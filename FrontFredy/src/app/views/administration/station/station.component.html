@@ -1,0 +1,137 @@
+<p-card>
+  <p-toolbar styleClass="p-mb-4">
+    <ng-template pTemplate="left">
+      <av-button type="button" [label]="'module.station.btnNew' | translate" icon="pi pi-plus p-button-icon-left"
+        class="p-button-text" (click)="openNew()"></av-button>
+      <av-button type="button" [label]="'module.station.btnDelete' | translate"
+        [icon]="'pi pi-trash p-button-icon-left'" class="p-button-text" (click)="deleteSelectedStations()"
+        [disabled]="!selectedStations || !selectedStations.length"></av-button>
+    </ng-template>
+  </p-toolbar>
+
+  <p-table #dt [value]="stations" [lazy]="true" (onLazyLoad)="loadStations($event)" [totalRecords]="totalRecords"
+    [rows]="10" [paginator]="true" [(selection)]="selectedStations" [rowHover]="true" dataKey="id"
+    currentPageReportTemplate="Mostrar {first} a {last} de {{ totalRecords}} registros" [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 25, 50]" styleClass="p-datatable-responsive-demo">
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 3rem">
+          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+        </th>
+        <th pSortableColumn="name">
+          {{ "module.station.name" | translate }}
+          <p-sortIcon field="name"></p-sortIcon>
+        </th>
+        <th pSortableColumn="description">
+          {{ "module.station.description" | translate }}
+          <p-sortIcon field="description"></p-sortIcon>
+        </th>
+        <th pSortableColumn="baseAdmonCod">
+          {{ "module.station.baseAdmonCod" | translate }}
+          <p-sortIcon field="baseAdmonCod"></p-sortIcon>
+        </th>
+        <th pSortableColumn="active">
+          {{ "module.station.activeStation" | translate }}
+          <p-sortIcon field="active"></p-sortIcon>
+        </th>
+        <th pSortableColumn="principal">
+          {{ "module.station.principal" | translate }}
+          <p-sortIcon field="principal"></p-sortIcon>
+        </th>
+        <th style="width: 8rem"></th>
+      </tr>
+      <tr>
+        <th></th>
+        <th>
+          <av-input-text [label]="'module.station.name'|translate" [(ngModel)]="stationFind.name"></av-input-text>
+        </th>
+        <th>
+          <av-input-text [label]="'module.station.description'|translate" [(ngModel)]="stationFind.description"></av-input-text>
+        </th>
+        <th>
+          <av-input-text [label]="'module.station.baseAdmonCod'|translate" [(ngModel)]="stationFind.baseAdmonCod"></av-input-text>
+        </th>
+        <th>
+          <p-triStateCheckbox [(ngModel)]="stationFind.active" placeholder="Activo"></p-triStateCheckbox>
+        </th>
+        <th>
+          <p-triStateCheckbox [(ngModel)]="stationFind.principal" placeholder="Principal"></p-triStateCheckbox>
+        </th>
+        <th>
+          <av-button [label]="'module.station.btnFilter' | translate" icon="pi pi-search" class="p-button-text"
+            (click)="getPaginationAndFilter()"></av-button>
+        </th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-station let-editing="editing" let-ri="rowIndex">
+      <tr [pEditableRow]="station">
+        <td>
+          <p-tableCheckbox [value]="station"></p-tableCheckbox>
+        </td>
+        <td pEditableColumn>
+          {{ station.name }}
+        </td>
+        <td pEditableColumn>
+          {{ station.description }}
+        </td>
+        <td pEditableColumn>
+          {{ station.baseAdmonCod }}
+        </td>
+        <td pEditableColumn>
+          {{ station.active ? "SI" : "NO" }}
+        </td>
+        <td pEditableColumn>
+          {{ station.principal ? "SI" : "NO" }}
+        </td>
+        <td style="text-align: center">
+          <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-text"
+            (click)="editStation(station)"></button>
+          <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-text"
+            (click)="deleteStation(station)"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>
+
+<p-dialog [(visible)]="stationDialog" [style]="{ width: '450px' }" [header]="'module.station.title' | translate"
+  [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <form id="stationForm" [formGroup]="stationForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+      <av-input-text hidden formControlName="id" [label]="'module.station.id' | translate"
+        [(ngModel)]="station.id"></av-input-text>
+      <av-input-text formControlName="name" [maxlength]="3" label="module.station.name" [(ngModel)]="station.name"
+        ng-required="true" required></av-input-text>
+      <div *ngIf="submitted && !station.name" class="p-p-2" style="min-width: 225px">
+        <small class="p-invalid" *ngIf="submitted && !station.name">{{
+          "module.station.validation.nameRequired" | translate
+        }}</small>
+      </div>
+      <av-input-text formControlName="description" [maxlength]="100" label="module.station.description"
+        [(ngModel)]="station.description"></av-input-text>
+      <av-input-text formControlName="baseAdmonCod" [maxlength]="5" label="module.station.baseAdmonCod"
+        [(ngModel)]="station.baseAdmonCod"></av-input-text>
+      <div class="p-p-2" style="min-width: 225px">
+        <p-checkbox formControlName="active" [binary]="true" [label]="'module.station.active' | translate"
+          [(ngModel)]="station.active">
+        </p-checkbox>
+      </div>
+      <div class="p-p-2" style="min-width: 225px">
+        <p-checkbox formControlName="principal" [binary]="true" [label]="'module.station.principal' | translate"
+          [(ngModel)]="station.principal">
+        </p-checkbox>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <av-button [label]="'module.station.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+      (click)="hideDialog()"></av-button>
+    <av-button [label]="'module.station.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+      (click)="saveStation(station)"></av-button>
+  </ng-template>
+</p-dialog>
+<p-toast baseZIndex="10000"></p-toast>
+<p-confirmDialog [style]="{ width: '450px' }" [acceptLabel]="'module.station.btnAccept' | translate"
+  [rejectLabel]="'module.station.btnCancel' | translate"></p-confirmDialog>
+  <p-blockUI [blocked]="loading"><p-progressSpinner></p-progressSpinner></p-blockUI>

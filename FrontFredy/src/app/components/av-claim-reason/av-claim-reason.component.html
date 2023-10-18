@@ -1,0 +1,18 @@
+<!-- <p-selectButton
+  [options]="claimMotive"
+  [(ngModel)]="value2"
+  multiple="multiple"
+  optionLabel="name"
+  optionValue="key"
+></p-selectButton> -->
+
+<p-multiSelect [options]="claimMotive" [(ngModel)]="selectionReason" [selectionLimit]="selectionLimit" defaultLabel="Select..." (onChange)="onChange()"  optionLabel="name" display="chip">
+  <ng-template let-item pTemplate="selectedItem">
+    <span>{{item.name}}</span>
+  </ng-template>
+  <ng-template let-opt pTemplate="item">
+    <div>
+      <div>{{opt.name}}</div>
+    </div>
+  </ng-template>
+</p-multiSelect>

@@ -1,0 +1,162 @@
+<p-card>
+    <p-toolbar styleClass="p-mb-4">
+        <ng-template pTemplate="left">
+            <av-button type="button" [label]="'module.messages.btnNew' | translate" icon="pi pi-plus p-button-icon-left"
+                class="p-button-text" (click)="openNew()"></av-button>
+            <av-button type="button" [label]="'module.messages.btnDelete' | translate"
+                [icon]="'pi pi-trash p-button-icon-left'" class="p-button-text" (click)="deleteSelectedMessages()"
+                [disabled]="!selectedMessages || !selectedMessages.length"></av-button>
+        </ng-template>
+    </p-toolbar>
+    <p-table #dt [value]="messages" [lazy]="true" (onLazyLoad)="loadMessages($event)" [totalRecords]="totalRecords"
+        [rows]="10" [paginator]="true" [(selection)]="selectedMessages" [rowHover]="true" dataKey="id"
+        currentPageReportTemplate="Mostrar {first} a {last} de {{ totalRecords}} registros"
+        [showCurrentPageReport]="true" [rowsPerPageOptions]="[10, 25, 50]" styleClass="p-datatable-responsive-demo">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 3rem">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th pSortableColumn="languageDesc">
+                    <div class="p-fluid p-p-2">
+                        {{ "module.messages.language" | translate }}
+                        <p-sortIcon field="languageDesc"></p-sortIcon>
+                    </div>
+                </th>
+                <th pSortableColumn="messageText">
+                    <div class="p-fluid p-p-2">
+                        {{ "module.messages.messageText" | translate }}
+                        <p-sortIcon field="messageText"></p-sortIcon>
+                    </div>
+                </th>
+                <th pSortableColumn="notificationTypeDesc">
+                    <div class="p-fluid p-p-2">
+                        {{ "module.messages.notificationTypeDesc" | translate }}
+                        <p-sortIcon field="notificationTypeDesc"></p-sortIcon>
+                    </div>
+                </th>
+                <th pSortableColumn="attached">
+                    <div class="p-fluid p-p-2">
+                        {{ "module.messages.attached" | translate }}
+                        <p-sortIcon field="attached"></p-sortIcon>
+                    </div>
+                </th>
+                <th style="width: 8rem"></th>
+            </tr>
+            <tr>
+                <th></th>
+                <th>
+                    <av-language label="{{'module.messages.language' | translate}}" [(ngModel)]="messageFind.languageId">
+                    </av-language>
+                </th>
+                <th>
+                    <av-input-text [label]="'module.messages.messageText'|translate"
+                        [(ngModel)]="messageFind.messageText"></av-input-text>
+                </th>
+                <th>
+                    <av-notification label="{{'module.messages.notificationTypeDesc' | translate}}"
+                        [(ngModel)]="messageFind.notificationTypeId">
+                    </av-notification>
+                </th>
+                <th>
+                    <div class="p-fluid p-p-2">
+                        <p-triStateCheckbox [(ngModel)]="messageFind.attached" placeholder="Adjunto">
+                        </p-triStateCheckbox>
+                    </div>
+                </th>
+                <th>
+                    <av-button [label]="'module.messages.btnFilter' | translate" icon="pi pi-search"
+                        class="p-button-text" (click)="getPaginationAndFilter()"></av-button>
+                </th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-message let-editing="editing" let-ri="rowIndex">
+            <tr [pEditableRow]="message">
+                <td>
+                    <p-tableCheckbox [value]="message"></p-tableCheckbox>
+                </td>
+                <td pEditableColumn>
+                    {{ message.languageDesc }}
+                </td>
+                <td pEditableColumn>
+                    {{ message.messageText }}
+                </td>
+                <td pEditableColumn>
+                    {{ message.notificationTypeDesc }}
+                </td>
+                <td pEditableColumn>
+                    {{ message.attached ?  labelYes : "NO" }}
+                </td>
+                <td style="text-align: center">
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-text"
+                        (click)="editMessage(message)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-text"
+                        (click)="deleteMessage(message)"></button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-card>
+
+<p-dialog [(visible)]="messageDialog" [style]="{ width: '600px' }" [header]="'module.messages.title' | translate"
+    [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <form id="messageForm" [formGroup]="messageForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+            <av-input-text hidden formControlName="id" [label]="'module.messages.id' | translate"
+                [(ngModel)]="message.id"></av-input-text>
+            <av-language label="{{'module.messages.language' | translate}}" formControlName="languageId"
+                [(ngModel)]="message.languageId">
+            </av-language>
+            <div *ngIf="submitted && !message.languageId" class="p-p-2" style="min-width: 225px">
+                <small class="p-invalid">
+                    {{"module.messages.validation.languageRequired" | translate }}
+                </small>
+            </div>
+            <av-notification label="{{'module.messages.notificationTypeDesc' | translate}}"
+                formControlName="notificationTypeId" [(ngModel)]="message.notificationTypeId">
+            </av-notification>
+            <div *ngIf="submitted && !message.notificationTypeId" class="p-p-2" style="min-width: 225px">
+                <small class="p-invalid">
+                    {{"module.messages.validation.notificationTypeRequired" | translate }}
+                </small>
+            </div>
+            <div class="p-p-2" style="min-width: 225px">
+                <p-checkbox formControlName="attached" [binary]="true" [label]="'module.messages.attached' | translate"
+                    [(ngModel)]="message.attached">
+                </p-checkbox>
+            </div>
+            <av-input-text formControlName="affair" [maxlength]="50" [label]="'module.messages.affair' | translate"
+                [(ngModel)]="message.affair">
+            </av-input-text>
+            <div *ngIf="submitted && !message.affair" class="p-p-2" style="min-width: 225px">
+                <small class="p-invalid">
+                    {{"module.messages.validation.affairRequired" | translate }}
+                </small>
+            </div>
+            <av-input-text-area formControlName="messageText" [maxlength]="500"
+                [label]="'module.messages.messageText' | translate" [(ngModel)]="message.messageText">
+            </av-input-text-area>
+            <div *ngIf="submitted && !message.messageText" class="p-p-2" style="min-width: 225px">
+                <small class="p-invalid">
+                    {{"module.messages.validation.textRequired" | translate }}
+                </small>
+            </div>
+        </form>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <av-button [label]="'module.messages.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+            (click)="hideDialog()"></av-button>
+        <av-button [label]="'module.messages.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+            (click)="saveMessage(message)"></av-button>
+    </ng-template>
+</p-dialog>
+
+<p-toast baseZIndex="10000"></p-toast>
+
+<p-confirmDialog [style]="{ width: '450px' }" [acceptLabel]="'module.messages.btnAccept' | translate"
+    [rejectLabel]="'module.messages.btnCancel' | translate"></p-confirmDialog>
+
+<p-blockUI [blocked]="loading">
+    <p-progressSpinner></p-progressSpinner>
+</p-blockUI>

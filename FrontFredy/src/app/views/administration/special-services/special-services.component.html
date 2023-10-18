@@ -1,0 +1,358 @@
+<p-card>
+  <div class="p-field p-grid">
+    <div class="p-col-1">
+      <av-button type="button" [label]="'module.user.btnNew' | translate" icon="pi pi-plus p-button-icon-left"
+        class="p-button-text" (click)="open()"></av-button>
+    </div>
+  </div>
+
+  <p-table #dt styleClass="p-datatable-sm p-datatable-responsive-demo" [value]="specialServices" (onLazyLoad)="loadServices($event)" 
+  [lazy]="true" [rows]="10" [rowHover]="true" dataKey="id" [totalRecords]="totalRecords" [paginator]="true" [rowsPerPageOptions]="[5,10, 25, 50]"
+    currentPageReportTemplate="Mostrar {first} a {last} de {{ totalRecords }} registros" [showCurrentPageReport]="true">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>
+          <div class="p-fluid p-p-2">{{ "module.services.tblData.header.serviceType" | translate }}</div>
+        </th>
+        <th>
+          <div class="p-fluid p-p-2">{{ "module.services.tblData.header.stationOrigin" | translate }}</div>
+        </th>
+        <th>
+          <div class="p-fluid p-p-2">{{ "module.services.tblData.header.stationDestiny" | translate }}</div>
+        </th>
+        <th>
+          <div class="p-fluid p-p-2">{{ "module.services.tblData.header.arrivalDate" | translate }}</div>
+        </th>
+        <th>
+          <div class="p-fluid p-p-2">{{ "module.services.tblData.header.awb" | translate }}</div>
+        </th>
+        <th></th>
+      </tr>
+      <tr>
+        <td>
+          <av-special-service-type [label]="'module.services.tblData.header.serviceType' | translate"
+            [selectionLabel]="'module.services.tblData.header.serviceType' | translate"
+            [(ngModel)]="specialServiceTypeFind"></av-special-service-type>
+        </td>
+        <td>
+          <av-station [label]="'module.services.tblData.header.stationOrigin' | translate"
+            [selectionLabel]="'module.services.tblData.header.stationOrigin' | translate" [(ngModel)]="stationOriginFind">
+          </av-station>
+        </td>
+        <td>
+          <av-station [label]="'module.services.tblData.header.stationDestiny' | translate"
+            [selectionLabel]="'module.services.tblData.header.stationDestiny' | translate"
+            [(ngModel)]="stationDestinyFind"></av-station>
+        </td>
+        <td>
+          <av-input-date [label]="'module.services.tblData.header.arrivalDate' | translate" [monthNavigator]="true"
+            [yearNavigator]="true" yearRange="2000:2050" [showIcon]="true" inputId="icon"
+            [(ngModel)]="specialServicesFind.arrivalDate"></av-input-date>
+        </td>
+        <td>
+          <av-input-text label="{{'module.services.tblData.header.awb'| translate}}"
+            [(ngModel)]="specialServicesFind.awb"></av-input-text>
+        </td>
+        <td>
+          <av-button [label]="'module.user.btnFilter' | translate" icon="pi pi-search" class="p-button-text"
+            (click)="getPaginationAndFilter()"></av-button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-service>
+      <tr [pEditableRow]="service">
+        <td pEditableColumn>
+          <div class="p-fluid p-p-2">{{ service.specialServiceTypeDescription }}</div>
+        </td>
+        <td pEditableColumn>
+          <div class="p-fluid p-p-2">{{ service.stationOriginDescription }}</div>
+        </td>
+        <td pEditableColumn>
+          <div class="p-fluid p-p-2">{{ service.stationDestinyDescription }}</div>
+        </td>
+        <td pEditableColumn>
+          <div class="p-fluid p-p-2">{{ service.arrivalDate | date:'yyyy-MMM-dd'}}<br>{{ service.arrivalDate | date:'h:mm a z'}}</div>
+        </td>
+        <td pEditableColumn>
+          <div class="p-fluid p-p-2">{{ service.awb }}</div>
+        </td>
+        <td style="text-align: center">
+          <span>
+            <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-text"
+              (click)="edit(service)"></button>
+            <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-text"
+              (click)="deleteService(service)"></button>
+          </span>
+          <button pButton pRipple icon="fa fa-fw fa-eye" class="p-button-rounded p-button-text"
+            (click)="view(service)"></button>
+          <button *ngIf="service.specialServiceRoutes.length == 0 && service.specialServiceTypeId=='1'" pButton pRipple
+            icon="fa fa-fw fa-mail-reply" class="p-button-rounded p-button-text" (click)="reposition(service)"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>
+<p-dialog [(visible)]="serviceDialog" [style]="{ width: '70%'}"
+  [header]="'module.services.popUpService.header' | translate" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <form id="specialServiceForm" [formGroup]="specialServiceForm"
+      class="form-horizontal ng-untouched ng-pristine ng-valid">
+      <av-input-text hidden formControlName="id" [label]="'module.station.id' | translate"
+        [(ngModel)]="specialService.id"></av-input-text>
+      <div class="p-fluid p-formgrid p-grid" *ngIf="!onlyView">
+        <div class="p-field p-col-12 p-md-3">
+          <av-special-service-type formControlName="specialServiceType" required
+            [label]="'module.services.popUpService.template.specialServiceType' | translate"
+            [selectionLabel]="'module.services.popUpService.template.specialServiceType' | translate"
+            [(ngModel)]="specialServiceType" [disabled]="repositioning"></av-special-service-type>
+          <div *ngIf="submittedF1 && f1.specialServiceType.errors" class="p-col-6 p-p-2" style="min-width: 225px">
+            <small class="p-invalid" *ngIf="submittedF1 && f1.specialServiceType.errors">{{
+              "module.services.popUpService.template.validation.specialServiceTypeRequired" | translate
+              }}</small>
+          </div>
+        </div>
+        <div class="p-field p-col-12 p-md-2">
+          <av-station formControlName="stationOrigin" required
+            [label]="'module.services.popUpService.template.originStation' | translate"
+            [selectionLabel]="'module.services.popUpService.template.originStation' | translate"
+            [(ngModel)]="stationOrigin"></av-station>
+          <div *ngIf="submittedF1 && f1.stationOrigin.errors" class="p-col-6 p-p-2" style="min-width: 225px">
+            <small class="p-invalid" *ngIf="submittedF1 && f1.stationOrigin.errors">{{
+              "module.services.popUpService.template.validation.originStationRequired" | translate
+              }}</small>
+          </div>
+        </div>
+        <div class="p-field p-col-12 p-md-2">
+          <av-station formControlName="stationDestiny" required
+            [label]="'module.services.popUpService.template.destinyStation' | translate"
+            [selectionLabel]="'module.services.popUpService.template.destinyStation' | translate"
+            [(ngModel)]="stationDestiny" [disabled]="repositioning"></av-station>
+          <div *ngIf="submittedF1 && f1.stationDestiny.errors" class="p-col-6 p-p-2" style="min-width: 225px">
+            <small class="p-invalid" *ngIf="submittedF1 && f1.stationDestiny.errors">{{
+              "module.services.popUpService.template.validation.destinyStationRequired" | translate
+              }}</small>
+          </div>
+        </div>
+        <div class="p-field p-col-12 p-md-2">
+          <av-input-date formControlName="arrivalDate" required
+            [label]="'module.services.popUpService.template.arrivalDate' | translate" [monthNavigator]="true"
+            [yearNavigator]="true" yearRange="2000:2050" [showIcon]="true" [showTime]="true" inputId="icon"
+            [(ngModel)]="specialService.arrivalDate"></av-input-date>
+          <div *ngIf="submittedF1 && f1.arrivalDate.errors" class="p-col-6 p-p-2" style="min-width: 225px">
+            <small class="p-invalid" *ngIf="submittedF1 && f1.arrivalDate.errors">{{
+              "module.services.popUpService.template.validation.arrivalDateRequired" | translate
+              }}</small>
+          </div>
+        </div>
+        <div class="p-field p-col-12 p-md-2">
+          <av-input-text formControlName="awb" required
+            label="{{'module.services.popUpService.template.awb' | translate}}" [(ngModel)]="specialService.awb">
+          </av-input-text>
+          <div *ngIf="submittedF1 && f1.awb.errors" class="p-col-6 p-p-2" style="min-width: 225px">
+            <small class="p-invalid" *ngIf="submittedF1 && f1.awb.errors">{{
+              "module.services.popUpService.template.validation.awbRequired" | translate
+              }}</small>
+          </div>
+        </div>
+        <div class="p-field p-col-12 p-md-12">
+          <av-input-text hidden formControlName="containerList" required
+            [(ngModel)]="specialService.specialServiceContainers">
+          </av-input-text>
+          <div *ngIf="submittedF1 && f1.containerList.errors" class="p-col-6 p-p-2" style="min-width: 225px">
+            <small class="p-invalid" *ngIf="submittedF1 && f1.containerList.errors">{{
+              "module.services.popUpService.template.validation.containerItmeRequired" | translate
+              }}</small>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div *ngIf="onlyView">
+      <div class="p-fluid p-formgrid p-grid">
+        <div class="p-field p-col-12 p-md-2">
+          <div><b>{{"module.services.tblData.header.serviceType" | translate}}</b></div>
+          <div>{{specialServiceType.description}}</div>
+        </div>
+        <div class="p-field p-col-12 p-md-2">
+          <div><b>{{"module.services.popUpService.template.originStation" | translate}}</b></div>
+          <div>{{stationOrigin.description}}</div>
+        </div>
+        <div class="p-field p-col-12 p-md-2">
+          <div><b>{{"module.services.popUpService.template.destinyStation" | translate}}</b></div>
+          <div>{{stationDestiny.description}}</div>
+        </div>
+        <div class="p-field p-col-12 p-md-2">
+          <div><b>{{"module.services.popUpService.template.arrivalDate" | translate}}</b></div>
+          <div>{{ specialService.arrivalDate | date:'yyyy-MMM-dd'}}<br>{{ specialService.arrivalDate | date:'h:mm a z'}}
+          </div>
+        </div>
+        <div class="p-field p-col-12 p-md-2">
+          <div><b>{{"module.services.popUpService.template.awb" | translate}}</b></div>
+          <div>{{specialService.awb}}</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <p-tabView styleClass="tabview-custom">
+        <p-tabPanel>
+          <ng-template pTemplate="header">
+            <i class="fa fa-fw fa-archive p-mr-2"></i>
+            <span>{{'module.services.popUpService.template.tabs.containers' | translate}}</span>
+          </ng-template>
+          <div class="p-col-12 p-p-2">
+            <p-dataView [value]="specialServiceContainers" [lazy]="true" (onLazyLoad)="loadContainer($event)"
+              layout="grid">
+              <ng-template pTemplate="header">
+                <div *ngIf="!repositioning">
+                  <form id="containerForm" [formGroup]="containerForm"
+                    class="form-horizontal ng-untouched ng-pristine ng-valid">
+                    <div class="p-grid p-d-flex">
+                      <div class="p-col-6 p-p-2">
+                        <av-input-text formControlName="containerNumber" required
+                          label="{{'module.services.popUpService.template.txtContainer' | translate}}">
+                        </av-input-text>
+                      </div>
+                      <div class="p-col-6 p-p-2 p-d-flex p-ai-center">
+                        <av-button [label]="'module.services.popUpService.template.btnAddContainer' | translate"
+                          icon="fa fa-fw fa-plus" class="p-button-text" (click)="addContainer()">
+                        </av-button>
+                      </div>
+                      <div *ngIf="submittedF2 && f2.containerNumber.errors" class="p-col-6 p-p-2"
+                        style="min-width: 225px">
+                        <small class="p-invalid" *ngIf="submittedF2 && f2.containerNumber.errors">{{
+                          "module.services.popUpService.template.validation.containerRequired" | translate
+                          }}</small>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+              </ng-template>
+              <ng-template let-container pTemplate="listItem" let-rowIndex="rowIndex">
+                <div class="p-col-11">
+                  {{container.container }}
+                </div>
+                <div class="p-col-1" *ngIf="!repositioning">
+                  <p-button label="" icon="pi pi-minus" iconPos="left" (click)="deleteContainer(rowIndex)"></p-button>
+                </div>
+              </ng-template>
+              <ng-template let-container pTemplate="gridItem" let-rowIndex="rowIndex">
+                <div class="p-col-11 p-md-3">
+                  {{container.container }}
+                </div>
+                <div class="p-col-1 p-md-1" *ngIf="!repositioning">
+                  <p-button label="" icon="pi pi-minus" iconPos="left" (click)="deleteContainer(rowIndex)"></p-button>
+                </div>
+              </ng-template>
+            </p-dataView>
+          </div>
+        </p-tabPanel>
+        <p-tabPanel>
+          <ng-template pTemplate="header">
+            <i class="fa fa-fw fa-plane p-mr-2"></i>
+            <span>{{'module.services.popUpService.template.tabs.flightPlan' | translate}}</span>
+          </ng-template>
+          <p-table #dt [value]="specialServiceRoutes" (onLazyLoad)="filterFlightPlan($event)" [lazy]="true" [rows]="4"
+            [rowHover]="true" dataKey="id" [totalRecords]="filterFlightTotalRecords" [paginator]="false"
+            currentPageReportTemplate="Mostrar {first} a {last} de {{ filterFlightTotalRecords }} registros"
+            [showCurrentPageReport]="true" styleClass="p-datatable-responsive-demo" [resizableColumns]="true"
+            [autoLayout]="true">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>
+                  <div class="p-fluid p-p-2">
+                    {{ "module.services.popUpService.template.tblData.header.origin" |
+                    translate }}
+                  </div>
+                </th>
+                <th>
+                  <div class="p-fluid p-p-2">
+                    {{ "module.services.popUpService.template.tblData.header.destiny" |
+                    translate }}
+                  </div>
+                </th>
+                <th>
+                  <div class="p-fluid p-p-2">
+                    {{ "module.services.popUpService.template.tblData.header.flight" |
+                    translate }}
+                  </div>
+                </th>
+                <th>
+                  <div class="p-fluid p-p-2">
+                    {{ "module.services.popUpService.template.tblData.header.dateFlight" |
+                    translate }}
+                  </div>
+                </th>
+                <th>
+
+                </th>
+              </tr>
+              <!-- <tr>
+                <th>
+                  <av-station [label]="'module.services.popUpService.template.originStation' | translate"
+                    [selectionLabel]="'module.services.popUpService.template.originStation' | translate">
+                  </av-station>
+                </th>
+                <th>
+                  <av-station [label]="'module.services.popUpService.template.destinyStation' | translate"
+                    [selectionLabel]="'module.services.popUpService.template.destinyStation' | translate">
+                  </av-station>
+                </th>
+                <th>
+                  <av-input-number label="{{'module.services.popUpService.template.numberFlight' | translate}}">
+                  </av-input-number>
+                </th>
+                <th>
+                  <av-input-date [label]="'module.services.popUpService.template.dateFlight' | translate"
+                    [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [showIcon]="true"
+                    inputId="icon">
+                  </av-input-date>
+                </th>
+                <th>
+                  <av-button [label]="'module.user.btnFilter' | translate" icon="pi pi-search" class="p-button-text"
+                    (click)="filterFlightPlan()">
+                  </av-button>
+                </th>
+              </tr> -->
+            </ng-template>
+            <ng-template pTemplate="body" let-serviceRoute>
+              <tr [pEditableRow]="serviceRoute">
+                <td pEditableColumn>
+                  <div class="p-fluid p-p-2">
+                    {{ serviceRoute.stationDeparture.description }}
+                  </div>
+                </td>
+                <td pEditableColumn>
+                  <div class="p-fluid p-p-2">
+                    {{ serviceRoute.stationArrival.description }}
+                  </div>
+                </td>
+                <td pEditableColumn>
+                  <div class="p-fluid p-p-2">
+                    {{ serviceRoute.flight }}
+                  </div>
+                </td>
+                <td pEditableColumn>
+                  <div class="p-fluid p-p-2">
+                    {{ serviceRoute.dateFlight }}
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <span *ngIf="!onlyView">
+      <av-button [label]="'module.services.popUpService.footer.btnCancel' | translate" icon="pi pi-times"
+        class="p-button-text" (click)="close()"></av-button>
+      <av-button [label]="'module.services.popUpService.footer.btnSave' | translate" icon="pi pi-save"
+        class="p-button-text" (click)="addSpecialService()">
+      </av-button>
+    </span>
+  </ng-template>
+</p-dialog>
+<p-toast baseZIndex="10000"></p-toast>
+<p-confirmDialog [style]="{ width: '450px' }" [acceptLabel]="'module.user.btnAccept' | translate"
+  [rejectLabel]="'module.user.btnCancel' | translate"></p-confirmDialog>

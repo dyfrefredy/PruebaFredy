@@ -1,0 +1,84 @@
+import {  Component,  forwardRef,  ViewChild,  ElementRef,  NgZone,  Input, Output, EventEmitter } from '@angular/core';
+import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { environment } from '../../../environments/environment';
+import { ConstantService } from '../../constant/constant-service';
+import { LoadTypeService } from '../../enumeration/load-type';
+import { TransactionService } from '../../services/transaction.service';
+
+export const AV_INPUT_CONTROL_VALUE_ACCESSOR: any = {
+  provide: NG_VALUE_ACCESSOR,
+  useExisting: forwardRef(() => AvLoadTypeComponent),
+  multi: true,
+};
+
+@Component({
+  selector: 'av-load-type',
+  templateUrl: './av-load-type.component.html',
+  providers: [AV_INPUT_CONTROL_VALUE_ACCESSOR],
+})
+export class AvLoadTypeComponent implements ControlValueAccessor {
+  @Input() label: string;
+  @Input() selectedLabel: string;
+  @Input() options: Array<{ label: string; value: any }>;
+  @Input() disabled = false;
+  @Input() filter = false;
+  @Output() change = new EventEmitter<any>();
+
+  @ViewChild('input') inputRef: ElementRef;
+  selectionChargeType: any;
+
+  @Output() selectPerishable: EventEmitter<Boolean> = new EventEmitter<Boolean>();
+
+  constructor(
+    private zone: NgZone, 
+    private transactionService: TransactionService, 
+    private constantService: ConstantService,
+    private loadTypeService: LoadTypeService) {
+    this.getChargeTypes();
+  }
+
+  getChargeTypes(){
+    this.transactionService.getAll(environment.adminAPI, this.constantService.LOAD_TYPE_URL).subscribe(
+      (data) => {
+        if (data.responseDto.response === this.constantService.RESPONSE_OK) {
+          this.options = new Array();
+          this.options.push({ label:  this.selectedLabel, value: 0 });
+          for (let index = 0; index < data.businessDto.length; index++) {
+            this.options.push({ label: data.businessDto[index].description, value: data.businessDto[index].id });
+          }
+        }
+      },
+      (error) => {
+        console.log('Error: ' + error);
+      }
+    );
+  }
+
+  propagateChange = (_: any) => {};
+  onTouched = () => {};
+
+  writeValue(value: any): void {
+    this.selectionChargeType = value;
+  }
+  onChange(): void {
+    this.zone.run(() => {
+      this.propagateChange(this.selectionChargeType);
+      this.change.emit();
+    });
+
+    if(this.selectionChargeType==this.loadTypeService.perishable){
+      this.selectPerishable.emit(true);
+    }
+  }
+
+  registerOnChange(fn: any): void {
+    this.propagateChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
+}

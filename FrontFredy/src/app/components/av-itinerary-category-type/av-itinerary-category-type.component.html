@@ -1,0 +1,8 @@
+<div class="p-p-2">
+  <label class="p-text-bold p-mr-2 p-ml-3 p-as-center">{{label|translate}} </label>
+  <img alt="Card" [src]="icon" style="width:24px; margin-top:-10px" />
+  <div *ngFor="let category of categories" class="p-field-checkbox p-d-inline">
+    <label class="p-text-bold p-mr-2 p-ml-3 p-as-center" [for]="category.key">{{category.name}}</label>
+    <p-radioButton class="radio-button-horizontal" [inputId]="category.key" (click)="onChange(category.key)" [value]="category" [(ngModel)]="selectedOption"></p-radioButton>
+</div>
+</div>

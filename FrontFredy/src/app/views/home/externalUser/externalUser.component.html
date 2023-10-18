@@ -1,0 +1,196 @@
+<p-card>
+  <div class="p-p-2 p-col-12" style="text-align:center">
+    <h4>
+      {{"module.externalUser.headerInstruction" | translate}}
+    </h4>
+  </div>
+  <form id="externalUserForm" [formGroup]="externalUserForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+    <div class="p-fluid p-formgrid p-grid">
+      <div class="p-p-2 p-col-4">
+        <av-input-text label="{{'module.externalUser.firstName' | translate}}*" formControlName="firstName"
+          [(ngModel)]="externalUser.firstName">
+        </av-input-text>
+        <small class="p-p-2 p-invalid" *ngIf="submitted && !externalUser.firstName">
+          {{"module.externalUser.validation.firstNameRequired" | translate}}
+        </small>
+      </div>
+      <div class="p-p-2 p-col-4">
+        <av-input-text label="{{'module.externalUser.lastName' | translate}}*" formControlName="lastName"
+          [(ngModel)]="externalUser.lastName">
+        </av-input-text>
+        <small class="p-p-2 p-invalid" *ngIf="submitted && !externalUser.lastName">
+          {{"module.externalUser.validation.lastNameRequired" | translate}}
+        </small>
+      </div>
+      <div class="p-p-2 p-col-4">
+        <av-input-text label="{{'module.externalUser.email' | translate}}*" formControlName="email"
+          [(ngModel)]="externalUser.email" [disabled]="true">
+        </av-input-text>
+        <div *ngIf="submitted && f.email.errors" class="p-invalid">
+          <div *ngIf="f.email.errors.required" class="p-p-2">
+            {{"module.externalUser.validation.emailRequired" | translate}}
+          </div>
+        </div>
+        <div *ngIf="submitted && f.email.errors" class="p-invalid">
+          <div *ngIf="f.email.errors.email" class="p-p-2">
+            {{"module.externalUser.validation.emailinvalid" | translate}}
+          </div>
+        </div>
+      </div>
+      <div class="p-p-2 p-col-4">
+        <div class="p-p-2">
+          <span class="p-float-label">
+            <p-dropdown formControlName="countryId" [options]="countries" filter="true"
+              [(ngModel)]="externalUser.countryId" (onChange)="onChangeCountry(2)">
+              <ng-template let-item pTemplate="selectedItem">
+                <span>{{item.label}}</span>
+              </ng-template>
+              <ng-template let-opt pTemplate="item">
+                <div>
+                  <div> {{opt.label}}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <label for="field-id">{{ "module.externalUser.countryId" | translate }}*</label>
+          </span>
+        </div>
+        <small class="p-p-2 p-invalid" *ngIf="submitted && !externalUser.countryId">
+          {{"module.externalUser.validation.countryIdRequired" | translate}}
+        </small>
+      </div>
+      <div class="p-p-2 p-col-4">
+        <div class="p-p-2">
+          <span class="p-float-label">
+            <p-dropdown formControlName="stateId" [options]="states" filter="true" [(ngModel)]="externalUser.stateId"
+              (onChange)="onChangeState(2)">
+              <ng-template let-item pTemplate="selectedItem">
+                <span>{{item.label}}</span>
+              </ng-template>
+              <ng-template let-opt pTemplate="item">
+                <div>
+                  <div> {{opt.label}}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <label for="field-id">{{ "module.externalUser.stateId" | translate }}</label>
+          </span>
+        </div>
+      </div>
+      <div class="p-p-2 p-col-4">
+        <div class="p-p-2">
+          <span class="p-float-label">
+            <p-dropdown formControlName="cityId" [options]="cities" filter="true" [(ngModel)]="externalUser.cityId">
+              <ng-template let-item pTemplate="selectedItem">
+                <span>{{item.label}}</span>
+              </ng-template>
+              <ng-template let-opt pTemplate="item">
+                <div>
+                  <div> {{opt.label}}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <label for="field-id">{{ "module.externalUser.cityId" | translate }}*</label>
+          </span>
+        </div>
+      </div>
+      <div class="p-p-2 p-col-6">
+        <av-input-text label="{{'module.externalUser.companyName' | translate}}*" formControlName="companyName"
+          [(ngModel)]="externalUser.companyName">
+        </av-input-text>
+        <small class="p-p-2 p-invalid" *ngIf="submitted && !externalUser.companyName">
+          {{"module.externalUser.validation.companyNameRequired" | translate}}
+        </small>
+      </div>
+      <div class="p-p-2 p-col-6">
+        <av-company-type label="{{'module.externalUser.companyType' | translate}}*" formControlName="companyTypeId"
+          [(ngModel)]="externalUser.companyTypeId" [selectLabel]="'module.componentNames.select' | translate">
+        </av-company-type>
+        <small class="p-p-2 p-invalid" *ngIf="submitted && !externalUser.companyTypeId">
+          {{"module.externalUser.validation.companyTypeRequired" | translate}}
+        </small>
+      </div>
+      <div class="p-p-2 p-col-6">
+        <av-input-text label="{{'module.externalUser.iataCode' | translate}}" formControlName="iataCode"
+          [(ngModel)]="externalUser.iataCode">
+        </av-input-text>
+      </div>
+      <div class="p-p-2 p-col-6">
+        <av-input-text label="{{'module.externalUser.cassCode' | translate}}" formControlName="cassCode"
+          [(ngModel)]="externalUser.cassCode">
+        </av-input-text>
+      </div>
+      <div class="p-p-2 p-col-5">
+        <av-input-text label="{{'module.externalUser.address' | translate}}" formControlName="address"
+          [(ngModel)]="externalUser.address">
+        </av-input-text>
+      </div>
+      <div class="p-p-2 p-col-3">
+        <av-input-number label="{{'module.externalUser.postalCode' | translate}}" formControlName="postalCode"
+          [(ngModel)]="externalUser.postalCode">
+        </av-input-number>
+      </div>
+      <div class="p-p-2 p-col-4">
+        <av-input-number label="{{'module.externalUser.phoneNumber' | translate}}*" formControlName="phoneNumber"
+          [(ngModel)]="externalUser.phoneNumber">
+        </av-input-number>
+      </div>
+      <div class="p-p-2 p-col-6">
+        <av-input-text label="{{'module.externalUser.mobileNumber' | translate}}" formControlName="mobileNumber"
+          [(ngModel)]="externalUser.mobileNumber">
+        </av-input-text>
+      </div>
+      <div class="p-p-2 p-col-6">
+        <av-input-text label="{{'module.externalUser.fax' | translate}}" formControlName="fax"
+          [(ngModel)]="externalUser.fax">
+        </av-input-text>
+      </div>
+      <div class="p-p-2 p-col-12">
+        <p-checkbox formControlName="termsConditions" [binary]="true"
+          [label]="'module.externalUser.termsConditions' | translate " [(ngModel)]="externalUser.termsConditions">
+        </p-checkbox>
+        <small class="p-p-2 p-invalid"
+          *ngIf="submitted && !externalUser.termsConditions || externalUser.termsConditions == false">
+          {{"module.externalUser.validation.termsConditionsRequired" | translate}}
+        </small>
+      </div>
+      <div class="p-p-2 p-col-12">
+        <span>
+          <a href="http://www.aviancacargo.com/eng/atm/privacy.aspx" target="_blank">
+            {{"module.externalUser.privacyPolicy" | translate}}
+          </a>
+        </span>
+      </div>
+    </div>
+  </form>
+  <ng-template pTemplate="footer">
+    <div class="text-right">
+      <av-button [label]="'module.componentNames.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+        (click)="saveExternalUser()">
+      </av-button>
+    </div>
+  </ng-template>
+</p-card>
+
+<p-dialog [(visible)]="warningDialog" [style]="{ width: '50%', heigth: '500px' }"
+  [header]="'module.externalUser.warning' | translate" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <div class="p-fluid p-formgrid p-grid">
+      <div class="p-p-2 p-col-12">
+        <p>{{'module.externalUser.msgWarning' | translate}}</p>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <av-button type="button" [label]="'module.componentNames.btnAccept' | translate" icon="pi pi-save"
+      class="p-button-text" (click)="finalize()"></av-button>
+  </ng-template>
+</p-dialog>
+
+<p-toast baseZIndex="10000"></p-toast>
+
+<p-confirmDialog [style]="{ width: '450px' }" [acceptLabel]="'module.externalUser.btnAccept' | translate"
+  [rejectLabel]="'module.externalUser.btnCancel' | translate"></p-confirmDialog>
+
+<p-blockUI [blocked]="loading">
+  <p-progressSpinner></p-progressSpinner>
+</p-blockUI>

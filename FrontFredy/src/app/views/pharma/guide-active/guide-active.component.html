@@ -1,0 +1,429 @@
+<div class="card">
+  <p-table [value]="filters.guideActives" styleClass="p-datatable-responsive-demo table-striped" [lazy]="true"
+    [totalRecords]="totalRecords" [rows]="pagination.pageSize" [paginator]="true" [showCurrentPageReport]="true"
+    currentPageReportTemplate="Mostrar {first} a {last} de {{ totalRecords }} registros" [rowHover]="true" dataKey="id"
+    [rowsPerPageOptions]="[10, 25, 50]" [autoLayout]="true" [lazy]="true" (onLazyLoad)="loadActive($event)"
+    [frozenColumns]="{ field: 'awb', header: 'awb' }">
+    <ng-template pTemplate="caption">
+      <p-accordion>
+        <p-accordionTab header="Filter">
+          <div class="p-fluid p-formgrid p-grid">
+            <div class="p-col-4">
+              <av-input-text [(ngModel)]="guideActiveFilter.docNum" [label]="'module.guideActive.awb'|translate">
+              </av-input-text>
+            </div>
+            <div class="p-col-4">
+              <av-input-number [(ngModel)]="guideActiveFilter.fitNum"
+                [label]="'module.guideActive.flightNumber'|translate"></av-input-number>
+            </div>
+            <div class="p-col-4">
+              <av-input-text [(ngModel)]="guideActiveFilter.shc" [label]="'module.guideActive.shc'|translate">
+              </av-input-text>
+            </div>
+            <av-station-user class="p-col-4" [selectionLabel]="'module.guideActive.NextPointOffload'|translate"
+              [(ngModel)]="guideActiveFilter.brdPtStationId" [label]="'module.guideActive.NextPointOffload'|translate">
+            </av-station-user>
+            <av-station-user class="p-col-4" [selectionLabel]="'module.guideActive.FinalDestination'|translate"
+              [(ngModel)]="guideActiveFilter.offPtStationId" [label]="'module.guideActive.FinalDestination'|translate">
+            </av-station-user>
+            <div class="p-d-flex p-jc-end p-col-12">
+              <av-button [label]="'module.module.btnFilter' | translate" icon="pi pi-search" class="p-button-text"
+                (click)="getPaginationAndFilterActives()"></av-button>
+            </div>
+          </div>
+        </p-accordionTab>
+      </p-accordion>
+    </ng-template>
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th style="min-width:100px" pSortableColumn="docNum">
+          {{ "module.guideActive.awb" | translate }}
+          <p-sortIcon field="docNum"></p-sortIcon>
+        </th>
+        <th style="min-width:80px" pSortableColumn="fitNum">
+          {{ "module.guideActive.flightNumber" | translate }}
+          <p-sortIcon field="fitNum"></p-sortIcon>
+        </th>
+        <th style="min-width:90px" pSortableColumn="date">
+          {{ "module.guideActive.date" | translate }}
+          <p-sortIcon field="date"></p-sortIcon>
+        </th>
+        <th style="min-width:110px" pSortableColumn="shc">
+          {{ "module.guideActive.shc" | translate }}
+          <p-sortIcon field="shc"></p-sortIcon>
+        </th>
+        <th style="min-width:100px" pSortableColumn="productTypeId">
+          {{ "module.guideActive.pharmaProduct" | translate }}
+          <p-sortIcon field="productTypeId"></p-sortIcon>
+        </th>
+        <th style="min-width:100px" pSortableColumn="BrdPtStationId">
+          {{ "module.guideActive.Origin" | translate }}
+          <p-sortIcon field="BrdPtStationId"></p-sortIcon>
+        </th>
+        <th style="min-width:100px" pSortableColumn="offPtStationId">
+          {{ "module.guideActive.NextPointOffload" | translate }}
+          <p-sortIcon field="offPtStationId"></p-sortIcon>
+        </th>
+        <th style="min-width:100px" pSortableColumn="DestStationId">
+          {{ "module.guideActive.FinalDestination" | translate }}
+          <p-sortIcon field="DestStationId"></p-sortIcon>
+        </th>
+        <th style="min-width:90px" pSortableColumn="WBS.UpdatedDate">
+          {{ "module.guideActive.LastTimeStatus" | translate }}
+          <p-sortIcon field="WBS.UpdatedDate"></p-sortIcon>
+        </th>
+        <th style="min-width:90px" pSortableColumn="WBS.StationId">
+          {{ "module.guideActive.LastStatus" | translate }}
+          <p-sortIcon field="WBS.StationId"></p-sortIcon>
+        </th>
+        <th pSortableColumn="CriticalPoints">
+          {{ "module.guideActive.CriticalPoints" | translate }}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-guideActive>
+      <tr [pEditableRow]="guideActive">
+        <td pEditableColumn>
+          {{guideActive.docNum}}
+        </td>
+        <td pEditableColumn>
+          {{guideActive.fitNum}}
+        </td>
+        <td pEditableColumn>
+          {{guideActive.date | avDateTimeOffset:'OriginalLocationDate'}}
+        </td>
+        <td pEditableColumn>
+          {{guideActive.shc}}
+        </td>
+        <td>
+          <div *ngIf="guideActive.productTypeId==1">
+            <img alt="Pharma care" style="width: 8rem;" src="../../../../assets/img/pharma/air-wiybill/pharma-care.png">
+          </div>
+          <div *ngIf="guideActive.productTypeId!=1">
+            <img alt="Pharma cool care" style="width: 8rem;"
+              src="../../../../assets/img/pharma/air-wiybill/pharma-cool-care.png">
+          </div>
+        </td>
+        <!-- <td pEditableColumn>
+          <div class="p-fluid p-p-2">
+            <div *ngIf="guideActive.productTypeId==1">
+              <img alt="Pharma care" style="width: 100%;"
+                src="../../../../assets/img/pharma/air-wiybill/pharma-care.png">
+            </div>
+            <div *ngIf="guideActive.productTypeId==2">
+              <img alt="Pharma cool care" style="width: 100%;"
+                src="../../../../assets/img/pharma/air-wiybill/pharma-cool-care.png">
+            </div>
+          </div>
+        </td> -->
+        <td pEditableColumn>
+          {{guideActive.originStationIata}}
+        </td>
+        <td pEditableColumn>
+          {{guideActive.offPtStationIata}}
+        </td>
+        <td pEditableColumn>
+          {{guideActive.destinyStationIata}}
+        </td>
+        <td pEditableColumn>
+          {{guideActive.waybillStatus.updatedDate | avDateTimeOffset:'OriginalLocationDate'}}
+        </td>
+        <td pEditableColumn>
+          <div *ngIf="guideActive.waybillStatus.statusId == 5">
+            Pending arrival
+          </div>
+          <div *ngIf="guideActive.waybillStatus.statusId == 2">
+            Storage
+          </div>
+          <div *ngIf="guideActive.waybillStatus.statusId == 3">
+            {{ guideActive.waybillStatus.statusDesc }} ({{ guideActive.monitoringTime }})
+          </div>
+          <div
+            *ngIf="guideActive.waybillStatus.statusId != 5 && guideActive.waybillStatus.statusId != 2 && guideActive.waybillStatus.statusId != 3">
+            {{ guideActive.waybillStatus.statusDesc }}
+          </div>
+        </td>
+        <td>
+          <div>
+            <!-- <p-button *ngIf="(guideActive.waybillStatus.statusId == 2 || guideActive.waybillStatus.statusId == 3) 
+                          && guideActive.productTypeId == 2" styleClass="p-button-rounded p-button-text"
+              (click)="openMonitoring(guideActive)" pTooltip="Monitoring">
+              <img alt="buttonStatus" [src]="imgBtnMonitoring" style="width: 1.5rem" />
+            </p-button> -->
+            <div *ngIf="(guideActive.waybillStatus.statusId == 2 || guideActive.waybillStatus.statusId == 3) 
+            && guideActive.productTypeId == 2">
+              <span class="img-button" pTooltip="Monitoring">
+                <img alt="Monitoring" [src]="imgBtnMonitoring" style="width: 1.5rem; "
+                  (click)="openMonitoring(guideActive)" />
+              </span>
+            </div>
+            <!-- <p-button styleClass="p-button-rounded p-button-text" (click)="openCriticalPoint(guideActive)"
+              [pTooltip]="(guideActive.waybillStatus.statusId == 2 || guideActive.waybillStatus.statusId == 3) 
+                            && guideActive.waybillStatus.stationId == guideActive.destinyRedStationId ? 'Delivery' : 
+                            guideActive.waybillStatus.statusId == 5 || guideActive.waybillStatus.statusId == 1 ? 'Storage In' : 'Storage Out'">
+              <img alt="buttonStatus" [src]="(guideActive.waybillStatus.statusId == 2 || guideActive.waybillStatus.statusId == 3) 
+                                            && guideActive.waybillStatus.stationId == guideActive.destinyRedStationId ? imgBtnDelivery : 
+                                            guideActive.waybillStatus.statusId == 5 ? imgBtnPendingArrival:
+                                            guideActive.waybillStatus.statusId == 1 ? imgBtnAcceptance : imgBtnStorageIn"
+                style="width: 1.5rem" />
+            </p-button> -->
+            <div>
+              <span class="img-button" [pTooltip]="(guideActive.waybillStatus.statusId == 2 || guideActive.waybillStatus.statusId == 3) 
+              && guideActive.waybillStatus.stationId == guideActive.destinyRedStationId ? 'Delivery' : 
+              guideActive.waybillStatus.statusId == 5 || guideActive.waybillStatus.statusId == 1 ? 'Storage In' : 'Storage Out'">
+                <img alt="{{(guideActive.waybillStatus.statusId == 2 || guideActive.waybillStatus.statusId == 3) 
+                  && guideActive.waybillStatus.stationId == guideActive.destinyRedStationId ? 'Delivery' : 
+                  guideActive.waybillStatus.statusId == 5 || guideActive.waybillStatus.statusId == 1 ? 
+                  'Storage In' : 'Storage Out'}}" [src]="(guideActive.waybillStatus.statusId == 2 || guideActive.waybillStatus.statusId == 3) 
+                  && guideActive.waybillStatus.stationId == guideActive.destinyRedStationId ? imgBtnDelivery : 
+                  guideActive.waybillStatus.statusId == 5 ? imgBtnPendingArrival:
+                  guideActive.waybillStatus.statusId == 1 ? imgBtnAcceptance : imgBtnStorageIn" style="width: 1.5rem; "
+                  (click)="openCriticalPoint(guideActive)" />
+              </span>
+            </div>
+            <!-- <p-button *ngIf="guideActive.waybillStatus.stationId != guideActive.originRedStationId
+                        && guideActive.waybillStatus.stationId != guideActive.destinyRedStationId
+                        && guideActive.waybillStatus.statusId == 5" styleClass="p-button-rounded p-button-text"
+              (click)="noDownload(guideActive)" pTooltip="Transit">
+              <img alt="buttonStatus" [src]="imgBtnTransit" style="width: 1.5rem"/>
+            </p-button> -->
+            <div *ngIf="guideActive.waybillStatus.stationId != guideActive.originRedStationId
+            && guideActive.waybillStatus.stationId != guideActive.destinyRedStationId
+            && guideActive.waybillStatus.statusId == 5">
+              <span class="img-button" pTooltip="Transit">
+                <img alt="Transit" [src]="imgBtnTransit" style="width: 1.5rem; " (click)="noDownload(guideActive)" />
+              </span>
+            </div>
+            <!-- <p-button *ngIf="guideActive.dryIceSupply != null" styleClass="p-button-rounded p-button-text"
+              (click)="resupply(guideActive)" pTooltip="Resupply">
+              <img alt="buttonStatus" [src]="imgBtnResupply" style="width: 1.5rem" />
+            </p-button> -->
+            <div *ngIf="guideActive.dryIceSupply != null">
+              <span class="img-button" pTooltip="Resupply">
+                <img alt="Resupply" [src]="imgBtnResupply" style="width: 1.5rem; "
+                  (click)="resupply(guideActive)" />
+              </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog [(visible)]="pharmaCareDialog" [style]="{ width: '450px' }"
+  [header]="'module.guideActive.temperatureControlTitle' | translate" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <form id="temperatureControlForm" [formGroup]="pharmaCareForm"
+      class="form-horizontal ng-untouched ng-pristine ng-valid">
+      <div class="p-p-2 p-col-12" style="text-align:center">
+        <h2>{{ guideActive.docNum }}</h2>
+      </div>
+      <div class="p-p-2 p-col-12">
+        <h5>{{"module.guideActive.expectedTemperatureRange" | translate}} ({{ guideActive.productInitialRange }}°
+          {{"module.guideActive.to" | translate}}
+          {{guideActive.productFinalRange }}°)</h5>
+      </div>
+      <av-input-text hidden formControlName="id" [(ngModel)]="pharmaCare.id"></av-input-text>
+      <av-input-number [maxlength]="3" formControlName="temperature"
+        [label]="'module.guideActive.temperature' | translate" [(ngModel)]="pharmaCare.temperature">
+      </av-input-number>
+      <div class="p-p-2">
+        <small class="p-invalid" *ngIf="submitted && !pharmaCare.temperature">
+          {{"module.guideActive.validation.temperatureRequired" | translate}}
+        </small>
+      </div>
+      <av-input-text formControlName="additionalComments" [label]="'module.guideActive.additionalComments' | translate"
+        [(ngModel)]="pharmaCare.comments"></av-input-text>
+    </form>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <av-button [label]="'module.guideActive.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+      (click)="hideTemperatureControlDialog()"></av-button>
+    <av-button [label]="'module.guideActive.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+      (click)="validateSavePharmaCare()"></av-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="dryIceSupplyDialog" [style]="{ width: '450px' }"
+  [header]="'module.dryIceSupply.NoRevert' | translate" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <form id="dryIceSupplyControlForm" [formGroup]="dryIceSupplyForm"
+      class="form-horizontal ng-untouched ng-pristine ng-valid">
+      <div class="p-p-2 p-col-12" style="text-align:center">
+        <h2>{{ 'module.dryIceSupply.NoRevertQuestion' | translate }}</h2>
+      </div>
+      <div class="p-p-2 p-col-12">
+        <av-input-text-area formControlName="remark" [(ngModel)]="remark"
+          [label]="'module.quote.quotation.description'|translate"></av-input-text-area>
+        <small class="p-invalid" *ngIf="submitted && !remark">
+          {{"module.dryIceSupply.validation.dryIceSupplyDescriptionRequired" | translate}}
+        </small>
+      </div>
+    </form>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <av-button [label]="'module.guideActive.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+      (click)="dryIceSupplyDialog = false"></av-button>
+    <av-button [label]="'module.guideActive.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+      (click)="saveDryIceSupply()"></av-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="pharmaCoolCareDialog" [style]="{ width: '700px' }" [header]="titlePharmaCoolCare" [modal]="true"
+  styleClass="p-fluid">
+  <div class="p-fluid p-formgrid p-grid">
+    <div class="p-p-2 p-col-8" style="text-align:center">
+      <h2>{{ guideActive.docNum }}</h2>
+    </div>
+    <div class="p-p-2 p-col-4">
+      <span class="p-float-label">
+        <p-dropdown appendTo="body" [options]="monitoringTime" filter="true" [(ngModel)]="monitoringHour">
+          <ng-template let-item pTemplate="selectedItem">
+            <span>{{item.label}}</span>
+          </ng-template>
+          <ng-template let-opt pTemplate="item">
+            <div>
+              <div> {{opt.label}}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <label for="field-id">{{ "module.guideActive.pharmaCoolCare.monitoringTime" | translate }}</label>
+      </span>
+    </div>
+    <div class="p-p-2 p-col-12">
+      <h5>{{"module.guideActive.expectedTemperatureRange" | translate}} ({{ guideActive.productInitialRange }}° 
+        {{"module.guideActive.to" | translate}}
+        {{guideActive.productFinalRange }}°)</h5>
+    </div>
+  </div>
+  <p-table [value]="pharmaCoolCaresView" styleClass="p-datatable-responsive-demo" [showCurrentPageReport]="true"
+    dataKey="id" [resizableColumns]="true" [autoLayout]="true">
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th>
+          {{ "module.guideActive.pharmaCoolCare.containerNumber" | translate }}
+        </th>
+        <th>
+          {{ "module.guideActive.pharmaCoolCare.temperature" | translate }}
+        </th>
+        <th>
+          {{ "module.guideActive.pharmaCoolCare.battery" | translate }}
+        </th>
+        <th>
+          {{ "module.guideActive.pharmaCoolCare.currentTemp" | translate }}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-pharmaCoolCareView>
+      <tr [pEditableRow]="pharmaCoolCareView">
+        <td pEditableColumn>
+          {{pharmaCoolCareView.container}}
+        </td>
+        <td pEditableColumn>
+          {{pharmaCoolCareView.setTemp}}
+        </td>
+        <td pEditableColumn>
+          <av-input-number [label]="" [(ngModel)]="pharmaCoolCareView.voltage">
+          </av-input-number>
+        </td>
+        <td pEditableColumn>
+          <av-input-number [label]="" [(ngModel)]="pharmaCoolCareView.temperature">
+          </av-input-number>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <ng-template pTemplate="footer">
+    <av-button [label]="'module.guideActive.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+      (click)="hidePharmaCoolCareDialog()"></av-button>
+    <av-button [label]="'module.guideActive.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+      (click)="validateSavePharmaCoolCare()"></av-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="monitoringDialog" [style]="{ width: '700px' }"
+  [header]="'module.guideActive.monitoring.monitoringTitle' | translate" [modal]="true" styleClass="p-fluid">
+  <div class="p-fluid p-formgrid p-grid">
+    <div class="p-p-2 p-col-8" style="text-align:center">
+      <h2>{{ guideActive.docNum }}</h2>
+    </div>
+    <div class="p-p-2 p-col-4">
+      <span class="p-float-label">
+        <p-dropdown appendTo="body" [options]="monitoringTime" filter="true" [(ngModel)]="monitoringHour">
+          <ng-template let-item pTemplate="selectedItem">
+            <span>{{item.label}}</span>
+          </ng-template>
+          <ng-template let-opt pTemplate="item">
+            <div>
+              <div> {{opt.label}}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <label for="field-id">{{ "module.guideActive.pharmaCoolCare.monitoringTime" | translate }}</label>
+      </span>
+      <small class="p-invalid" *ngIf="submitted && !monitoringHour">
+        {{"module.guideActive.validation.monitoringTimeRequired" | translate}}
+      </small>
+    </div>
+    <div class="p-p-2 p-col-12">
+      <h5>
+        {{"module.guideActive.expectedTemperatureRange" | translate}} ({{ guideActive.productInitialRange }}° 
+        {{"module.guideActive.to" | translate}} 
+        {{guideActive.productFinalRange }}°)
+      </h5>
+    </div>
+  </div>
+  <p-table [value]="pharmaCoolCaresView" styleClass="p-datatable-responsive-demo" [showCurrentPageReport]="true"
+    dataKey="id" [resizableColumns]="true" [autoLayout]="true">
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th>
+          {{ "module.guideActive.pharmaCoolCare.containerNumber" | translate }}
+        </th>
+        <th>
+          {{ "module.guideActive.pharmaCoolCare.temperature" | translate }}
+        </th>
+        <th>
+          {{ "module.guideActive.pharmaCoolCare.battery" | translate }}
+        </th>
+        <th>
+          {{ "module.guideActive.pharmaCoolCare.currentTemp" | translate }}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-pharmaCoolCareView>
+      <tr [pEditableRow]="pharmaCoolCareView">
+        <td pEditableColumn>
+          {{pharmaCoolCareView.container}}
+        </td>
+        <td pEditableColumn>
+          {{pharmaCoolCareView.setTemp}}
+        </td>
+        <td pEditableColumn>
+          <av-input-number [label]="" [(ngModel)]="pharmaCoolCareView.voltage">
+          </av-input-number>
+        </td>
+        <td pEditableColumn>
+          <av-input-number [label]="" [(ngModel)]="pharmaCoolCareView.temperature">
+          </av-input-number>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <ng-template pTemplate="footer">
+    <av-button [label]="'module.guideActive.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+      (click)="hideMonitoringDialog()"></av-button>
+    <av-button [label]="'module.guideActive.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+      (click)="validateMonitoringPharmaCoolCare()"></av-button>
+  </ng-template>
+</p-dialog>
+
+<p-toast baseZIndex="10000"></p-toast>
+
+<p-confirmDialog [style]="{ width: '450px' }" [acceptLabel]="'module.guideActive.btnAccept' | translate"
+  [rejectLabel]="'module.guideActive.btnCancel' | translate" key="confirmDialogActive"></p-confirmDialog>

@@ -1,0 +1,7 @@
+<ng-container *ngFor="let breadcrumb of breadcrumbs | async, let last = last">
+    <li class="breadcrumb-item" *ngIf="breadcrumb.label.title && (breadcrumb.url.slice(-1) == '/' || last)"
+        [ngClass]="{active: last}">
+        <a *ngIf="!last" href="#{{breadcrumb.url}}">{{breadcrumb.label.title | translate}}</a>
+        <span *ngIf="last">{{breadcrumb.label.title | translate}}</span>
+    </li>
+</ng-container>

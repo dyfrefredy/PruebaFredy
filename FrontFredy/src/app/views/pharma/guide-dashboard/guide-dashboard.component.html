@@ -1,0 +1,58 @@
+<div class="card">
+  <form id="airWaybillSearchForm" [formGroup]="airWaybillSearchForm"
+    class="form-horizontal ng-untouched ng-pristine ng-valid">
+    <div class="d-flex p-jc-end p-fluid p-formgrid p-grid">
+      <div class="p-col-3">
+        <img style="width: 7.5rem" src="../../../../assets/img/pharma/air-wiybill/pharmasite.png">
+      </div>
+      <div class="p-col-4">
+        <av-station-user formControlName="station" [selectionLabel]="'module.pharmaDashboard.lblSelStation'|translate"
+          [(ngModel)]="airWaybillSearch.station" [label]="'module.pharmaDashboard.lblSelStation'|translate">
+        </av-station-user>
+        <small class="p-p-2 p-invalid" *ngIf="submitted && !airWaybillSearch.station">
+          {{"module.pharmaDashboard.validation.stationRequired" | translate}}
+        </small>
+      </div>
+      <div class="p-col-3">
+        <av-input-text formControlName="awb" [label]="'module.pharmaDashboard.lblFilter'|translate"
+          [(ngModel)]="airWaybillSearch.awb"></av-input-text>
+      </div>
+      <div class="p-d-flex p-jc-center p-p-2 p-col-2">
+        <av-button type="button" [label]="'module.pharmaDashboard.btnFilter' | translate" icon="pi pi-search"
+          (childGetGuides)="getGuides()" (click)="getGuides()" class="p-button-text"></av-button>
+      </div>
+    </div>
+  </form>
+  <p-tabView styleClass="tabview-custom" [(activeIndex)]="tabViewIndex">
+    <p-tabPanel>
+      <ng-template pTemplate="header">
+        <img style="width: 1.5rem;" src="../../../../assets/img/pharma/air-wiybill/icons8_system_task_96px.png">
+        <!-- <i class="pi pi-eye p-mr-2"></i> -->
+        <span>{{'module.pharmaDashboard.lblActive' | translate}}</span>
+      </ng-template>
+      <app-guide-active [filters]="filters" [totalRecords]="totalRecordsActive"></app-guide-active>
+    </p-tabPanel>
+    <p-tabPanel>
+      <ng-template pTemplate="header">
+        <img style="width: 1.5rem;" src="../../../../assets/img/pharma/air-wiybill/icons8_move_stock_200px_2.png">
+        <!-- <i class="pi pi-check p-mr-2"></i> -->
+        <span>{{'module.pharmaDashboard.lblAcceptance' | translate}}</span>
+      </ng-template>
+      <app-guide-acceptance (childGetGuides)="getGuides()" [filters]="filters" [totalRecords]="totalRecordsAcceptance"></app-guide-acceptance>
+    </p-tabPanel>
+    <!-- <p-tabPanel>
+      <ng-template pTemplate="header">
+        <i class="pi pi-check p-mr-2"></i>
+        <span>{{'module.pharmaDashboard.lblWarning' | translate}}</span>
+      </ng-template>
+      <app-guide-notify [filters]="filters"></app-guide-notify>
+    </p-tabPanel>
+    <p-tabPanel>
+      <ng-template pTemplate="header">
+        <i class="fa fa-fw fa-cube p-mr-2"></i>
+        <span>{{'module.pharmaDashboard.lblSpecialService' | translate}}</span>
+      </ng-template>
+      <app-special-service-operation [filters]="filters"></app-special-service-operation>
+    </p-tabPanel> -->
+  </p-tabView>
+</div>

@@ -1,0 +1,51 @@
+<p-table [(value)]="filters.guideAlert" styleClass="p-datatable-responsive-demo" [totalRecords]="totalRecords"
+  [rows]="pagination.pageSize" [paginator]="true" [showCurrentPageReport]="true" currentPageReportTemplate="Mostrar {first} a {last} de {{
+    totalRecords}} registros" [rowHover]="true" dataKey="id" [rowsPerPageOptions]="[10, 25, 50]" [lazy]="true" (onLazyLoad)="loadNotify($event)">
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th pSortableColumn="pha.WaybillRpa.docNum">
+        {{ "module.guideAlert.tblData.header.numberGuide" | translate }}
+        <p-sortIcon field="pha.WaybillRpa.docNum"></p-sortIcon>
+      </th>
+      <th pSortableColumn="adm.Product.productTypeId">
+        {{ "module.guideAlert.tblData.header.product" | translate }}
+        <p-sortIcon field="adm.Product.productTypeId"></p-sortIcon>
+      </th>
+      <th pSortableColumn="pha.WaybillStatus.statusId">
+        {{ "module.guideAlert.tblData.header.nextStation" | translate }}
+        <p-sortIcon field="pha.WaybillStatus.statusId"></p-sortIcon>
+      </th>
+      <th pSortableColumn="days">
+        {{ "module.guideAlert.tblData.header.days" | translate }}
+      </th>
+      <th>
+        {{"module.guideAlert.tblData.header.acceptanceOption" | translate}}
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-airWaybillAceptance>
+    <tr>
+      <td>
+        {{ airWaybillAceptance.docNum }}
+      </td>
+      <td>
+        <div *ngIf="airWaybillAceptance.productTypeId==1">
+          <img alt="Pharma care" style="width: 100%;" src="../../../../assets/img/pharma/air-wiybill/pharma-care.jpg">
+        </div>
+        <div *ngIf="airWaybillAceptance.productTypeId!=1">
+          <img alt="Pharma cool care" style="width: 100%;"
+            src="../../../../assets/img/pharma/air-wiybill/pharma-cool-care.jpg">
+        </div>
+      </td>
+      <td>
+        {{ airWaybillAceptance.nextState }}
+      </td>
+      <td>
+        {{ airWaybillAceptance.days }}
+      </td>
+      <td>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+

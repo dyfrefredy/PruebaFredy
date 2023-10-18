@@ -1,0 +1,25 @@
+<div class="card">
+    <p-tabView styleClass="tabview-custom" [(activeIndex)]="tabViewIndex">
+      <p-tabPanel>
+        <ng-template pTemplate="header">
+          <i class="pi pi-check p-mr-2"></i>
+          <span>{{'module.myTaskDashboard.lblQuotes' | translate}}</span>
+        </ng-template>
+        <div *ngIf="!automaticAssigmentTransation">
+          <app-quotation-dashboard></app-quotation-dashboard>
+        </div>        
+      </p-tabPanel>
+      <!-- Por el momento solo sale Quotation-->
+      <p-tabPanel>
+        <ng-template pTemplate="header">
+          <i class="pi pi-check p-mr-2"></i>
+          <span>{{'module.myTaskDashboard.lblBookingConfirmation' | translate}}</span>
+        </ng-template>
+        <div *ngIf="!automaticAssigmentTransation">
+          <app-booking-confirmation></app-booking-confirmation>
+        </div>
+      </p-tabPanel>
+      
+    </p-tabView>
+  </div>
+  

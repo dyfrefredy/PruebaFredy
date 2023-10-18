@@ -1,0 +1,15 @@
+C:\Users\Sofya\Documents\Temp\NetCore6\BackFredy\BackFredy\Common\bin\Debug\net6.0\Common.deps.json
+C:\Users\Sofya\Documents\Temp\NetCore6\BackFredy\BackFredy\Common\bin\Debug\net6.0\Common.dll
+C:\Users\Sofya\Documents\Temp\NetCore6\BackFredy\BackFredy\Common\bin\Debug\net6.0\Common.pdb
+C:\Users\Sofya\Documents\Temp\NetCore6\BackFredy\BackFredy\Common\bin\Debug\net6.0\Data.dll
+C:\Users\Sofya\Documents\Temp\NetCore6\BackFredy\BackFredy\Common\bin\Debug\net6.0\Data.pdb
+C:\Users\Sofya\Documents\Temp\NetCore6\BackFredy\BackFredy\Common\obj\Debug\net6.0\Common.csproj.AssemblyReference.cache
+C:\Users\Sofya\Documents\Temp\NetCore6\BackFredy\BackFredy\Common\obj\Debug\net6.0\Common.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Sofya\Documents\Temp\NetCore6\BackFredy\BackFredy\Common\obj\Debug\net6.0\Common.AssemblyInfoInputs.cache
+C:\Users\Sofya\Documents\Temp\NetCore6\BackFredy\BackFredy\Common\obj\Debug\net6.0\Common.AssemblyInfo.cs
+C:\Users\Sofya\Documents\Temp\NetCore6\BackFredy\BackFredy\Common\obj\Debug\net6.0\Common.csproj.CoreCompileInputs.cache
+C:\Users\Sofya\Documents\Temp\NetCore6\BackFredy\BackFredy\Common\obj\Debug\net6.0\Common.csproj.CopyComplete
+C:\Users\Sofya\Documents\Temp\NetCore6\BackFredy\BackFredy\Common\obj\Debug\net6.0\Common.dll
+C:\Users\Sofya\Documents\Temp\NetCore6\BackFredy\BackFredy\Common\obj\Debug\net6.0\refint\Common.dll
+C:\Users\Sofya\Documents\Temp\NetCore6\BackFredy\BackFredy\Common\obj\Debug\net6.0\Common.pdb
+C:\Users\Sofya\Documents\Temp\NetCore6\BackFredy\BackFredy\Common\obj\Debug\net6.0\ref\Common.dll

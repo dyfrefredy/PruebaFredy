@@ -1,0 +1,28 @@
+<!-- <div class="p-p-2">
+	<span class="p-float-label">
+		<p-dropdown appendTo="body" [(ngModel)]="selectionCountry" field="label" dropdownIcon="pi pi-chevron-down"
+			(completeMethod)="search($event)" minLength="2" (onSelect)="onSelect()"
+			(onClear)="onClear()" optionValue="value" optionLabel="label">
+			<ng-template let-item pTemplate="selectedItem">
+				<span>{{item.label}}</span>
+			</ng-template>
+		</p-dropdown>
+		<label for="field-id">{{label|translate}}</label>
+	</span>
+</div> -->
+
+<div class="p-p-2">
+  <span class="p-float-label">
+    <p-dropdown [options]="filteredOptions" [(ngModel)]="selectionCountry" [disabled]="disabled" (onChange)="onChange()" optionValue="value" optionLabel="label" filterBy="label" [filter]="true" [showClear]="true">
+      <ng-template let-item pTemplate="selectedItem">
+        <span>{{item.label}}</span>
+      </ng-template>
+      <ng-template let-opt pTemplate="item">
+        <div>
+          <div>{{opt.label}}</div>
+        </div>
+      </ng-template>
+    </p-dropdown>
+    <label for="field-id">{{label|translate}}</label>
+  </span>
+</div>

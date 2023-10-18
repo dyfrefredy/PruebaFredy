@@ -1,0 +1,801 @@
+<div></div>
+<p-card>
+  <ng-template pTemplate="content">
+    <form [formGroup]="directClaimsHeaderForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+      <div class="p-fluid p-formgrid p-grid">
+        <div class="p-p-2 p-col-3">
+          <div class="p-p-2 p-col-16">
+            <p-selectButton formControlName="airline" [options]="stateOptions" optionLabel="label" optionValue="value">
+            </p-selectButton>
+          </div>
+          <av-input-number id="guide" formControlName="confirmarAwb"
+            [label]="'module.directClaims.ConfirmAWB' | translate">
+          </av-input-number>
+        </div>
+        <div class="p-p-2 p-col-3">
+          <div class="p-p-2 p-col-7">
+            <p-button [label]="'module.directClaims.btnConfirm' | translate" [icon]="'pi pi-search p-button-icon-left'"
+              class="p-button-text" (click)="confirmAWB()"></p-button>
+            <p></p>
+            <div *ngIf="isValidAwb">
+              <p-button [label]="'module.directClaims.btnCreateClaim' | translate" icon="pi pi-check-right"
+                (click)="saveClaim()">
+              </p-button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-fluid p-formgrid p-grid">
+        <div class="p-p-2 p-col-3"></div>
+      </div>
+    </form>
+  </ng-template>
+</p-card>
+<p></p>
+<p-card>
+  <ng-template pTemplate="content">
+    <div class="p-p-2 p-col-12" style="text-align:left">
+      <h5>AWB: {{ awbNumber }}</h5>
+    </div>
+    <p-tabView>
+      <!-- <p-tabPanel [header]="'module.directClaims.InfoGuide' | translate">
+        <div class="p-fluid p-formgrid p-grid">
+          <div class="p-p-2 p-col-3">
+            <av-input-text
+              [label]="'module.directClaims.awbIssueDate' | translate"
+              [disabled]="true"
+              [(ngModel)]="claimDate"
+            ></av-input-text>
+          </div>
+        </div>
+        <div class="p-fluid p-formgrid p-grid">
+          <div class="p-p-2 p-col-1">
+            <av-input-text
+              [label]="'module.directClaims.Origin' | translate"
+              [disabled]="true"
+              [(ngModel)]="awb.awbOrigin"
+            ></av-input-text>
+          </div>
+          <div class="p-p-2 p-col-1">
+            <av-input-text
+              [label]="'module.directClaims.Destination' | translate"
+              [disabled]="true"
+              [(ngModel)]="awb.destination"
+            ></av-input-text>
+          </div>
+          <div class="p-p-2 p-col-2">
+            <av-input-text
+              [label]="'module.directClaims.TotalNumberOfPieces' | translate"
+              [(ngModel)]="awb.totalNumberOfPieces"
+              [disabled]="true"
+            ></av-input-text>
+          </div>
+          <div class="p-p-2 p-col-2">
+            <av-input-text
+              [label]="'module.quote.quotation.lengthUnit' | translate"
+              [disabled]="true"
+              [(ngModel)]="awb.weightCode"
+            ></av-input-text>
+          </div>
+          <div class="p-p-2 p-col-2">
+            <av-input-text
+              [label]="'module.directClaims.totalStatedWeight' | translate"
+              [disabled]="true"
+              [(ngModel)]="awb.totalStatedWeight"
+            ></av-input-text>
+          </div>
+        </div>
+        <div class="p-fluid p-formgrid p-grid">
+          <div class="p-p-2 p-col-3">
+            <av-input-text
+              [label]="'module.directClaims.referenceNumber' | translate"
+              [disabled]="true"
+              [(ngModel)]="awb.awbReferenceNumber"
+            ></av-input-text>
+          </div>
+          <div class="p-p-2 p-col-6">
+            <av-input-text
+              [label]="
+                'module.directClaims.supplementaryShipmentInformation'
+                  | translate
+              "
+              [disabled]="true"
+              [(ngModel)]="awb.awbsupplementaryShipmentInformation"
+            ></av-input-text>
+          </div>
+        </div>
+        <div class="p-fluid p-formgrid p-grid">
+          <div class="p-p-2 p-col-12">
+            <av-input-text
+              [label]="'module.directClaims.shipmentDescription' | translate"
+              [disabled]="true"
+              [(ngModel)]="awb.awbshipmentDescription"
+            ></av-input-text>
+          </div>
+        </div>
+      </p-tabPanel>
+      <p-tabPanel [header]="'module.directClaims.ArrivalDeparture' | translate">
+        <tr *ngFor="let list of flightBooking; let i = index">
+          <div class="p-fluid p-formgrid p-grid">
+            <div>
+              <av-input-text
+                [label]="'module.directClaims.dateDeparture' | translate"
+                [(ngModel)]="list.departureDate"
+                [disabled]="true"
+              ></av-input-text>
+            </div>
+            <div>
+              <av-input-text
+                [label]="'module.directClaims.flightSegmentOrigin' | translate"
+                [(ngModel)]="list.flightSegmentOrigin"
+                [disabled]="true"
+              ></av-input-text>
+            </div>
+            <div>
+              <av-input-text
+                [label]="
+                  'module.directClaims.flightSegmentDestination' | translate
+                "
+                [(ngModel)]="list.flightSegmentDestination"
+                [disabled]="true"
+              ></av-input-text>
+            </div>
+            <div>
+              <av-input-text
+                [label]="'module.directClaims.flightSegmentNumber' | translate"
+                [(ngModel)]="list.flightSegmentNumber"
+                [disabled]="true"
+              ></av-input-text>
+            </div>
+            <div>
+              <av-input-text
+                [label]="'module.directClaims.dateArrival' | translate"
+                [(ngModel)]="list.arrivalDate"
+                [disabled]="true"
+              ></av-input-text>
+            </div>
+          </div>
+        </tr>
+      </p-tabPanel>
+      <p-tabPanel [header]="'module.directClaims.Shipper' | translate">
+        <div class="p-fluid p-formgrid p-grid">
+          <div>
+            <av-input-text
+              [label]="'module.directClaims.customerNameShipper' | translate"
+              [disabled]="true"
+              [(ngModel)]="awb.shipperCustomerName"
+            ></av-input-text>
+          </div>
+          <div>
+            <av-input-text
+              [label]="
+                'module.directClaims.customerStreetAddressShipper' | translate
+              "
+              [disabled]="true"
+              [(ngModel)]="awb.shipperCustomerStreetAddress"
+            ></av-input-text>
+          </div>
+          <div>
+            <av-input-text
+              [label]="'module.directClaims.stationNameShipper' | translate"
+              [disabled]="true"
+              [(ngModel)]="awb.shipperStationCode"
+            ></av-input-text>
+          </div>
+          <div>
+            <av-input-text
+              [label]="'module.directClaims.customerPlaceShipper' | translate"
+              [disabled]="true"
+              [(ngModel)]="awb.shipperCustomerPlace"
+            ></av-input-text>
+          </div>
+          <div>
+            <av-input-text
+              [label]="'module.directClaims.customerStateShipper' | translate"
+              [disabled]="true"
+              [(ngModel)]="awb.shipperCustomerState"
+            ></av-input-text>
+          </div>
+          <div>
+            <av-input-text
+              [label]="
+                'module.directClaims.customerCountryCodeShipper' | translate
+              "
+              [disabled]="true"
+              [(ngModel)]="awb.shipperCustomerCountryCode"
+            ></av-input-text>
+          </div>
+          <div>
+            <av-input-text
+              [label]="'module.directClaims.customerZipCodeShipper' | translate"
+              [disabled]="true"
+              [(ngModel)]="awb.shipperCustomerZipCode"
+            ></av-input-text>
+          </div>
+          <div>
+            <av-input-text
+              [label]="
+                'module.directClaims.customerPhoneNumberShipper' | translate
+              "
+              [disabled]="true"
+              [(ngModel)]="awb.shipperCustomerPhoneNumber"
+            ></av-input-text>
+          </div>
+          <div>
+            <av-input-text
+              [label]="'module.directClaims.customerEmailIdShipper' | translate"
+              [disabled]="true"
+              [(ngModel)]="awb.shipperCustomerEmail"
+            ></av-input-text>
+          </div>
+          <av-input-text
+            [label]="
+              'module.directClaims.customerMobilePhoneNumberShipper' | translate
+            "
+            [disabled]="true"
+            [(ngModel)]="awb.shipperCustomerMobilePhoneNumber"
+          ></av-input-text>
+        </div>
+      </p-tabPanel>
+      <p-tabPanel [header]="'module.directClaims.Consignee' | translate">
+        <div class="p-fluid p-formgrid p-grid">
+          <div>
+            <av-input-text
+              [label]="'module.directClaims.customerNameConsignee' | translate"
+              [disabled]="true"
+              [(ngModel)]="awb.consigneeCustomerName"
+            ></av-input-text>
+          </div>
+          <div>
+            <av-input-text
+              [label]="
+                'module.directClaims.customerStreetAddressConsignee' | translate
+              "
+              [disabled]="true"
+              [(ngModel)]="awb.shipperCustomerStreetAddress"
+            ></av-input-text>
+          </div>
+          <div>
+            <av-input-text
+              [label]="'module.directClaims.stationNameConsignee' | translate"
+              [disabled]="true"
+              [(ngModel)]="awb.consigneeeStationCode"
+            ></av-input-text>
+          </div>
+          <div>
+            <av-input-text
+              [label]="'module.directClaims.customerPlaceConsignee' | translate"
+              [disabled]="true"
+              [(ngModel)]="awb.consigneeCustomerPlace"
+            ></av-input-text>
+          </div>
+          <div>
+            <av-input-text
+              [label]="'module.directClaims.customerStateConsignee' | translate"
+              [disabled]="true"
+              [(ngModel)]="awb.consigneeCustomerState"
+            ></av-input-text>
+          </div>
+          <div>
+            <av-input-text
+              [label]="
+                'module.directClaims.customerCountryCodeConsignee' | translate
+              "
+              [disabled]="true"
+              [(ngModel)]="awb.consigneeCustomerCountryCode"
+            ></av-input-text>
+          </div>
+          <div>
+            <av-input-text
+              [label]="
+                'module.directClaims.customerZipCodeConsignee' | translate
+              "
+              [disabled]="true"
+              [(ngModel)]="awb.consigneeCustomerZipCode"
+            ></av-input-text>
+          </div>
+          <div>
+            <av-input-text
+              [label]="
+                'module.directClaims.customerPhoneNumberConsignee' | translate
+              "
+              [disabled]="true"
+              [(ngModel)]="awb.consigneeCustomerPhoneNumber"
+            ></av-input-text>
+          </div>
+          <div>
+            <av-input-text
+              [label]="
+                'module.directClaims.customerEmailIdConsignee' | translate
+              "
+              [(ngModel)]="awb.consigneeCustomerEmail"
+              [disabled]="true"
+            ></av-input-text>
+          </div>
+          <av-input-text
+            [label]="
+              'module.directClaims.customerMobilePhoneNumberConsignee'
+                | translate
+            "
+            [(ngModel)]="awb.consigneeCustomerMobilePhoneNumber"
+            [disabled]="true"
+          ></av-input-text>
+        </div>
+      </p-tabPanel>
+       -->
+
+      <p-tabPanel [header]="'module.directClaims.claim' | translate" [hidden]="hiddenClaim">
+        <form id="claimSummary" [formGroup]="claimSummaryForm"
+          class="form-horizontal ng-untouched ng-pristine ng-valid">
+          <div class="p-fluid p-formgrid p-grid">
+            <div class="p-p-2 p-col-6">
+              <av-input-text [label]="'module.directClaims.daughterDocumentNumber' | translate"
+                formControlName="daughterDocumentNumber"></av-input-text>
+            </div>
+          </div>
+          <div class="p-fluid p-formgrid p-grid">
+            <div class="p-p-2 p-col-3">
+              <div class="p-p-2">
+                <p-dropdown [options]="options" (onChange)="onChange()"  formControlName="stationResposible"
+                  optionLabel="label" [showClear]="true" >
+                  <ng-template let-item pTemplate="selectedItem">
+                    <span>{{ item.label }}</span>
+                  </ng-template>
+                  <ng-template let-opt pTemplate="item">
+                    <div>
+                      <div>{{ opt.label }}</div>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
+                  <small *ngIf="submitted && fcs.stationResposible.errors?.required"  class="p-invalid"
+                   >
+                    {{"module.directClaims.validation.StationsRequired" | translate}}
+              </small>
+              </div>
+            </div>
+          </div>
+          <div class="p-fluid p-formgrid p-grid">
+            <av-input-text class="p-p-2 p-col-12" required [label]="'module.directClaims.claimDescription' | translate"
+              formControlName="claimDescription"></av-input-text>
+            <div *ngIf="
+                fcs.claimDescription.invalid &&
+                (fcs.claimDescription.dirty || submitted)
+              " class="p-p-2" style="min-width: 225px">
+              <small *ngIf="fcs.claimDescription.errors?.required" class="p-invalid">
+                {{
+                "module.directClaims.validation.DescValidation" | translate
+                }}
+              </small>
+            </div>
+          </div>
+          <div class="p-fluid p-formgrid p-grid">
+            <div class="p-p-2 p-col-4">
+              <av-input-text [label]="'module.directClaims.claimantName' | translate" formControlName="claimantName">
+              </av-input-text>
+              <div *ngIf="
+                  fcs.claimantName.invalid &&
+                  (fcs.claimantName.dirty || submitted)
+                " class="p-p-2" style="min-width: 225px">
+                <small *ngIf="fcs.claimantName.errors?.required" class="p-invalid">
+                  {{
+                  "module.directClaims.validation.nameValidation" | translate
+                  }}
+                </small>
+              </div>
+            </div>
+            <div class="p-p-2 p-col-4">
+              <av-input-text [label]="'module.directClaims.claimantCompany' | translate"
+                formControlName="claimantCompany"></av-input-text>
+              <div *ngIf="
+                  fcs.claimantCompany.invalid &&
+                  (fcs.claimantCompany.dirty || submitted)
+                " class="p-p-2" style="min-width: 225px">
+                <small *ngIf="fcs.claimantCompany.errors?.required" class="p-invalid">
+                  {{
+                  "module.directClaims.validation.nameValidation" | translate
+                  }}
+                </small>
+              </div>
+            </div>
+            <div class="p-p-2 p-col-3">
+              <av-input-text [label]="'module.directClaims.claimantCode' | translate" formControlName="claimantCode"
+                [disabled]="true"></av-input-text>
+              <div *ngIf="
+                  fcs.claimantCode.invalid &&
+                  (fcs.claimantCode.dirty || submitted)
+                " class="p-p-2" style="min-width: 225px">
+                <small *ngIf="fcs.claimantCode.errors?.required" class="p-invalid">
+                  {{
+                  "module.directClaims.validation.codeValidation" | translate
+                  }}
+                </small>
+              </div>
+            </div>
+            <div class="p-p-2 p-col-6">
+              <av-input-text [label]="'module.directClaims.claimantAdress' | translate"
+                formControlName="claimantAddress1"></av-input-text>
+              <div *ngIf="
+                  fcs.claimantAddress1.invalid &&
+                  (fcs.claimantAddress1.dirty || submitted)
+                " class="p-p-2" style="min-width: 225px">
+                <small *ngIf="fcs.claimantAddress1.errors?.required" class="p-invalid">
+                  {{
+                  "module.directClaims.validation.addressValidation"
+                  | translate
+                  }}
+                </small>
+              </div>
+            </div>
+            <div class="p-p-2 p-col-6"></div>
+          </div>
+          <div class="p-fluid p-formgrid p-grid">
+            <av-input-text class="p-p-2 p-col-3" [label]="'module.directClaims.postalCode' | translate"
+              formControlName="claimantZipCode"></av-input-text>
+
+            <av-input-number class="p-p-2 p-col-3" [label]="'module.directClaims.claimantFax' | translate"
+              formControlName="claimantFax"></av-input-number>
+
+            <div class="p-p-2 p-col-3">
+              <av-input-number [label]="'module.directClaims.claimantPhone' | translate"
+                formControlName="claimantTelephoneNumber"></av-input-number>
+              <div *ngIf="
+                  fcs.claimantTelephoneNumber.invalid &&
+                  (fcs.claimantTelephoneNumber.dirty || submitted)
+                " class="p-p-2" style="min-width: 225px">
+                <small *ngIf="fcs.claimantTelephoneNumber.errors?.required" class="p-invalid">
+                  {{
+                  "module.directClaims.validation.claimantPhoneRequired" | translate
+                  }}
+                </small>
+              </div>
+            </div>
+
+          </div>
+          <div class="p-fluid p-formgrid p-grid">
+            <div class="p-p-2 p-col-3">
+              <av-country-code [selectionLabel]="
+                  'module.directClaims.claimantCountry' | translate
+                " [label]="'module.directClaims.claimantCountry' | translate" formControlName="claimantCountry">
+              </av-country-code>
+            </div>
+            <div class="p-p-2 p-col-3">
+              <av-input-text [label]="'module.directClaims.claimantEmail' | translate" formControlName="claimantEmail">
+              </av-input-text>
+              <div *ngIf="
+                  fcs.claimantEmail.invalid &&
+                  (fcs.claimantEmail.dirty || submitted)
+                " class="p-p-2" style="min-width: 225px">
+                <small *ngIf="fcs.claimantEmail.errors?.required" class="p-invalid">
+                  {{
+                  "module.directClaims.validation.EmailValidation" | translate
+                  }}
+                </small>
+                <small *ngIf="fcs.claimantEmail.errors?.email" class="p-invalid">
+                  {{ "module.directClaims.validation.ValidEmail" | translate }}
+                </small>
+              </div>
+            </div>
+            <!-- Se elimina por historia HU-336815
+            <div class="p-p-2 p-col-3">
+              <av-input-number [label]="'module.directClaims.invoiceNumber' | translate"
+                formControlName="invoiceNumber"></av-input-number>
+            </div>
+            -->
+          </div>
+        </form>
+      </p-tabPanel>
+      <p-tabPanel [header]="'module.directClaims.claimReason' | translate" [hidden]="hiddenClaimReason">
+        <form id="claimDetailForm" [formGroup]="claimDetailForm"
+          class="form-horizontal ng-untouched ng-pristine ng-valid">
+          <div class="p-fluid p-formgrid p-grid">
+            <div class="p-p-2 p-col-3">
+              <av-commodities [selectionLabel]="'module.directClaims.commodities' | translate"
+                formControlName="commodityCode"></av-commodities>
+            </div>
+          </div>
+          <div class="p-fluid p-formgrid p-grid">
+            <div class="p-p-2 p-col-6">
+              <div class="p-p-2">
+                <av-claim-reason [selectionLimit]="2" formControlName="reasonCode"></av-claim-reason>
+              </div>
+            </div>
+          </div>
+          <div class="p-fluid p-formgrid p-grid">
+            <div class="p-p-2 p-col-2">
+              <av-input-number [label]="'module.directClaims.pieces' | translate" formControlName="numberOfPieces">
+              </av-input-number>
+              <div *ngIf="
+                fcd.numberOfPieces.invalid &&
+                (fcd.numberOfPieces.dirty || submitted)
+              " class="p-p-2" style="min-width: 225px">
+                <small *ngIf="fcd.numberOfPieces.errors?.required" class="p-invalid">
+                  {{
+                  "module.directClaims.validation.piecesValidation" | translate
+                  }}
+                </small>
+              </div>
+            </div>
+            <div class="p-p-2 p-col-2">
+              <av-input-number [label]="'module.directClaims.weight' | translate" formControlName="weight">
+              </av-input-number>
+              <div *ngIf="fcd.weight.invalid && (fcd.weight.dirty || submitted)" class="p-p-2" style="min-width: 225px">
+                <small *ngIf="fcd.weight.errors?.required" class="p-invalid">
+                  {{
+                  "module.directClaims.validation.piecesValidation" | translate
+                  }}
+                </small>
+              </div>
+            </div>
+            <av-input-text class="p-p-2 p-col-2" formControlName="portOfDelivery">
+            </av-input-text>
+          </div>
+          <div class="p-field p-grid">
+            <div class="p-p-2 p-col-1">
+              <div class="p-p-2">
+                <av-button type="button" [label]="'module.directClaims.preliminaryButton' | translate"
+                  class="p-button-text" (click)="preliminaryClick()" [disabled]="typeClaim==true">
+                </av-button>
+              </div>
+            </div>
+            <div class="p-p-2 p-col-1">
+              <div class="p-p-2">
+                <av-button type="button" [label]="'module.directClaims.formalButton' | translate" class="p-button-text"
+                  (click)="typeClaim = true" [disabled]="typeClaim==false">
+                </av-button>
+              </div>
+            </div>
+
+          </div>
+          <div class="p-fluid p-formgrid p-grid" *ngIf="typeClaim">
+            <div class="p-p-2 p-col-3">
+              <av-input-number [label]="'module.directClaims.claimAmount' | translate" formControlName="claimAmount"
+                [Change]="sumValues()"></av-input-number>
+              <div *ngIf="
+                fcd.claimAmount.invalid &&
+                  (fcd.claimAmount.dirty || submitted)
+                " class="p-p-2" style="min-width: 225px">
+                <small *ngIf="fcd.claimAmount.errors?.pattern" class="p-invalid">
+                  {{ "module.directClaims.validation.amountFormat" | translate }}
+                </small>
+              </div>
+            </div>
+            <div class="p-p-2 p-col-3">
+              <av-input-number [label]="'module.directClaims.cargoAmount' | translate" formControlName="approvedAmount"
+                [Change]="sumValues()"></av-input-number>
+              <div *ngIf="
+                fcd.approvedAmount.invalid &&
+                  (fcd.approvedAmount.dirty || submitted)
+                " class="p-p-2" style="min-width: 225px">
+                <small *ngIf="fcd.approvedAmount.errors?.pattern" class="p-invalid">
+                  {{ "module.directClaims.validation.amountFormat" | translate }}
+                </small>
+              </div>
+            </div>
+            <div class="p-p-2 p-col-3">
+              <av-input-number [label]="'module.directClaims.otherAmount' | translate" formControlName="otherAmount"
+                [Change]="sumValues()"></av-input-number>
+              <div *ngIf="
+                fcd.otherAmount.invalid &&
+                  (fcd.otherAmount.dirty || submitted)
+                " class="p-p-2" style="min-width: 225px">
+                <small *ngIf="fcd.otherAmount.errors?.pattern" class="p-invalid">
+                  {{ "module.directClaims.validation.amountFormat" | translate }}
+                </small>
+              </div>
+            </div>
+            <div class="p-p-2 p-col-3"></div>
+            <div class="p-p-2 p-col-6">
+              <av-input-number [label]="'module.directClaims.totalAmount' | translate" formControlName="totalAmount">
+              </av-input-number>
+            </div>
+          </div>
+        </form>
+
+        <p-fieldset legend="{{'module.directClaims.loadFile.btnSelected' | translate}}">
+          <form id="claimfile" [formGroup]="claimDetailForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+            <div class="p-fluid p-formgrid p-grid">
+              <div class="p-p-2 p-col-6">
+                <av-input-text [label]="'module.directClaims.remarks' | translate" [(ngModel)]="attachmentRemark"
+                  formControlName="attachmentRemark"></av-input-text>
+                <div class="p-p-2 p-col-3">
+                  <input style="display: none"
+                    accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/pdf,image/*,.csv,text/plain"
+                    multiple type="file" (change)="selectFile($event)" #fileInput />
+                </div>
+              </div>
+              <div class="p-p-2 p-col-2">
+                <av-button [label]="'module.directClaims.loadFile.btnSelected' | translate" icon="pi pi-file"
+                  class="p-button-text" (click)="fileInput.click()"></av-button>
+              </div>
+            </div>
+            <p></p>
+            <div class="p-p-2 p-col-12">
+              <p-table [value]="claimSummary.claimAttachments">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>{{ "module.directClaims.fileName" | translate }}</th>
+                    <th>{{ "module.directClaims.fileRemark" | translate }}</th>
+                    <th>
+                      {{ "module.directClaims.operationalFlag" | translate }}
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-claimAttachment>
+                  <tr>
+                    <td>{{ claimAttachment.fileName }}</td>
+                    <td pEditableColumn>
+                      <p-cellEditor>
+                        <ng-template pTemplate="input">
+                          <input pInputText formControlName="attachment"
+                            [(ngModel)]="claimSummary.claimAttachments.remarks" />
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                          {{ claimAttachment.remarks }}
+                        </ng-template>
+                      </p-cellEditor>
+                    </td>
+                    <td>{{ claimAttachment.operationalFlag }}</td>
+                    <td>
+                      <button pButton pRipple icon="pi pi-minus-circle" class="p-button-rounded p-button-text"
+                        (click)="deleteFile(claimAttachment)"></button>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+            <!-- <p></p>
+            <div class="p-p-2 p-col-2">
+              <p-button [label]="'module.directClaims.btnAddClaim' | translate" icon="pi pi-check-right"
+                (click)="addClaim()"></p-button>
+            </div> -->
+            <!-- <div class="p-p-2 p-col-12">
+              <p-table [value]="claimAdd">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>{{ "module.directClaims.awb" | translate }}</th>
+                    <th>
+                      {{ "module.directClaims.claimantName" | translate }}
+                    </th>
+                    <th>
+                      {{ "module.directClaims.claimCommodity" | translate }}
+                    </th>
+                    <th>{{ "module.directClaims.claimReason" | translate }}</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-claims>
+                  <tr>
+                    <td>
+                      {{ claims.shipmentPrefix + claims.masterDocumentNumber }}
+                    </td>
+                    <td>{{ claims.claimantName }}</td>
+                    <td>{{ claims.commodityCodeName }}</td>
+                    <td>{{ claims.reasonCodeName }}</td>
+                    <td>
+                      <button pButton pRipple icon="pi pi-minus-circle" class="p-button-rounded p-button-text"
+                        (click)="deletePreparedClaim(claims)"></button>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div> -->
+          </form>
+        </p-fieldset>
+
+      </p-tabPanel>
+      <p-tabPanel [header]="'module.directClaims.headerImportantInfo' | translate">
+        <p>
+          {{ "module.directClaims.importantInfo" | translate }}
+        </p>
+        <ul>
+          <li>{{ "module.directClaims.listDocument.document1" | translate }}</li>
+          <li>{{ "module.directClaims.listDocument.document2" | translate }}</li>
+          <li>{{ "module.directClaims.listDocument.document3" | translate }}</li>
+          <li>{{ "module.directClaims.listDocument.document4" | translate }}</li>
+        </ul>
+      </p-tabPanel>
+      <!-- <p-tabPanel [header]="'module.directClaims.claimFile' | translate" [hidden]="hiddenClaimReason">
+        <form id="claimfile" [formGroup]="claimDetailForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+          <div class="p-fluid p-formgrid p-grid">
+            <div class="p-p-2 p-col-6">
+              <av-input-text [label]="'module.directClaims.remarks' | translate" [(ngModel)]="attachmentRemark"
+                formControlName="attachmentRemark"></av-input-text>
+              <div class="p-p-2 p-col-3">
+                <input style="display: none"
+                  accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/pdf,image/*,.csv,text/plain"
+                  multiple type="file" (change)="selectFile($event)" #fileInput />
+              </div>
+            </div>
+            <div class="p-p-2 p-col-2">
+              <av-button [label]="'module.directClaims.loadFile.btnSelected' | translate" icon="pi pi-file"
+                class="p-button-text" (click)="fileInput.click()"></av-button>
+            </div>
+          </div>
+          <p></p>
+          <div class="p-p-2 p-col-12">
+            <p-table [value]="claimSummary.claimAttachments">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>{{ "module.directClaims.fileName" | translate }}</th>
+                  <th>{{ "module.directClaims.fileRemark" | translate }}</th>
+                  <th>
+                    {{ "module.directClaims.operationalFlag" | translate }}
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-claimAttachment>
+                <tr>
+                  <td>{{ claimAttachment.fileName }}</td>
+                  <td pEditableColumn>
+                    <p-cellEditor>
+                      <ng-template pTemplate="input">
+                        <input pInputText formControlName="attachment"
+                          [(ngModel)]="claimSummary.claimAttachments.remarks" />
+                      </ng-template>
+                      <ng-template pTemplate="output">
+                        {{ claimAttachment.remarks }}
+                      </ng-template>
+                    </p-cellEditor>
+                  </td>
+                  <td>{{ claimAttachment.operationalFlag }}</td>
+                  <td>
+                    <button pButton pRipple icon="pi pi-minus-circle" class="p-button-rounded p-button-text"
+                      (click)="deleteFile(claimAttachment)"></button>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+          <p></p>
+          <div class="p-p-2 p-col-2">
+            <p-button [label]="'module.directClaims.btnAddClaim' | translate" icon="pi pi-check-right"
+              (click)="addClaim()"></p-button>
+          </div>
+          <div class="p-p-2 p-col-12">
+            <p-table [value]="claimAdd">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>{{ "module.directClaims.awb" | translate }}</th>
+                  <th>
+                    {{ "module.directClaims.claimantName" | translate }}
+                  </th>
+                  <th>
+                    {{ "module.directClaims.claimCommodity" | translate }}
+                  </th>
+                  <th>{{ "module.directClaims.claimReason" | translate }}</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-claims>
+                <tr>
+                  <td>
+                    {{ claims.shipmentPrefix + claims.masterDocumentNumber }}
+                  </td>
+                  <td>{{ claims.claimantName }}</td>
+                  <td>{{ claims.commodityCodeName }}</td>
+                  <td>{{ claims.reasonCodeName }}</td>
+                  <td>
+                    <button pButton pRipple icon="pi pi-minus-circle" class="p-button-rounded p-button-text"
+                      (click)="deletePreparedClaim(claims)"></button>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </form>
+      </p-tabPanel> -->
+    </p-tabView>
+  </ng-template>
+</p-card>
+<p></p>
+
+<p-toast baseZIndex="10000"></p-toast>
+<p-confirmDialog [header]="'module.directClaims.policies.header' | translate" icon="pi pi-exclamation-triangle"
+  [style]="{ width: '50vw' }" [baseZIndex]="10000">
+</p-confirmDialog>
+<div class="overlay" *ngIf="loading">
+  <div class="spinner">
+    <img src="assets/img/ZZ5H.gif" />
+  </div>
+</div>
+<!-- <p-blockUI [blocked]="loading">
+  <p-progressSpinner></p-progressSpinner>
+</p-blockUI> -->

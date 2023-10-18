@@ -1,0 +1,148 @@
+<p-table #dt [value]="filters.specialServiceRouteStatuses" [totalRecords]="totalRecords" [rows]="pagination.pageSize" [paginator]="true"
+  [rowHover]="true" dataKey="id" currentPageReportTemplate="Mostrar {first} a {last} de {{ totalRecords }} registros"
+  [showCurrentPageReport]="true" [rowsPerPageOptions]="[10, 25, 50]" styleClass="p-datatable-responsive-demo"
+  [resizableColumns]="true" [autoLayout]="true">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>
+        <div class="p-fluid p-p-2">
+          {{ "module.specialServiceOperation.stationArrival" |
+          translate }}
+        </div>
+      </th>
+      <th>
+        <div class="p-fluid p-p-2">
+          {{ "module.specialServiceOperation.flight" |
+          translate }}
+        </div>
+      </th>
+      <th>
+        <div class="p-fluid p-p-2">
+          {{ "module.services.tblData.header.awb" |
+          translate }}
+        </div>
+      </th>
+      <th>
+        <div class="p-fluid p-p-2">
+          {{ "module.specialServiceOperation.flightDate" |
+          translate }}
+        </div>
+      </th>
+      <th>
+        <div class="p-fluid p-p-2">
+          {{ "module.specialServiceOperation.status" |
+          translate }}
+        </div>
+      </th>
+      <th></th>
+    </tr>
+    <tr>
+      <th>
+        <av-station [label]="'module.specialServiceOperation.stationArrival' | translate"
+          [selectionLabel]="'module.services.tblData.header.stationArrival' | translate" [(ngModel)]="stationDestiny">
+        </av-station>
+      </th>
+      <th>
+        <av-input-number label="{{'module.specialServiceOperation.flight' | translate}}"
+          [(ngModel)]="specialServiceRouteStatusFind.specialServiceRoute.flight"></av-input-number>
+      </th>
+      <th>
+        <av-input-text label="{{'module.specialServiceOperation.awb' | translate}}"
+          [(ngModel)]="specialServiceRouteStatusFind.specialServiceRoute.specialService.awb"></av-input-text>
+      </th>
+      <th>
+        <av-input-date [label]="'module.specialServiceOperation.flightDate' | translate" [monthNavigator]="true"
+          [yearNavigator]="true" yearRange="2000:2050" [showIcon]="true" inputId="icon"
+          [(ngModel)]="specialServiceRouteStatusFind.specialServiceRoute.dateFlight"></av-input-date>
+      </th>
+      <th>
+
+      </th>
+      <th>
+        <av-button [label]="'module.specialServiceOperation.btnFilter' | translate" icon="pi pi-search"
+          class="p-button-text" (click)="loadRoutesPaginationAndFilter()"></av-button>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-serviceRouteStatus>
+    <tr [pEditableRow]="serviceRouteStatus">
+      <td pEditableColumn>
+        <div class="p-fluid p-p-2">
+          {{ serviceRouteStatus.specialServiceRoute.stationArrival.description }}({{
+          serviceRouteStatus.specialServiceRoute.stationArrival.name }})
+        </div>
+      </td>
+      <td pEditableColumn>
+        <div class="p-fluid p-p-2">
+          {{ serviceRouteStatus.specialServiceRoute.flight }}
+        </div>
+      </td>
+      <td pEditableColumn>
+        <div class="p-fluid p-p-2">
+          {{ serviceRouteStatus.specialServiceRoute.specialService.awb }}
+        </div>
+      </td>
+      <td pEditableColumn>
+        <div class="p-fluid p-p-2">
+          {{ serviceRouteStatus.specialServiceRoute.dateFlight | date:'yyyy-MMM-dd'}}<br>{{
+          serviceRouteStatus.specialServiceRoute.dateFlight | date:'h:mm a z'}}
+        </div>
+      </td>
+      <td pEditableColumn>
+        <div class="p-fluid p-p-2" *ngIf="serviceRouteStatus.status == null" >
+          {{"module.specialServiceOperation.pending"| translate}}
+        </div>
+        <div class="p-fluid p-p-2" *ngIf="serviceRouteStatus.status != null" >
+          {{ serviceRouteStatus.status.name }}
+        </div>
+      </td>
+      <td>
+        <av-button *ngIf="!serviceRouteStatus.status"
+          [label]="'module.specialServiceOperation.btnStorageIn' | translate" icon="fa fa-fw fa-sign-in"
+          class="p-button-text" (click)="popupSpecialServiceOperation(serviceRouteStatus)"></av-button>
+        <av-button *ngIf="serviceRouteStatus.status"
+          [label]="'module.specialServiceOperation.btnStorageOut' | translate" icon="fa fa-fw fa-sign-out"
+          class="p-button-text" (click)="popupSpecialServiceOperation(serviceRouteStatus)"></av-button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+<p-dialog [(visible)]="specialServiOperationDialog" [style]="{ width: '70%'}" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <span class="p-d-flex p-flex-column">
+      <h3>{{ "module.specialServiceOperation.specialServiceOperationPopup.title" | translate }}</h3>
+      <div class="p-col-12 p-p-2">
+        <p-dataView [value]="specialServiceContainers" [lazy]="true" (onLazyLoad)="loadContainer($event)" layout="grid">
+          <ng-template pTemplate="header">
+            <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+          </ng-template>
+          <ng-template let-container pTemplate="listItem" let-rowIndex="rowIndex">
+            <div class="p-col-11">
+              {{container.container }}
+            </div>
+          </ng-template>
+          <ng-template let-container pTemplate="gridItem" let-rowIndex="rowIndex">
+            <div class="p-col-11 p-md-3">
+              {{container.container }}
+            </div>
+          </ng-template>
+        </p-dataView>
+      </div>
+    </span>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <av-button [label]="'module.services.popUpService.footer.btnCancel' | translate" icon="pi pi-times"
+      class="p-button-text" (click)="closeSpecialServiceOperationDialog()"></av-button>
+    <av-button [label]="'module.services.popUpService.footer.btnSave' | translate" icon="pi pi-save"
+      class="p-button-text" (click)="saveSpecialServiceOperationDialog()"></av-button>
+  </ng-template>
+</p-dialog>
+
+<p-toast baseZIndex="10000"></p-toast>
+
+<p-confirmDialog [style]="{ width: '450px' }" [acceptLabel]="'module.user.btnAccept' | translate"
+  [rejectLabel]="'module.user.btnCancel' | translate"></p-confirmDialog>
+
+<p-blockUI [blocked]="loading">
+  <p-progressSpinner></p-progressSpinner>
+</p-blockUI>

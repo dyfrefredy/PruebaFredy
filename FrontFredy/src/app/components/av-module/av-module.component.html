@@ -1,0 +1,16 @@
+<!-- "p-fluid" es para que el componente se ajuste en los filtros de las tablas-->
+<div class="p-fluid p-p-2">
+	<span class="p-float-label">
+		<p-dropdown [options]="options" [(ngModel)]="selectionChargeType" [filter]="filter" [disabled]="disabled" (onChange)="onChange()">
+			<ng-template let-item pTemplate="selectedItem">
+				<span>{{item.label}} - {{item.desc}}</span>
+			</ng-template>
+			<ng-template let-opt pTemplate="item">
+				<div>
+					<div> {{opt.label}} - {{opt.desc}}</div>
+				</div>
+			</ng-template>
+		</p-dropdown>
+		<label for="field-id">{{label|translate}}</label>
+	</span>
+</div>

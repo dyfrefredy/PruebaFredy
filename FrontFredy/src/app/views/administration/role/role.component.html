@@ -1,0 +1,101 @@
+<p-card>
+  <div class="p-field p-grid">
+    <div class="p-col-1">
+      <av-button type="button" [label]="'module.role.btnNew' | translate" icon="pi pi-plus p-button-icon-left"
+        class="p-button-text" (click)="openNew()"></av-button>
+    </div>
+    <div class="p-col-1">
+      <av-button type="button" [label]="'module.role.btnDisabled' | translate"
+        [icon]="'pi pi-minus-circle p-button-icon-left'" class="p-button-text" (click)="deleteSelectedRoles()"
+        [disabled]="!selectedRoles || !selectedRoles.length"></av-button>
+    </div>
+  </div>
+
+  <p-table #dt styleClass="p-datatable-sm p-datatable-responsive-demo" [value]="roles" [lazy]="true" (onLazyLoad)="loadRoles($event)" [totalRecords]="totalRecords" [rows]="10"
+    [paginator]="true" [(selection)]="selectedRoles" [rowHover]="true" dataKey="id"
+    currentPageReportTemplate="Mostrar {first} a {last} de {{ totalRecords}} registros" [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 25, 50]">
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 3rem">
+          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+        </th>
+        <th pSortableColumn="description">
+          {{ "module.role.description" | translate }}
+          <p-sortIcon field="description"></p-sortIcon>
+        </th>
+        <th pSortableColumn="active">
+          {{ "module.role.activeRole" | translate }}
+          <p-sortIcon field="active"></p-sortIcon>
+        </th>
+        <th style="width: 8rem"></th>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <av-input-text [label]="'module.role.description'|translate" [(ngModel)]="roleFind.description">
+          </av-input-text>
+        </td>
+        <td>
+          <p-triStateCheckbox [(ngModel)]="roleFind.active" placeholder="Activo"></p-triStateCheckbox>
+        </td>
+        <td>
+          <av-button [label]="'module.role.btnFilter' | translate" icon="pi pi-search" class="p-button-text"
+            (click)="getPaginationAndFilter()"></av-button>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-role let-editing="editing" let-ri="rowIndex">
+      <tr [pEditableRow]="role">
+        <td>
+          <p-tableCheckbox [value]="role"></p-tableCheckbox>
+        </td>
+        <td pEditableColumn>
+          {{ role.description }}
+        </td>
+        <td pEditableColumn>
+          {{ role.active ? "SI" : "NO" }}
+        </td>
+        <td style="text-align: center">
+          <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-text"
+            (click)="editRole(role)"></button>
+          <button pButton pRipple icon="pi pi-minus-circle"
+            class="p-button-rounded p-button-text" (click)="deleteRole(role)"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>
+
+<p-dialog [(visible)]="roleDialog" [style]="{ width: '450px' }" [header]="'module.role.title' | translate"
+  [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <form id="roleForm" [formGroup]="roleForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+      <av-input-text hidden formControlName="id" [label]="'module.role.id' | translate" [(ngModel)]="role.id">
+      </av-input-text>
+      <av-input-text formControlName="description" [maxlength]="100" label="module.role.description"
+        [(ngModel)]="role.description"></av-input-text>
+      <div class="p-p-2" style="min-width: 225px">
+        <p-checkbox formControlName="active" [binary]="true" [label]="'module.role.active' | translate"
+          [(ngModel)]="role.active">
+        </p-checkbox>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <av-button [label]="'module.role.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+      (click)="hideDialog()"></av-button>
+    <av-button [label]="'module.role.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+      (click)="saveRole(role)"></av-button>
+  </ng-template>
+</p-dialog>
+
+<p-toast baseZIndex="10000"></p-toast>
+
+<p-confirmDialog [style]="{ width: '450px' }" [acceptLabel]="'module.role.btnAccept' | translate"
+  [rejectLabel]="'module.role.btnCancel' | translate"></p-confirmDialog>
+
+<p-blockUI [blocked]="loading">
+  <p-progressSpinner></p-progressSpinner>
+</p-blockUI>

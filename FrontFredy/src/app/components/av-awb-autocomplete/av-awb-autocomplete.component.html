@@ -1,0 +1,10 @@
+<div class="p-p-2">
+  <span class="p-float-label">
+    <p-autoComplete [suggestions]="options" [(ngModel)]="selectionDocNum" (completeMethod)="filterAwbsByName($event)"
+      (onSelect)="onSelect($event)" (onDropdownClick)="onDropdownClick($event)" optionValue="id" [multiple]="multiple"
+      [forceSelection]="forceSelection" [dropdownIcon]="'pi pi-search'" [minLength]="minLength" field="value"
+      [dropdown]="dropdown" appendTo="body">
+    </p-autoComplete>
+    <label>{{label|translate}}</label>
+  </span>
+</div>

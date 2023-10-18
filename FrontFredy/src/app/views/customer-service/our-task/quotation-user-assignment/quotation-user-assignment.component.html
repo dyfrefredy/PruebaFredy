@@ -1,0 +1,294 @@
+<p-card>
+  <p-table #dt [value]="quotationData" [lazy]="true" (onLazyLoad)="loadQuotation($event)" [totalRecords]="totalRecords"
+    [rows]="10" [paginator]="true" [rowHover]="true" dataKey="id"
+    currentPageReportTemplate="{{'module.componentNames.currentPageReport' | translate }}"
+    [showCurrentPageReport]="true" [rowsPerPageOptions]="[5,10, 25, 50]" styleClass="p-datatable-responsive-demo"
+    [resizableColumns]="true" [autoLayout]="true">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>
+          <div class="p-fluid p-p-2">
+            {{ "module.quote.user.detail" | translate }}
+          </div>
+        </th>
+        <th pSortableColumn="id">
+          <div class="p-fluid p-p-2">
+            {{ "module.quote.user.id" | translate }} ###
+            <p-sortIcon field="id"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="creationDate">
+          <div class="p-fluid p-p-2">
+            {{ "module.quote.user.creationDate" | translate }}
+            <p-sortIcon field="creationDate"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="company">
+          <div class="p-fluid p-p-2">
+            {{ "module.quote.user.company" | translate }}
+            <p-sortIcon field="company"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="name">
+          <div class="p-fluid p-p-2">
+            {{ "module.quote.user.name" | translate }}
+            <p-sortIcon field="name"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="originStationId">
+          <div class="p-fluid p-p-2">
+            {{"module.quote.user.originCityId" | translate}}
+            <p-sortIcon field="originStationId"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="destinationStationId">
+          <div class="p-fluid p-p-2">
+            {{"module.quote.user.destinationCityId" | translate}}
+            <p-sortIcon field="destinationStationId"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="lblLoadType">
+          <div class="p-fluid p-p-2">
+            {{ "module.quote.user.lblLoadType" | translate }}
+            <p-sortIcon field="lblLoadType"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="status">
+          <div class="p-fluid p-p-2">
+            {{ "module.quote.user.status" | translate }}
+            <p-sortIcon field="status"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="statusDatetime">
+          <div class="p-fluid p-p-2">
+            {{ "module.quote.user.statusDatetime" | translate }}
+            <p-sortIcon field="statusDatetime"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="user">
+          <div class="p-fluid p-p-2">
+            {{ "module.quote.user.user" | translate }}
+            <p-sortIcon field="user"></p-sortIcon>
+          </div>
+        </th>
+
+      </tr>
+      <tr>
+        <td>
+          <av-button [label]="'module.componentNames.btnFilter' | translate" icon="pi pi-search" class="p-button-text"
+            (click)="getPaginationAndFilter()"></av-button>
+        </td>
+        <td>
+          <av-input-number [(ngModel)]="quotationFind.id"></av-input-number>
+        </td>
+        <td>
+          <av-input-date [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [showIcon]="true"
+            inputId="icon" [(ngModel)]="quotationFind.creationDate"></av-input-date>
+        </td>
+        <td>
+          <av-input-text [(ngModel)]="quotationFind.company"></av-input-text>
+        </td>
+        <td>
+          <av-input-text [(ngModel)]="quotationFind.name"></av-input-text>
+        </td>
+        <td>
+          <av-station [(ngModel)]="originStation" [dropdown]="false" (sendStation)="receiveOriginStation($event)">
+          </av-station>
+        </td>
+        <td>
+          <av-station [(ngModel)]="destinationStation" [dropdown]="false"
+            (sendStation)="receiveDestinationStation($event)">
+          </av-station>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            <av-load-type [(ngModel)]="quotationFind.loadTypeId"
+              selectedLabel="{{'module.quote.user.loadTypeAll' | translate}}"></av-load-type>
+          </div>
+        </td>
+        <td>
+          <p-dropdown [options]="status" [(ngModel)]="quotationFind.status" appendTo="body"></p-dropdown>
+        </td>
+        <td>
+          <av-input-date [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [showIcon]="true"
+            inputId="icon" [(ngModel)]="quotationFind.quotationAsignment.updatedDate"></av-input-date>
+        </td>
+        <td>
+          <av-user-autocomplete [(ngModel)]="userAsignmentFind" (sendUser)="receiveUser($event)" [dropdown]="false" [userLoginId]= "user.id">
+          </av-user-autocomplete>
+        </td>
+
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-quotation let-i="rowIndex">
+      <tr>
+        <td>
+          <div *ngIf="!comeRole">
+            <av-button *ngIf="!quotation.quotationAsignment" [label]="'module.quote.user.assign'" icon="pi pi-plus"
+              class="p-button-text" (click)="openAssignUser(quotation)">
+            </av-button>
+            <av-button *ngIf="quotation.quotationAsignment" [label]="'module.quote.user.reAssign'" icon="pi pi-pencil"
+              class="p-button-text" (click)="openReAssignUser(quotation)">
+            </av-button>
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            {{quotation.id}}
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            {{quotation.creationDate | date:'yyyy-MMM-dd HH:MM'}}
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            {{quotation.company}}
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            {{quotation.name}}
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            {{quotation.originStationDesc}}
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            {{quotation.destinationStationDesc}}
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            {{quotation.loadType}}
+          </div>
+        </td>
+        <td>
+          <!-- <div class="p-fluid p-p-2" *ngIf="!quotation.quotationAsignment">
+            {{"module.quote.user.statuses.pending" | translate}}
+          </div>
+          <div class="p-fluid p-p-2" *ngIf="quotation.quotationAsignment">
+            {{"module.quote.user.statuses.assigned" | translate}}
+          </div> -->
+          <div class="p-fluid p-p-2">
+            {{quotation.quotationStatus?.quotationStatusName | translate}}
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2" *ngIf="quotation.quotationAsignment">
+            {{ quotation.quotationAsignment.updatedDate | date:'yyyy-MMM-dd hh:mm' }}
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            {{ quotation.quotationAsignment ? quotation.quotationAsignment.userAsignmentFirstName + " " +
+            quotation.quotationAsignment.userAsignmentLastName : "" }}
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>
+
+<p-dialog [(visible)]="quoteDetailsDialog" [style]="{ width: '800px', heigth : '500px' }"
+  [header]="'module.quote.user.popupTitle' | translate" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <div>
+      <div class="p-grid">
+        <b class="p-col-3 ">{{ "module.quote.dashboard.popup.lblName" | translate }}:</b>
+        <b class="p-col-3">{{ "module.quote.dashboard.popup.lblOriginCityId" | translate }}:</b>
+        <b class="p-col-3">{{ "module.quote.dashboard.popup.lblDestinationCityId" | translate }}:</b>
+        <b class="p-col-3">{{ "module.quote.dashboard.popup.lblLoadType" | translate }}:</b>
+      </div>
+      <div class="p-grid">
+        <span class="p-col-3">{{quoteDetails.name}}</span>
+        <span class="p-col-3">{{quoteDetails.originStationDesc}}</span>
+        <span class="p-col-3">{{quoteDetails.destinationStationDesc}}</span>
+        <span class="p-col-3">{{quoteDetails.loadType}}</span>
+      </div>
+      <p-table #dt [value]="quotationDetailsData" [lazy]="true" (onLazyLoad)="loadQuotationDetails($event)"
+        [totalRecords]="totalRecordsDatails" [rows]="5" [paginator]="false" [rowHover]="true" dataKey="id"
+        currentPageReportTemplate="{{'module.componentNames.currentPageReportDetails.show' | translate }} {{totalRecordsDatails}}
+          {{'module.componentNames.currentPageReportDetails.records' | translate }}" [showCurrentPageReport]="true"
+        styleClass="p-datatable-responsive-demo">
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="numberPieces">
+              {{ "module.quote.quoteDetails.numberPieces" | translate }}
+            </th>
+            <th pSortableColumn="weight">
+              {{ "module.quote.quoteDetails.weight" | translate }}
+            </th>
+            <th pSortableColumn="weightUnit">
+              {{ "module.quote.quoteDetails.weightUnit" | translate }}
+            </th>
+            <th pSortableColumn="depth">
+              {{ "module.quote.quoteDetails.depth" | translate }}
+            </th>
+            <th pSortableColumn="width">
+              {{ "module.quote.quoteDetails.width" | translate }}
+            </th>
+            <th pSortableColumn="high">
+              {{ "module.quote.quoteDetails.high" | translate }}
+            </th>
+            <th pSortableColumn="lengthUnit">
+              {{ "module.quote.quoteDetails.lengthUnit" | translate }}
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-quoteDetails let-editing="editing" let-ri="rowIndex">
+          <tr [pEditableRow]="quoteDetails">
+            <td pEditableColumn>
+              {{ quoteDetails.pieces }}
+            </td>
+            <td pEditableColumn>
+              {{ quoteDetails.weight }}
+            </td>
+            <td pEditableColumn>
+              {{ quoteDetails.weightUnitDesc }}
+            </td>
+            <td pEditableColumn>
+              {{ quoteDetails.depth }}
+            </td>
+            <td pEditableColumn>
+              {{ quoteDetails.width }}
+            </td>
+            <td pEditableColumn>
+              {{ quoteDetails.high }}
+            </td>
+            <td pEditableColumn>
+              {{ quoteDetails.lengthUnitDesc }}
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <form id="userForm" [formGroup]="userAsignmentForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+        <div class="p-grid">
+          <span class="p-col-12">
+            <!--Validación de rol de acuerdo a Bug308280-->
+            <av-user-autocomplete label="{{'module.quote.user.user' | translate}}" [(ngModel)]="userAsignment"
+              formControlName="userAsignment" [userLoginId]= "user.id" [disabled]="user.roleId!=roleService.customerServiceAdm"></av-user-autocomplete>
+            <small class="p-p-2 p-invalid" *ngIf="submitted && !userAsignment">
+              {{"module.quote.user.validation.userAsignmentRequired" | translate}}
+            </small>
+            <small class="p-p-2 p-invalid" *ngIf="submitted && userChange==false">
+              {{"module.quote.user.validation.userChangeRequired" | translate}}
+            </small>
+          </span>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <av-button [label]="'module.componentNames.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+      (click)="hideDialog()"></av-button>
+    <av-button [label]="'module.componentNames.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+      (click)="saveAsignment()"></av-button>
+  </ng-template>
+</p-dialog>
+
+<p-toast baseZIndex="10000"></p-toast>

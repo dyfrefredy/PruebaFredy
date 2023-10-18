@@ -1,0 +1,3 @@
+.p-steps .p-steps-item .p-menuitem-link {
+  flex-direction: column !important;
+}

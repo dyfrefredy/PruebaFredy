@@ -1,0 +1,47 @@
+<form id="guideMasterCargoForm" [formGroup]="guideMasterCargoForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+  <div class="p-fluid p-formgrid p-grid">
+    <div class="p-p-2 p-col-12">
+        <span class="p-float-label">
+            <textarea formControlName="cargoHandling" class="p-field p-col-12" rows="5" cols="30" pInputTextarea autoResize="autoResize"></textarea>
+            <label for="field-id">Manipulación de la carga</label>
+        </span>
+    </div>
+    <div class="p-p-2 p-col-12">
+      <span class="p-float-label">
+          <textarea formControlName="cargoDescription" class="p-field p-col-12" rows="5" cols="30" pInputTextarea autoResize="autoResize"></textarea>
+          <label for="field-id">Descripción de la carga</label>
+      </span>
+    </div>
+    <div class="p-p-2 p-col-4">
+      <av-input-number formControlName="totalPackagesPieces" [label]="'module.master.totalPackagesPieces' | translate" [ngClass]="{ 'p-invalid': submitted && f.totalPackagesPieces.errors }"></av-input-number>
+      <div *ngIf="submitted && ! f.totalPackagesPieces.errors" class="p-p-2" style="min-width: 225px">
+        <small class="p-invalid" *ngIf="submitted && !f.totalPackagesPieces.errors">{{"module.master.validation.totalPackagesPiecesRequired" | translate}}</small>
+      </div>
+    </div>
+    <div class="p-p-2 p-col-4">
+      <av-input-number formControlName="totalGrossWeightCargo" [label]="'module.master.totalGrossWeightCargo' | translate" [ngClass]="{ 'p-invalid': submitted && f.totalGrossWeightCargo.errors }"></av-input-number>
+      <div *ngIf="submitted && ! f.totalGrossWeightCargo.errors" class="p-p-2" style="min-width: 225px">
+        <small class="p-invalid" *ngIf="submitted && !f.totalGrossWeightCargo.errors">{{"module.master.validation.totalGrossWeightCargoRequired" | translate}}</small>
+      </div>
+    </div>
+    <div class="p-p-2 p-col-4">
+      <av-input-number formControlName="totalCargoVolume" [label]="'module.master.totalCargoVolume' | translate" [ngClass]="{ 'p-invalid': submitted && f.totalCargoVolume.errors }"></av-input-number>
+      <div *ngIf="submitted && ! f.totalCargoVolume.errors" class="p-p-2" style="min-width: 225px">
+        <small class="p-invalid" *ngIf="submitted && !f.totalCargoVolume.errors">{{"module.master.validation.totalCargoVolumeRequired" | translate}}</small>
+      </div>
+    </div>
+    <div class="p-p-2 p-col-6">
+      <av-input-number formControlName="travelDocumentNumber" [label]="'module.master.travelDocumentNumber' | translate" [ngClass]="{ 'p-invalid': submitted && f.travelDocumentNumber.errors }"></av-input-number>
+      <div *ngIf="submitted && ! f.travelDocumentNumber.errors" class="p-p-2" style="min-width: 225px">
+        <small class="p-invalid" *ngIf="submitted && !f.travelDocumentNumber.errors">{{"module.master.validation.travelDocumentNumberRequired" | translate}}</small>
+      </div>
+    </div>
+    <div class="p-p-2 p-col-6">
+        <av-input-date formControlName="travelDocumentDate" [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [showIcon]="true" inputId="icon" [label]="'Fecha del documento de viaje'"></av-input-date>
+        <div *ngIf="submitted &&  f.travelDocumentDate.errors" class="p-p-2" style="min-width: 225px;">
+            <small class="p-invalid" *ngIf="submitted && f.travelDocumentDate.errors">{{'module.importSkychain.validation.travelDocumentDateRequired'|translate}}
+            </small>
+        </div>
+    </div>
+  </div>
+</form>

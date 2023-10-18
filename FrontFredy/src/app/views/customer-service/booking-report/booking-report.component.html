@@ -1,0 +1,206 @@
+<p-card>
+    <form id="bookingForm" [formGroup]="bookingForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+        <div class="p-fluid p-formgrid p-grid">
+            <div class="p-p-2 p-col-3">
+                <av-input-range-date formControlName="rangeDateReport" [(ngModel)]="rangeDate" [monthNavigator]="true"
+                    [yearNavigator]="true" yearRange="2000:2050" [showIcon]="true" inputId="icon"
+                    label="{{'module.bookingReport.rangeDate' | translate}}*">
+                </av-input-range-date>
+                <div *ngIf="submitted" class="p-p-2">
+                    <small class="p-invalid">
+                        {{"module.bookingReport.validation.rangeDateRequired" | translate}}
+                    </small>
+                </div>
+            </div>
+            <div class="p-p-2 p-col-3">
+                <av-station formControlName="originStation" required [label]="'module.bookingReport.originStation' | translate"
+                    (sendStation)="receiveOriginStation($event)" [selectionLabel]="'module.bookingReport.originStation' | translate"
+                    [(ngModel)]="originStation">
+                </av-station>
+            </div>
+            <div class="p-p-2 p-col-3">
+                <av-station formControlName="destinationCity" required
+                    [label]="'module.bookingReport.destinationStation' | translate"
+                    (sendStation)="receiveDestinationStation($event)"
+                    [selectionLabel]="'module.bookingReport.destinationStation' | translate" [(ngModel)]="destinationStation">
+                </av-station>
+            </div>
+            <div class="p-p-2 p-col-3 p-d-flex p-ai-center p-jc-left">
+                <av-button type="button" [label]="'module.bookingReport.btnFilter' | translate" icon="pi pi-search"
+                    class="p-button-text" (click)="getFilter()"></av-button>
+            </div>
+        </div>
+    </form>
+    <div class="p-p-3 p-col-12 text-right">
+        <a (click)="exportTrackAwb()">
+            <img alt="Exportar" src="../../../../assets/img/pharma/track-awb/excel.svg"
+                style="width: 45px; height: 45px;"> {{'module.trackAwb.btnExport'|translate}}
+        </a>
+    </div>
+    <p-table #dt [value]="quotesBookingsReports" [rowHover]="true" dataKey="id" styleClass="p-datatable-responsive-demo"
+        [resizableColumns]="true" [autoLayout]="true">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>
+                    <div class="p-fluid p-p-2">
+                        {{ "module.bookingReport.type" | translate }}
+                    </div>
+                </th>
+                <th>
+                    <div class="p-fluid p-p-2">
+                        {{ "module.bookingReport.id" | translate }}
+                    </div>
+                </th>
+                <th>
+                    <div class="p-fluid p-p-2">
+                        {{ "module.bookingReport.requirementDate" | translate }}
+                    </div>
+                </th>
+                <th>
+                    <div class="p-fluid p-p-2">
+                        {{ "module.bookingReport.assignmentDate" | translate }}
+                    </div>
+                </th>
+                <th>
+                    <div class="p-fluid p-p-2">
+                        {{ "module.bookingReport.answerDate" | translate }}
+                    </div>
+                </th>
+                <th>
+                    <div class="p-fluid p-p-2">
+                        {{ "module.bookingReport.user" | translate }}
+                    </div>
+                </th>
+                <th>
+                    <div class="p-fluid p-p-2">
+                        {{ "module.bookingReport.company" | translate }}
+                    </div>
+                </th>
+                <th>
+                    <div class="p-fluid p-p-2">
+                        {{ "module.bookingReport.name" | translate }}
+                    </div>
+                </th>
+                <th>
+                    <div class="p-fluid p-p-2">
+                        {{ "module.bookingReport.origin" | translate }}
+                    </div>
+                </th>
+                <th>
+                    <div class="p-fluid p-p-2">
+                        {{ "module.bookingReport.destination" | translate }}
+                    </div>
+                </th>
+                <th>
+                    <div class="p-fluid p-p-2">
+                        {{ "module.bookingReport.customerType" | translate }}
+                    </div>
+                </th>
+                <th>
+                    <div class="p-fluid p-p-2">
+                        {{ "module.bookingReport.commodity" | translate }}
+                    </div>
+                </th>
+                <th>
+                    <div class="p-fluid p-p-2">
+                        {{ "module.bookingReport.stackable" | translate }}
+                    </div>
+                </th>
+                <th>
+                    <div class="p-fluid p-p-2">
+                        {{ "module.bookingReport.chargableweight" | translate }}
+                    </div>
+                </th>
+                <th>
+                    <div class="p-fluid p-p-2">
+                        {{ "module.bookingReport.rate" | translate }}
+                    </div>
+                </th>
+                <!-- <th>
+                    <div class="p-fluid p-p-2">
+                        {{ "module.bookingReport.totalAmount" | translate }}
+                    </div>
+                </th> -->
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-quotesBookingsReport>
+            <tr [pEditableRow]="quotesBookingsReport">
+                <td pEditableColumn>
+                    <div class="p-fluid p-p-2">
+                        {{ quotesBookingsReport.type}}
+                    </div>
+                </td>
+                <td pEditableColumn>
+                    <div class="p-fluid p-p-2">
+                        {{ quotesBookingsReport.id}}
+                    </div>
+                </td>
+                <td pEditableColumn>
+                    <div class="p-fluid p-p-2">
+                        {{ quotesBookingsReport.requirementDate | date:'yyyy-MM-dd HH:mm' }}
+                    </div>
+                </td>
+                <td pEditableColumn>
+                    <div class="p-fluid p-p-2">
+                        {{ quotesBookingsReport.assignmentDate | date:'yyyy-MM-dd HH:mm' }}
+                    </div>
+                </td>
+                <td pEditableColumn>
+                    <div class="p-fluid p-p-2">
+                        {{ quotesBookingsReport.answerDate | date:'yyyy-MM-dd HH:mm' }}
+                    </div>
+                </td>
+                <td pEditableColumn>
+                    <div class="p-fluid p-p-2">
+                        {{ quotesBookingsReport.user }}
+                    </div>
+                </td>
+                <td pEditableColumn>
+                    <div class="p-fluid p-p-2">
+                        {{ quotesBookingsReport.company }}
+                    </div>
+                </td>
+                <td pEditableColumn>
+                    <div class="p-fluid p-p-2">
+                        {{ quotesBookingsReport.userName }}
+                    </div>
+                </td>
+                <td pEditableColumn>
+                    <div class="p-fluid p-p-2">
+                        {{ quotesBookingsReport.origin }}
+                    </div>
+                </td>
+                <td pEditableColumn>
+                    <div class="p-fluid p-p-2">
+                        {{ quotesBookingsReport.destination }}
+                    </div>
+                </td>
+                <td pEditableColumn>
+                    <div class="p-fluid p-p-2">
+                        {{ quotesBookingsReport.customerType }}
+                    </div>
+                </td>
+                <td pEditableColumn>
+                    <div class="p-fluid p-p-2">
+                        {{ quotesBookingsReport.commodity }}
+                    </div>
+                </td>
+                <td pEditableColumn>
+                    <div class="p-fluid p-p-2">
+                        {{ quotesBookingsReport.stackable ? 'SI':'NO' }}
+                    </div>
+                </td>
+                <td pEditableColumn>
+                    <div class="p-fluid p-p-2">
+                        {{ quotesBookingsReport.chargableweight }}
+                    </div>
+                </td>
+                <td pEditableColumn>
+                    <div class="p-fluid p-p-2">
+                        {{ quotesBookingsReport.rate }}
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-card>

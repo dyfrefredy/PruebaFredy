@@ -1,0 +1,84 @@
+<!-- <ng-template pTemplate="header">
+    <img alt="Card" src="assets/showcase/images/usercard.png" />
+  </ng-template> -->
+<!-- <div class="card" style="background-color: #f4d03f"> -->
+<p class="card" style="text-align: center; background-color: #f4d03f">
+  <a></a>
+  {{ "module.directClaims.notice" | translate }}
+  <a href="https://apps.avianca.com/claims/wPage/pgClaimPolicy.aspx" target="_blank"
+    >https://apps.avianca.com/claims/wPage/pgClaimPolicy.aspx</a
+  >
+</p>
+<!-- </div> -->
+
+<div>
+  <div class="row">
+    <div class="col-sm-4 col-md-3">
+      <div class="p-d-flex p-flex-wrap p-jc-center">
+        <a href="#/home/claim" class="p-m-2">
+          <p-card>
+            <div
+              class="p-d-flex p-flex-column p-jc-center"
+              style="width: 300px; height: 200px"
+            >
+              <span class="p-text-center"
+                ><img
+                  alt="Card"
+                  style="width: 128px; margin-top: -10px"
+                  src="/assets/img/module/claim.png"
+              /></span>
+              <span class="p-text-center p-text-bold">{{
+                "module.directClaims.titleClaim" | translate
+              }}</span>
+            </div>
+          </p-card>
+        </a>
+      </div>
+    </div>
+    <div class="col-sm-4 col-md-3">
+      <div class="p-d-flex p-flex-wrap p-jc-center">
+        <a href="#/home/fetch-claim" class="p-m-2">
+          <p-card>
+            <div
+              class="p-d-flex p-flex-column p-jc-center"
+              style="width: 300px; height: 200px"
+            >
+              <span class="p-text-center"
+                ><img
+                  alt="Card"
+                  style="width: 128px; margin-top: -10px"
+                  src="/assets/img/module/search.png"
+              /></span>
+              <span class="p-text-center p-text-bold">{{
+                "module.directClaims.titleFetch" | translate
+              }}</span>
+            </div>
+          </p-card>
+        </a>
+      </div>
+    </div>
+    <!-- se deshabilita momentaneamente hasta que arreglen el pdf a descargar -->
+    <!-- <div class="col-sm-4 col-md-3">
+      <div class="p-d-flex p-flex-wrap p-jc-center">
+        <a href="../../../../assets/pdf/Claims.pdf" download="Claims" class="p-m-2">
+          <p-card>
+            <div
+              class="p-d-flex p-flex-column p-jc-center"
+              style="width: 300px; height: 200px"
+            >
+              <span class="p-text-center"
+                ><img
+                  alt="Card"
+                  style="width: 128px; margin-top: -10px"
+                  src="/assets/img/module/open-book.png"
+              /></span>
+              <span class="p-text-center p-text-bold">{{
+                "module.directClaims.claimPdf" | translate
+              }}</span>
+            </div>
+          </p-card>
+        </a>
+      </div>
+    </div> -->
+  </div>
+</div>

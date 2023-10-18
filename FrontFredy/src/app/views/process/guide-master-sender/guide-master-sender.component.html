@@ -1,0 +1,25 @@
+<form id="guideMasterSenderForm" [formGroup]="guideMasterSenderForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+  <div class="p-fluid p-formgrid p-grid">
+    <div class="p-p-2 p-col-12">
+      <av-skychain formControlName="businessName" [label]="'module.master.businessName'|translate"></av-skychain>
+      <div *ngIf="submitted && ! f.businessName.errors" class="p-p-2" style="min-width: 225px">
+        <small class="p-invalid"
+          *ngIf="submitted && !f.businessName.errors">{{"module.master.validation.businessNameRequired" | translate}}</small>
+      </div>
+    </div>
+    <div class="p-p-2 p-col-6">
+      <av-document-type formControlName="documentType" [label]="'module.master.documentType'|translate"></av-document-type>
+      <div *ngIf="submitted && ! f.documentType.errors" class="p-p-2" style="min-width: 225px">
+        <small class="p-invalid"
+          *ngIf="submitted && !f.documentType.errors">{{"module.master.validation.documentTypeRequired" | translate}}</small>
+      </div>
+    </div>
+    <div class="p-p-2 p-col-6">
+      <av-input-number [maxlength]="2" formControlName="documentNumber" [label]="'module.master.documentNumber' | translate" size="1"></av-input-number>
+      <div *ngIf="submitted && ! f.documentNumber.errors" class="p-p-2" style="min-width: 225px">
+        <small class="p-invalid"
+          *ngIf="submitted && !f.documentNumber.errors">{{"module.master.validation.documentNumberRequired" | translate}}</small>
+      </div>
+    </div>
+  </div>
+</form>

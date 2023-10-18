@@ -1,0 +1,223 @@
+<p-card>
+  <div class="p-field p-grid">
+    <div class="p-col-1">
+      <av-button type="button" [label]="'module.roleModule.btnNew' | translate" icon="pi pi-plus p-button-icon-left"
+        class="p-button-text" (click)="openNew()"></av-button>
+    </div>
+    <div class="p-col-1">
+      <av-button type="button" [label]="'module.roleModule.btnDisabled' | translate"
+        [icon]="'pi pi-minus-circle p-button-icon-left'" class="p-button-text" (click)="deleteSelectedRoleModules()"
+        [disabled]="!selectedRoleModules || !selectedRoleModules.length">
+      </av-button>
+    </div>
+  </div>
+
+  <p-table #dt styleClass="p-datatable-sm p-datatable-responsive-demo" [value]="roleModules" [lazy]="true" (onLazyLoad)="loadRoleModules($event)" [totalRecords]="totalRecords"
+    [rows]="10" [paginator]="true" [(selection)]="selectedRoleModules" [rowHover]="true" dataKey="id"
+    currentPageReportTemplate="Mostrar {first} a {last} de {{ totalRecords }} registros" [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 25, 50]">
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 3rem">
+          <div class="p-fluid p-p-2">
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </div>
+        </th>
+        <th pSortableColumn="ROL.Description">
+          <div class="p-fluid p-p-2">
+            {{ "module.roleModule.roleDesc" | translate }}
+            <p-sortIcon field="ROL.Description"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="MDL.Name">
+          <div class="p-fluid p-p-2">
+            {{ "module.roleModule.moduleName" | translate }}
+            <p-sortIcon field="MDL.Name"></p-sortIcon>
+          </div>
+        </th>
+        <th style="width: 5rem" pSortableColumn="RML.[Read]">
+          <div class="p-fluid p-p-2">
+            {{ "module.roleModule.read" | translate }}
+            <p-sortIcon field="RML.[Read]"></p-sortIcon>
+          </div>
+        </th>
+        <th style="width: 5rem" pSortableColumn="RML.Write">
+          <div class="p-fluid p-p-2">
+            {{ "module.roleModule.write" | translate }}
+            <p-sortIcon field="RML.Write"></p-sortIcon>
+          </div>
+        </th>
+        <th style="width: 5rem" pSortableColumn="RML.Edit">
+          <div class="p-fluid p-p-2">
+            {{ "module.roleModule.edit" | translate }}
+            <p-sortIcon field="RML.Edit"></p-sortIcon>
+          </div>
+        </th>
+        <th style="width: 5rem" pSortableColumn="RML.[Delete]">
+          <div class="p-fluid p-p-2">
+            {{ "module.roleModule.delete" | translate }}
+            <p-sortIcon field="RML.[Delete]"></p-sortIcon>
+          </div>
+        </th>
+        <th style="width: 5rem" pSortableColumn="RML.active">
+          <div class="p-fluid p-p-2">
+            {{ "module.roleModule.active" | translate }}
+            <p-sortIcon field="RML.active"></p-sortIcon>
+          </div>
+        </th>
+        <th style="width: 8rem"></th>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <av-role label="{{'module.roleModule.roleDesc' | translate}}" [(ngModel)]="roleModuleFind.roleId">
+          </av-role>
+        </td>
+        <td>
+          <av-module label="{{'module.module.moduleParent' | translate}}" [(ngModel)]="roleModuleFind.moduleId">
+          </av-module>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            <p-triStateCheckbox [(ngModel)]="roleModuleFind.read" placeholder="read"></p-triStateCheckbox>
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            <p-triStateCheckbox [(ngModel)]="roleModuleFind.write" placeholder="write"></p-triStateCheckbox>
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            <p-triStateCheckbox [(ngModel)]="roleModuleFind.edit" placeholder="edit"></p-triStateCheckbox>
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            <p-triStateCheckbox [(ngModel)]="roleModuleFind.delete" placeholder="delete">
+            </p-triStateCheckbox>
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            <p-triStateCheckbox [(ngModel)]="roleModuleFind.active" placeholder="Activo">
+            </p-triStateCheckbox>
+          </div>
+        </td>
+        <td>
+          <av-button [label]="'module.roleModule.btnFilter' | translate" icon="pi pi-search" class="p-button-text"
+            (click)="getPaginationAndFilter()"></av-button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-roleModule>
+      <tr [pEditableRow]="roleModule">
+        <td>
+          <div class="p-fluid p-p-2">
+            <p-tableCheckbox [value]="roleModule"></p-tableCheckbox>
+          </div>
+        </td>
+        <td pEditableColumn>
+          <div class="p-fluid p-p-2">
+            {{ roleModule.roleDesc }}
+          </div>
+        </td>
+        <td pEditableColumn>
+          <div class="p-fluid p-p-2">
+            {{ roleModule.moduleName }}
+          </div>
+        </td>
+        <td pEditableColumn>
+          <div class="p-fluid p-p-2">
+            {{ roleModule.read ? "SI" : "NO" }}
+          </div>
+        </td>
+        <td pEditableColumn>
+          <div class="p-fluid p-p-2">
+            {{ roleModule.write ? "SI" : "NO" }}
+          </div>
+        </td>
+        <td pEditableColumn>
+          <div class="p-fluid p-p-2">
+            {{ roleModule.edit ? "SI" : "NO" }}
+          </div>
+        </td>
+        <td pEditableColumn>
+          <div class="p-fluid p-p-2">
+            {{ roleModule.delete ? "SI" : "NO" }}
+          </div>
+        </td>
+        <td pEditableColumn>
+          <div class="p-fluid p-p-2">
+            {{ roleModule.active ? "SI" : "NO" }}
+          </div>
+        </td>
+        <td style="text-align: center">
+          <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-text"
+            (click)="editRoleModule(roleModule)"></button>
+          <button pButton pRipple icon="pi pi-minus-circle" class="p-button-rounded p-button-text"
+            (click)="deleteRoleModule(roleModule)"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>
+
+<p-dialog [(visible)]="roleModuleDialog" [style]="{ width: '450px' }" [header]="'module.roleModule.title' | translate"
+  [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <form id="roleModuleForm" [formGroup]="roleModuleForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+      <div class="p-p-2 p-col-12">
+        <av-role label="{{'module.roleModule.roleDesc' | translate}}" formControlName="roleId"
+          [(ngModel)]="roleModule.roleId">
+        </av-role>
+      </div>
+      <div class="p-p-2 p-col-12">
+        <av-module label="{{'module.roleModule.moduleName' | translate}}" formControlName="moduleId"
+          [(ngModel)]="roleModule.moduleId">
+        </av-module>
+      </div>
+      <div class="p-p-2" style="min-width: 225px">
+        <p-checkbox formControlName="read" [binary]="true" [label]="'module.roleModule.read' | translate"
+          [(ngModel)]="roleModule.read">
+        </p-checkbox>
+      </div>
+      <div class="p-p-2" style="min-width: 225px">
+        <p-checkbox formControlName="write" [binary]="true" [label]="'module.roleModule.write' | translate"
+          [(ngModel)]="roleModule.write">
+        </p-checkbox>
+      </div>
+      <div class="p-p-2" style="min-width: 225px">
+        <p-checkbox formControlName="edit" [binary]="true" [label]="'module.roleModule.edit' | translate"
+          [(ngModel)]="roleModule.edit">
+        </p-checkbox>
+      </div>
+      <div class="p-p-2" style="min-width: 225px">
+        <p-checkbox formControlName="delete" [binary]="true" [label]="'module.roleModule.delete' | translate"
+          [(ngModel)]="roleModule.delete">
+        </p-checkbox>
+      </div>
+      <div class="p-p-2" style="min-width: 225px">
+        <p-checkbox formControlName="active" [binary]="true" [label]="'module.roleModule.active' | translate"
+          [(ngModel)]="roleModule.active">
+        </p-checkbox>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <av-button [label]="'module.roleModule.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+      (click)="hideDialog()"></av-button>
+    <av-button [label]="'module.roleModule.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+      (click)="saveRoleModule()">
+    </av-button>
+  </ng-template>
+</p-dialog>
+
+<p-toast baseZIndex="10000"></p-toast>
+
+<p-confirmDialog [style]="{ width: '450px' }" [acceptLabel]="'module.roleModule.btnAccept' | translate"
+  [rejectLabel]="'module.roleModule.btnCancel' | translate"></p-confirmDialog>
+
+<p-blockUI [blocked]="loading">
+  <p-progressSpinner></p-progressSpinner>
+</p-blockUI>

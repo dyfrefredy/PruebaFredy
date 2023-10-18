@@ -1,0 +1,196 @@
+<p-card>
+  <div class="p-field p-grid">
+    <div class="p-col-1">
+      <av-button type="button" [label]="'module.module.btnNew' | translate" icon="pi pi-plus p-button-icon-left"
+        class="p-button-text" (click)="openNew()"></av-button>
+    </div>
+    <div class="p-col-1">
+      <av-button type="button" [label]="'module.module.btnDisabled' | translate" [icon]="'pi pi-minus-circle p-button-icon-left'"
+        class="p-button-text" (click)="deleteSelectedModules()"
+        [disabled]="!selectedModules || !selectedModules.length"></av-button>
+    </div>
+  </div>
+
+  <p-table #dt styleClass="p-datatable-sm p-datatable-responsive-demo" [value]="modules" [lazy]="true" (onLazyLoad)="loadModules($event)" [totalRecords]="totalRecords"
+    [rows]="10" [paginator]="true" [(selection)]="selectedModules" [rowHover]="true" dataKey="id"
+    currentPageReportTemplate="Mostrar {first} a {last} de {{ totalRecords}} registros" [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 25, 50]">
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 3rem">
+          <div class="p-fluid p-p-2">
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </div>
+        </th>
+        <th pSortableColumn="MD1.name">
+          <div class="p-fluid p-p-2">
+            {{ "module.module.name" | translate }}
+            <p-sortIcon field="name"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="MD1.url">
+          <div class="p-fluid p-p-2">
+            {{ "module.module.url" | translate }}
+            <p-sortIcon field="url"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="MD2.name">
+          <div class="p-fluid p-p-2">
+            {{ "module.module.moduleParent" | translate }}
+            <p-sortIcon field="MD2.name"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="PRT.description">
+          <div class="p-fluid p-p-2">
+            {{ "module.module.projectType" | translate }}
+            <p-sortIcon field="PRT.description"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="MD1.active" style="width: 3rem">
+          <div class="p-fluid p-p-2">
+            {{ "module.module.active" | translate }}
+            <p-sortIcon field="MD1.active"></p-sortIcon>
+          </div>
+        </th>
+        <th style="width: 8rem"></th>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+            <av-input-text [label]="'module.module.name'|translate" [(ngModel)]="moduleFind.name">
+            </av-input-text>
+        </td>
+        <td>
+          <av-input-text [label]="'module.module.url'|translate" [(ngModel)]="moduleFind.url">
+          </av-input-text>
+        </td>
+        <td>
+            <av-module label="{{'module.module.moduleParent' | translate}}" [(ngModel)]="moduleFind.moduleId">
+            </av-module>
+        </td>
+        <td>
+            <av-project-type label="{{'module.module.projectType' | translate}}" [(ngModel)]="moduleFind.projectTypeId">
+            </av-project-type>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            <p-triStateCheckbox [(ngModel)]="moduleFind.active" placeholder="Activo"></p-triStateCheckbox>
+          </div>
+        </td>
+        <td>
+          <av-button [label]="'module.module.btnFilter' | translate" icon="pi pi-search" class="p-button-text"
+            (click)="getPaginationAndFilter()"></av-button>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-module let-editing="editing" let-ri="rowIndex">
+      <tr [pEditableRow]="module">
+        <td pEditableColumn style="width: 3rem">
+          <div class="p-fluid p-p-2">
+            <p-tableCheckbox [value]="module"></p-tableCheckbox>
+          </div>
+        </td>
+        <td pEditableColumn>
+          <div class="p-fluid p-p-2">
+            {{ module.name }}
+          </div>
+        </td>
+        <td pEditableColumn>
+          <div class="p-fluid p-p-2">
+            <p class="c">
+              {{ module.url }}
+            </p>
+          </div>
+        </td>
+        <td pEditableColumn>
+          <div class="p-fluid p-p-2">
+            {{ module.moduleParentDesc }}
+          </div>
+        </td>
+        <td pEditableColumn>
+          <div class="p-fluid p-p-2">
+            {{ module.projectTypeDesc }}
+          </div>
+        </td>
+        <td pEditableColumn>
+          <div class="p-fluid p-p-2">
+            {{ module.active ? "SI" : "NO" }}
+          </div>
+        </td>
+        <td style="text-align: center">
+          <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-text"
+            (click)="editModule(module)"></button>
+          <button pButton pRipple icon="pi pi-minus-circle" class="p-button-rounded p-button-text"
+            (click)="deleteModule(module)"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>
+
+<p-dialog [(visible)]="moduleDialog" [style]="{ width: '50%' }" [header]="'module.module.title' | translate"
+  [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <form id="moduleForm" [formGroup]="moduleForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+      <div class="p-fluid p-formgrid p-grid">
+        <av-input-text hidden formControlName="id" [(ngModel)]="module.id"></av-input-text>
+        <div class="p-p-2 p-col-6">
+          <av-project-type label="{{'module.module.projectType' | translate}}" formControlName="projectType"
+            [(ngModel)]="module.projectTypeId"></av-project-type>
+        </div>
+        <div class="p-p-2 p-col-6">
+          <av-module label="{{'module.module.moduleParent' | translate}}" formControlName="moduleId"
+            [(ngModel)]="module.moduleId">
+          </av-module>
+        </div>
+        <div class="p-p-2 p-col-6">
+          <av-input-text formControlName="name" [maxlength]="100" label="module.module.name" [(ngModel)]="module.name">
+          </av-input-text>
+        </div>
+        <div class="p-p-2 p-col-6">
+          <av-input-text formControlName="description" [maxlength]="100" label="module.module.description"
+            [(ngModel)]="module.description"></av-input-text>
+        </div>
+        <div class="p-p-2 p-col-6">
+          <av-input-text formControlName="url" [maxlength]="100" label="module.module.url" [(ngModel)]="module.url">
+          </av-input-text>
+        </div>
+        <div class="p-p-2 p-col-6">
+          <av-input-text formControlName="icon" [maxlength]="100" label="module.module.icon" [(ngModel)]="module.icon">
+          </av-input-text>
+        </div>
+        <div class="p-p-2 p-col-6">
+          <p-checkbox formControlName="active" [binary]="true" [label]="'module.module.active' | translate"
+            [(ngModel)]="module.active">
+          </p-checkbox>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <av-button [label]="'module.module.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+      (click)="hideDialog()"></av-button>
+    <av-button [label]="'module.module.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+      (click)="saveModule()"></av-button>
+  </ng-template>
+</p-dialog>
+
+<p-toast baseZIndex="10000"></p-toast>
+
+<p-confirmDialog [style]="{ width: '450px' }" [acceptLabel]="'module.module.btnAccept' | translate"
+  [rejectLabel]="'module.module.btnCancel' | translate"></p-confirmDialog>
+
+<p-blockUI [blocked]="loading">
+  <p-progressSpinner></p-progressSpinner>
+</p-blockUI>
+
+<style>
+  p {
+    width: width;
+  }
+
+  p.c {
+    word-break: break-all;
+  }
+</style>

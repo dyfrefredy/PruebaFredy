@@ -1,0 +1,10 @@
+<div class="p-p-2">
+  <span class="p-float-label">
+    <p-autoComplete #t [suggestions]="options" [(ngModel)]="selectionCity" (completeMethod)="filterCitysByName($event)"
+      (onSelect)="onSelect($event)" (onDropdownClick)="onDropdownClick($event)" optionValue="id" [multiple]="multiple"
+      [forceSelection]="forceSelection" [dropdownIcon]="'pi pi-search'" [minLength]="minLength" field="cityName"
+      [dropdown]="dropdown" appendTo="body" (onClear)="onClear()">
+    </p-autoComplete>
+    <label>{{label|translate}}</label>
+  </span>
+</div>

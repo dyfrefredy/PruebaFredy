@@ -1,0 +1,19 @@
+<div class="card">
+    <p-tabView styleClass="tabview-custom">
+      <p-tabPanel>
+        <ng-template pTemplate="header">
+          <i class="pi pi-eye p-mr-2"></i>
+          <span>{{'module.dashboardYourRequirement.quotation.modulName' | translate}}</span>
+        </ng-template>
+        <app-manage-your-quotation></app-manage-your-quotation>
+      </p-tabPanel>
+      <p-tabPanel>
+        <ng-template pTemplate="header">
+          <i class="pi pi-eye p-mr-2"></i>
+          <span>{{'module.dashboardYourRequirement.booking.modulName' | translate}}</span>
+        </ng-template>
+        <app-manage-your-booking></app-manage-your-booking>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+  

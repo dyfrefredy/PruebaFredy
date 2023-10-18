@@ -1,0 +1,73 @@
+<div class="p-d-flex p-flex-wrap p-jc-center">
+  <div *ngIf="existingExternalUser && existingExternalUserApproval == 0" class="p-p-2  p-col-12 p-text-italic p-text-center">
+    <div class="p-p-2 p-col-12">
+      <h4>{{'module.home.warningPendingAproval' | translate}}</h4>
+    </div>
+  </div>
+  <div *ngIf="existingExternalUser && existingExternalUserApproval == 2" class="p-p-2  p-col-12 p-text-italic p-text-center">
+    <div class="p-p-2 p-col-12">
+      <h4>{{'module.home.warningRejectedAproval' | translate}}</h4>
+    </div>
+  </div>
+  <a href="#/home/quotation" class="p-m-2">
+    <p-card>
+      <div class="p-d-flex p-flex-column p-jc-center" style="width:300px;height:200px">
+        <span class="p-text-center"><img alt="Card" src="/assets/img/home/quotation.svg"
+            style="width:128px; margin-top:-10px"></span>
+        <span class="p-text-center p-text-bold">{{'module.home.menuQuotation'|translate}}</span>
+        <span class="p-text-center">{{'module.home.descriptionQuotation'|translate}}</span>
+      </div>
+    </p-card>
+  </a>
+  <!-- <a href="#/home/searchItinerary" class="p-m-2">
+    <p-card>
+      <div class="p-d-flex p-flex-column p-jc-center" style="width:300px;height:200px">
+        <span class="p-text-center"><img alt="Card" src="/assets/img/home/itinerary.svg"
+            style="width:128px; margin-top:-10px"></span>
+        <span class="p-text-center p-text-bold">{{'module.home.menuItinerary'|translate}}</span>
+        <span class="p-text-center">{{'module.home.descriptionItinerary'|translate}}</span>
+      </div>
+    </p-card>
+  </a>
+  <a href="#/home/externalUser" class="p-m-2">
+    <p-card>
+      <div class="p-d-flex p-flex-column p-jc-center" style="width:300px;height:200px">
+        <span class="p-text-center"><img alt="Card" src="/assets/img/home/quotation.svg"
+            style="width:128px; margin-top:-10px"></span>
+        <span class="p-text-center p-text-bold">{{'module.externalUser.moduleName'|translate}}</span>
+        <span class="p-text-center">{{'module.externalUser.modulDescription'|translate}}</span>
+      </div>
+    </p-card>
+  </a>-->
+  <a *ngIf="user" href="#/home/module" class="p-m-2">
+    <p-card>
+      <div class="p-d-flex p-flex-column p-jc-center" style="width:300px;height:200px">
+        <span class="p-text-center"><img alt="Card" src="/assets/img/home/menu.svg"
+            style="width:128px; margin-top:-10px"></span>
+        <span class="p-text-center p-text-bold">{{'module.home.menuLogin'|translate}}</span>
+        <span class="p-text-center">{{'module.home.descriptionLogin'|translate}}</span>
+      </div>
+    </p-card>
+  </a>  
+  <a href="#/home/claimMenu" class="p-m-2">
+    <p-confirmDialog [header]="'module.directClaims.policies.header' | translate" icon="pi pi-exclamation-triangle" [style]="{width: '50vw'}" [baseZIndex]="10000"></p-confirmDialog>
+    <p-card>
+      <div class="p-d-flex p-flex-column p-jc-center" style="width:300px;height:200px">
+        <span class="p-text-center"><img alt="Card" src="/assets/img/home/modules1.png"
+            style="width:128px; margin-top:-10px" ></span>
+        <span class="p-text-center p-text-bold">{{'module.home.menuClaims'|translate}}</span>
+        <span class="p-text-center">{{'module.home.descriptionClaims'|translate}}</span>
+      </div>
+    </p-card>
+  </a>
+  <a *ngIf="!user && !userB2c" (click)="login()" class="p-m-2" href="#">
+    <p-card>
+      <div class="p-d-flex p-flex-column p-jc-center" style="width:300px;height:200px">
+        <span class="p-text-center"><img alt="Card" src="/assets/img/home/users.png"
+            style="width:128px; margin-top:-10px"></span>
+        <span class="p-text-center p-text-bold">{{'module.home.login'|translate}}</span>
+        <span class="p-text-center">{{'module.home.descriptionLogin'|translate}}</span>
+      </div>
+    </p-card>
+  </a>
+</div>

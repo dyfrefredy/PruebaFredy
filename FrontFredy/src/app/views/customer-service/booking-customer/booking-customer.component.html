@@ -1,0 +1,172 @@
+<p-card>
+    <p-table #dt [value]="bookingModels" [lazy]="true" (onLazyLoad)="loadBookings($event)" [totalRecords]="totalRecords"
+      [rows]="10" [paginator]="true" [rowHover]="true" dataKey="id"
+      currentPageReportTemplate="{{'module.componentNames.currentPageReport' | translate }}"
+      [showCurrentPageReport]="true" [rowsPerPageOptions]="[5,10, 25, 50]" styleClass="p-datatable-responsive-demo"
+      [resizableColumns]="true" [autoLayout]="true">
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="id">
+            <div class="p-fluid p-p-2">
+              {{ "module.myTaskDashboard.bookingConfirmation.id" | translate }}
+              <p-sortIcon field="id"></p-sortIcon>
+            </div>
+          </th>
+          <th pSortableColumn="creationDate">
+            <div class="p-fluid p-p-2">
+              {{ "module.myTaskDashboard.bookingConfirmation.creationDate" | translate }}
+              <p-sortIcon field="creationDate"></p-sortIcon>
+            </div>
+          </th>
+          <th pSortableColumn="company">
+            <div class="p-fluid p-p-2">
+              {{ "module.myTaskDashboard.bookingConfirmation.company" | translate }}
+              <p-sortIcon field="company"></p-sortIcon>
+            </div>
+          </th>
+          <th pSortableColumn="name">
+            <div class="p-fluid p-p-2">
+              {{ "module.myTaskDashboard.bookingConfirmation.name" | translate }}
+              <p-sortIcon field="name"></p-sortIcon>
+            </div>
+          </th>
+          <th pSortableColumn="origin">
+            <div class="p-fluid p-p-2">
+              {{"module.myTaskDashboard.bookingConfirmation.origin" | translate}}
+              <p-sortIcon field="origin"></p-sortIcon>
+            </div>
+          </th>
+          <th pSortableColumn="destination">
+            <div class="p-fluid p-p-2">
+              {{"module.myTaskDashboard.bookingConfirmation.destination" | translate}}
+              <p-sortIcon field="destination"></p-sortIcon>
+            </div>
+          </th>
+          <th pSortableColumn="lblLoadType">
+            <div class="p-fluid p-p-2">
+              {{ "module.myTaskDashboard.bookingConfirmation.lblLoadType" | translate }}
+              <p-sortIcon field="lblLoadType"></p-sortIcon>
+            </div>
+          </th>
+          <th pSortableColumn="weight">
+            <div class="p-fluid p-p-2">
+              {{ "module.myTaskDashboard.bookingConfirmation.weight" | translate }}
+              <p-sortIcon field="weight"></p-sortIcon>
+            </div>
+          </th>
+          <th pSortableColumn="status">
+            <div class="p-fluid p-p-2">
+              {{ "module.myTaskDashboard.bookingConfirmation.status" | translate }}
+              <p-sortIcon field="status"></p-sortIcon>
+            </div>
+          </th>
+          <th pSortableColumn="statusDatetime">
+            <div class="p-fluid p-p-2">
+              {{ "module.myTaskDashboard.bookingConfirmation.statusDatetime" | translate }}
+              <p-sortIcon field="statusDatetime"></p-sortIcon>
+            </div>
+          </th>
+          <th pSortableColumn="user">
+            <div class="p-fluid p-p-2">
+              {{ "module.myTaskDashboard.bookingConfirmation.user" | translate }}
+              <p-sortIcon field="user"></p-sortIcon>
+            </div>
+          </th>
+          <th>
+            <div class="p-fluid p-p-2">
+              {{ "module.myTaskDashboard.bookingConfirmation.detail" | translate }}
+            </div>
+          </th>
+        </tr>
+        <tr>
+          <th>
+            <av-input-number [(ngModel)]="bookingModelFind.id"></av-input-number>
+          </th>
+          <th>
+            <av-input-date [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [showIcon]="true"
+              inputId="icon" [(ngModel)]="bookingModelFind.createdDate"></av-input-date>
+          </th>
+          <th>
+            <av-input-text [(ngModel)]="bookingModelFind.company"></av-input-text>
+          </th>
+          <th>
+            <div class="p-fluid p-p-2">
+              <av-load-type [(ngModel)]="bookingModelFind.loadTypeId"></av-load-type>
+            </div>
+          </th>
+          <th>
+            <av-user-autocomplete [userLoginId]= "user.id" [(ngModel)]="userAsignmentFind">
+            </av-user-autocomplete>
+          </th>
+          <th>
+            <av-button [label]="'module.componentNames.btnFilter' | translate" icon="pi pi-search" class="p-button-text"
+              (click)="getPaginationAndFilter()"></av-button>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-bookingModel let-i="rowIndex">
+        <tr>
+          <td>
+            <div class="p-fluid p-p-2">
+              {{bookingModel.id}}
+            </div>
+          </td>
+          <td>
+            <div class="p-fluid p-p-2">
+              {{bookingModel.createdDate | date:'yyyy-MM-dd HH:MM'}}
+            </div>
+          </td>
+          <td>
+            <div class="p-fluid p-p-2">
+              {{bookingModel.company}}
+            </div>
+          </td>
+          <td>
+            <div class="p-fluid p-p-2">
+              {{bookingModel.userName}}
+            </div>
+          </td>
+          <td>
+            <div class="p-fluid p-p-2">
+              {{bookingModel.orgStationName}}
+            </div>
+          </td>
+          <td>
+            <div class="p-fluid p-p-2">
+              {{bookingModel.destStationName}}
+            </div>
+          </td>
+          <td>
+            <div class="p-fluid p-p-2">
+              {{bookingModel.loadTypeId}}
+            </div>
+          </td>
+          <td>
+            <div class="p-fluid p-p-2">
+              {{ bookingModel.weightKgs }}
+            </div>
+          </td>
+          <td>
+            <div class="p-fluid p-p-2">
+              {{ bookingModel.bookingHistoryLastStatus.bookingStatus.name }}
+            </div>
+          </td>
+          <td>
+            <div class="p-fluid p-p-2">
+              {{ bookingModel.bookingHistoryLastStatus.createdUser.firstName }}
+            </div>
+          </td>
+          <td>
+            <div class="p-fluid p-p-2">
+              {{ bookingModel.bookingHistoryLastStatus.creationDate | date:'yyyy-MM-dd hh:mm' }}
+            </div>
+          </td>
+          <td>
+            <av-button [label]="'module.myTaskDashboard.bookingConfirmation.detail'" icon="pi pi-plus"
+              class="p-button-text" (click)="openDetails(bookingModel)">
+            </av-button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>

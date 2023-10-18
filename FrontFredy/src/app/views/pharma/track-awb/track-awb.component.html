@@ -1,0 +1,447 @@
+<p-card>
+  <div id="trackAwb">
+    <form id="trackAwbForm" [formGroup]="trackAwbForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+      <div class="d-flex p-jc-end p-fluid p-formgrid p-grid">
+        <div class="p-col-4" id="imgPharmasite">
+          <img style="width: 7.5rem" src="../../../../assets/img/pharma/air-wiybill/pharmasite.png">
+        </div>
+        <div class="p-col-4">
+          <av-input-text formControlName="airWaybill" [(ngModel)]="searchTrackAwb.airWaybill"
+            [label]="'module.trackAwb.airWaybill'|translate">
+          </av-input-text>
+          <small class="p-p-2 p-invalid" *ngIf="submitted && !searchTrackAwb.airWaybill">
+            {{"module.trackAwb.validation.airWaybillRequired" | translate}}
+          </small>
+        </div>
+        <div class="p-col-4">
+          <av-button type="button" (click)="searchAirWaybill()" [label]="'module.trackAwb.btnConsultar' | translate"
+            icon="pi pi-search p-button-icon-left" class="p-button-text">
+          </av-button>
+        </div>
+      </div>
+    </form>
+    <div class="p-p-2 p-col-12 p-d-flex p-ai-center p-jc-end">
+      <span class="img-button" pTooltip="{{'module.trackAwb.btnExport'|translate}}">
+        <img alt="Exportar" src="../../../../assets/img/pharma/track-awb/pdf.png" style="width: 40px; height: 40px;"
+          (click)="exportPdf()" />
+      </span>
+      &nbsp;
+      <span class="img-button" pTooltip="{{'module.trackAwb.btnExport'|translate}}">
+        <img alt="Exportar" src="../../../../assets/img/pharma/track-awb/excel.svg" style="width: 40px; height: 40px;"
+          (click)="exportTrackAwb()">
+      </span>
+    </div>
+    <p-table #dt [value]="airWaybillsPrincipal" [rowHover]="true" dataKey="id" styleClass="p-datatable-responsive-demo table-striped">
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="min-width:100px">
+            <div class="p-fluid p-p-2">
+              {{ "module.trackAwb.productId" | translate }}
+            </div>
+          </th>
+          <th style="min-width:100px">
+            <div class="p-fluid p-p-2">
+              {{ "module.trackAwb.airWaybill" | translate }}
+
+            </div>
+          </th>
+          <th style="min-width:100px">
+            <div class="p-fluid p-p-2">
+              {{ "module.trackAwb.originRedStationId" | translate }}
+            </div>
+          </th>
+          <th style="min-width:100px">
+            <div class="p-fluid p-p-2">
+              {{ "module.trackAwb.destinyRedStationId" | translate }}
+            </div>
+          </th>
+          <th style="min-width:100px">
+            <div class="p-fluid p-p-2">
+              {{ "module.trackAwb.sch" | translate }}
+            </div>
+          </th>
+          <th style="min-width:70px">
+            <div class="p-fluid p-p-2">
+              {{ "module.trackAwb.pieces" | translate }}
+            </div>
+          </th>
+          <th style="min-width:70px">
+            <div class="p-fluid p-p-2">
+              {{ "module.trackAwb.weigtht" | translate }}
+            </div>
+          </th>
+          <th style="min-width:100px">
+            <div class="p-fluid p-p-2">
+              {{ "module.trackAwb.agent" | translate }}
+            </div>
+          </th>
+          <th style="min-width:100px">
+            <div class="p-fluid p-p-2">
+              {{ "module.trackAwb.manifiestDesc" | translate }}
+            </div>
+          </th>
+          <th style="min-width:100px">
+            <div class="p-fluid p-p-2">
+              {{ "module.trackAwb.shipmentStatus" | translate }}
+            </div>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-airWaybill>
+        <tr [pEditableRow]="airWaybill">
+          <td pEditableColumn>
+            <div *ngIf="airWaybill.productTypeId==1">
+              <img alt="Pharma care" style="width: 7rem; margin-left: -20px;"
+                src="../../../../assets/img/pharma/air-wiybill/pharma-care.png">
+            </div>
+            <div *ngIf="airWaybill.productTypeId!=1">
+              <img alt="Pharma cool care" style="width: 7rem; margin-left: -7px;"
+                src="../../../../assets/img/pharma/air-wiybill/pharma-cool-care.png">
+            </div>
+          </td>
+          <td pEditableColumn>
+            <div class="p-fluid p-p-2">
+              {{ airWaybill.docNum}}
+            </div>
+          </td>
+          <td pEditableColumn>
+            <div class="p-fluid p-p-2">
+              {{ airWaybill.originRedStationName }}
+            </div>
+          </td>
+          <td pEditableColumn>
+            <div class="p-fluid p-p-2">
+              {{ airWaybill.destinyRedStationName }}
+            </div>
+          </td>
+          <td pEditableColumn>
+            <div class="p-fluid p-p-2">
+              {{ airWaybill.shc }}
+            </div>
+          </td>
+          <td pEditableColumn>
+            <div class="p-fluid p-p-2">
+              {{ airWaybill.pieces }}
+            </div>
+          </td>
+          <td pEditableColumn>
+            <div class="p-fluid p-p-2">
+              {{ airWaybill.weight }}
+            </div>
+          </td>
+          <td pEditableColumn>
+            <div class="p-fluid p-p-2">
+              {{ airWaybill.agent }}
+            </div>
+          </td>
+          <td pEditableColumn>
+            <div class="p-fluid p-p-2">
+              {{ airWaybill.manifestDesc }}
+            </div>
+          </td>
+          <td pEditableColumn>
+            <div *ngIf="airWaybill.statusId != 0">
+              <div class="p-fluid p-p-2" *ngIf="airWaybill.statusId == 5">
+                Pending arrival {{ airWaybill.waybillStatus.stationDesc }}
+              </div>
+              <div *ngIf="airWaybill.statusId != 5" class="p-fluid p-p-2">
+                {{ airWaybill.waybillStatus.statusDesc }} {{ airWaybill.waybillStatus.stationDesc }}
+              </div>
+            </div>
+            
+          </td>
+
+        </tr>
+      </ng-template>
+    </p-table>
+    <p-fieldset legend="{{'module.trackAwb.itinerary.title' | translate}}" [toggleable]="true">
+      <p-table #dt [value]="airWaybillItineraries" [rowHover]="true" dataKey="id"
+        styleClass="p-datatable-responsive-demo table-striped" [resizableColumns]="true" [autoLayout]="true">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>
+              <div class="p-fluid p-p-2">
+                {{ "module.trackAwb.itinerary.airlineId" | translate }}
+              </div>
+            </th>
+            <th>
+              <div class="p-fluid p-p-2">
+                {{ "module.trackAwb.itinerary.fitNum" | translate }}
+              </div>
+            </th>
+            <th>
+              <div class="p-fluid p-p-2">
+                {{ "module.trackAwb.itinerary.brdPtStationId" | translate }}
+              </div>
+            </th>
+            <th>
+              <div class="p-fluid p-p-2">
+                {{ "module.trackAwb.itinerary.offPtStationId" | translate }}
+              </div>
+            </th>
+            <th>
+              <div class="p-fluid p-p-2">
+                {{ "module.trackAwb.itinerary.date" | translate }}
+              </div>
+            </th>
+            <th>
+              <div class="p-fluid p-p-2">
+                {{ "module.trackAwb.itinerary.mvtSt" | translate }}
+              </div>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-airWaybillItinerary>
+          <tr [pEditableRow]="airWaybillItinerary">
+            <td pEditableColumn>
+              <div class="p-fluid p-p-2">
+                {{ airWaybillItinerary.carrier }}
+              </div>
+            </td>
+            <td pEditableColumn>
+              <div class="p-fluid p-p-2">
+                {{ airWaybillItinerary.fitNum }}
+              </div>
+            </td>
+            <td pEditableColumn>
+              <div class="p-fluid p-p-2">
+                {{ airWaybillItinerary.brdPtStationName }}
+              </div>
+            </td>
+            <td pEditableColumn>
+              <div class="p-fluid p-p-2">
+                {{ airWaybillItinerary.offPtStationName }}
+              </div>
+            </td>
+            <td pEditableColumn>
+              <div class="p-fluid p-p-2">
+                {{ airWaybillItinerary.date | avDateTimeOffset:'OriginalLocationDate' }}
+              </div>
+            </td>
+            <td pEditableColumn>
+              <div class="p-fluid p-p-2">
+                {{ airWaybillItinerary.mvtSt }}
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-fieldset>
+    <div id="graphPharmaCare" *ngIf="showProduct=='PharmaCare'">
+      <p-fieldset legend="{{'module.trackAwb.temperatureChart.title' | translate}}" [toggleable]="true">
+        <p-chart id="lineChart" type="line" [options]="options" [data]="dataPharmaCare" height="250"></p-chart>
+      </p-fieldset>
+    </div>
+    <p-fieldset legend="{{'module.trackAwb.temperatureControl.title' | translate}}" [toggleable]="true">
+      <div *ngIf="showProduct=='PharmaCare'">
+        <p-table #dt [value]="airWaybillTemperatureControlsPharmaCare" [rowHover]="true" dataKey="id"
+          styleClass="p-datatable-responsive-demo table-striped" [resizableColumns]="true" [autoLayout]="true">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>
+                <div class="p-fluid p-p-2">
+                  {{ "module.trackAwb.temperatureControl.stationId" | translate }}
+                </div>
+              </th>
+              <th>
+                <div class="p-fluid p-p-2">
+                  {{ "module.trackAwb.temperatureControl.statusId" | translate }}
+                </div>
+              </th>
+              <th>
+                <div class="p-fluid p-p-2">
+                  {{ "module.trackAwb.temperatureControl.currentTemp" | translate }}
+                </div>
+              </th>
+              <th>
+                <div class="p-fluid p-p-2">
+                  {{ "module.trackAwb.temperatureControl.RangeTemp" | translate }}
+                </div>
+              </th>
+              <!-- <th>
+                <div class="p-fluid p-p-2">
+                  {{ "module.trackAwb.temperatureControl.MaxTemp" | translate }}
+                </div>
+              </th> -->
+              <th>
+                <div class="p-fluid p-p-2">
+                  {{ "module.trackAwb.temperatureControl.comments" | translate }}
+                </div>
+              </th>
+              <th>
+                <div class="p-fluid p-p-2">
+                  {{ "module.trackAwb.temperatureControl.userId" | translate }}
+                </div>
+              </th>
+              <th>
+                <div class="p-fluid p-p-2">
+                  {{ "module.trackAwb.temperatureControl.date" | translate }}
+                </div>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-airTemperatureControl>
+            <tr [pEditableRow]="airTemperatureControl">
+              <td pEditableColumn>
+                <div class="p-fluid p-p-2">
+                  {{ airTemperatureControl.stationName }}
+                </div>
+              </td>
+              <td pEditableColumn>
+                <div class="p-fluid p-p-2">
+                  {{ airTemperatureControl.statusName }}
+                </div>
+              </td>
+              <td pEditableColumn>
+                <div class="p-fluid p-p-2">
+                  {{ airTemperatureControl.temperature }}
+                </div>
+              </td>
+              <td pEditableColumn>
+                <div class="p-fluid p-p-2">
+                  {{ airTemperatureControl.initialRange }} - {{ airTemperatureControl.finalRange }}
+                </div>
+              </td>
+              <!-- <td pEditableColumn>
+                <div class="p-fluid p-p-2">
+                  {{ airTemperatureControl.finalRange }}
+                </div>
+              </td> -->
+              <td pEditableColumn>
+                <div class="p-fluid p-p-2">
+                  {{ airTemperatureControl.comments }}
+                </div>
+              </td>
+              <td pEditableColumn>
+                <div class="p-fluid p-p-2">
+                  {{ airTemperatureControl.userName }}
+                </div>
+              </td>
+              <td pEditableColumn>
+                <div class="p-fluid p-p-2">
+                  {{ airTemperatureControl.createdDate | avDateTimeOffset:'OriginalLocationDate'}} {{airTemperatureControl.createdDate | avDateTimeOffset:'OriginalLocationTime'}}
+                </div>
+                <!-- <div class="p-fluid p-p-2">
+                  {{ airTemperatureControl.createdDate | avDateTimeOffset:'OriginalLocationDate'}}<br>{{
+                  airTemperatureControl.createdDate | avDateTimeOffset:'OriginalLocationTimeZone'}}
+                </div> -->
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+      <div *ngIf="showProduct=='PharmaCoolCare'">
+        <div class="p-fluid p-p-2 p-col-12" *ngFor="let data1 of data">
+          <div [id]="data1.id">
+            <p-fieldset [legend]="data1.id" [toggleable]="true">
+              <p-chart id="lineChart" type="line" [options]="options" [data]="data1" height="250"></p-chart>
+            </p-fieldset>
+          </div>
+          <p-table #dt [value]="data1.airWaybillTemperatureControlPharmaCoolCare" [rowHover]="true" dataKey="id"
+            styleClass="p-datatable-responsive-demo table-striped">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>
+                  <div class="p-fluid p-p-2">
+                    {{ "module.trackAwb.temperatureControl.stationId" | translate }}
+                  </div>
+                </th>
+                <th>
+                  <div class="p-fluid p-p-2">
+                    {{ "module.trackAwb.temperatureControl.statusId" | translate }}
+                  </div>
+                </th>
+                <th>
+                  <div class="p-fluid p-p-2">
+                    {{ "module.trackAwb.temperatureControl.currentTemp" | translate }}
+                  </div>
+                </th>
+                <th>
+                  <div class="p-fluid p-p-2">
+                    {{ "module.trackAwb.temperatureControl.RangeTemp" | translate }}
+                  </div>
+                </th>
+                <!-- <th>
+                  <div class="p-fluid p-p-2">
+                    {{ "module.trackAwb.temperatureControl.MaxTemp" | translate }}
+                  </div>
+                </th> -->
+                <th>
+                  <div class="p-fluid p-p-2">
+                    {{ "module.trackAwb.temperatureControl.voltageBateria" | translate }}
+                  </div>
+                </th>
+                <th>
+                  <div class="p-fluid p-p-2">
+                    {{ "module.trackAwb.temperatureControl.userId" | translate }}
+                  </div>
+                </th>
+                <th>
+                  <div class="p-fluid p-p-2">
+                    {{ "module.trackAwb.temperatureControl.date" | translate }}
+                  </div>
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-airTemperatureControl>
+              <tr [pEditableRow]="airTemperatureControl">
+                <td pEditableColumn>
+                  <div class="p-fluid p-p-2">
+                    {{ airTemperatureControl.stationName}}
+                  </div>
+                </td>
+                <td pEditableColumn>
+                  <div *ngIf="airTemperatureControl.statusId == 3">
+                    {{ airTemperatureControl.status }} ({{ airTemperatureControl.monitoringHour }})
+                  </div>
+                  <div *ngIf="airTemperatureControl.statusId != 3">
+                    {{ airTemperatureControl.status }}
+                  </div>
+                </td>
+                <td pEditableColumn>
+                  <div class="p-fluid p-p-2">
+                    {{ airTemperatureControl.currentTemperature }}
+                  </div>
+                </td>
+                <td pEditableColumn>
+                  <div class="p-fluid p-p-2">
+                    {{ airTemperatureControl.minTemperature }} - {{ airTemperatureControl.maxTemperature }}
+                  </div>
+                  <!-- <div class="p-fluid p-p-2">
+                    {{ airTemperatureControl.minTemperature }}
+                  </div> -->
+                </td>
+                <!-- <td pEditableColumn>
+                  <div class="p-fluid p-p-2">
+                    {{ airTemperatureControl.maxTemperature }}
+                  </div>
+                </td> -->
+                <td pEditableColumn>
+                  <div class="p-fluid p-p-2">
+                    {{ airTemperatureControl.battVoltage }}
+                  </div>
+                </td>
+                <td pEditableColumn>
+                  <div class="p-fluid p-p-2">
+                    {{ airTemperatureControl.userName }}
+                  </div>
+                </td>
+                <td pEditableColumn>
+                  <div class="p-fluid p-p-2">
+                    {{ airTemperatureControl.createdDate | avDateTimeOffset:'OriginalLocationDate'}} {{airTemperatureControl.createdDate | avDateTimeOffset:'OriginalLocationTime'}}
+                  </div>
+                  <!-- <div class="p-fluid p-p-2">
+                    {{ airTemperatureControl.createdDate | avDateTimeOffset:'OriginalLocationDate'}}<br>{{
+                    airTemperatureControl.createdDate | avDateTimeOffset:'OriginalLocationTimeZone'}}
+                  </div> -->
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </p-fieldset>
+  </div>
+</p-card>
+
+<p-toast baseZIndex="10000"></p-toast>

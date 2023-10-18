@@ -1,0 +1,119 @@
+<p-card>
+  <div class="p-fluid p-formgrid p-grid">
+    <div class="p-field p-col">
+      <av-input-date [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [showIcon]="true" inputId="icon" [(ngModel)]="dateFilter.dateStart" [label]="'Fecha Inicial'"></av-input-date>
+      <div *ngIf="submitted && !dateFilter.dateStart" class="p-p-6">
+        <small class="p-invalid" *ngIf="submitted && !dateFilter.dateStart">Fecha Requerida.</small>
+      </div>
+    </div>
+    <div class="p-field p-col">
+      <av-input-date [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [showIcon]="true" inputId="icon" [(ngModel)]="dateFilter.dateEnd" [label]="'Fecha Final'"></av-input-date>
+      <div *ngIf="submitted && !dateFilter.dateEnd" class="p-p-6">
+        <small class="p-invalid" *ngIf="submitted && !dateFilter.dateEnd">Fecha Requerida.</small>
+      </div>
+    </div>
+    <div class="p-field p-col">
+      <av-button type="button" [label]="'module.date.btnNew' | translate" icon="pi pi-plus p-button-icon-left"
+      class="p-button-text" (click)="saveDate(dateFilter)"></av-button>
+    <av-button type="button" [label]="'module.date.btnQuery' | translate" [icon]="'pi pi-pencil p-button-icon-left'"
+      class="p-button-text" (click)="GetFechasListado()">
+    </av-button>
+    </div>
+</div>
+  <p-table #dt [value]="holidays" [rows]="10" [lazy]="true" (onLazyLoad)="loadHoliday($event)" [totalRecords]="totalRecords" [paginator]="true" [globalFilterFields]="['anio', 'nombre_Mes', 'nombre_Dia_Semana']"
+  [rowHover]="true" dataKey="id" currentPageReportTemplate="Mostrar {first} a {last} de {{ totalRecords }} registros"  [showCurrentPageReport]="true" [rowsPerPageOptions]="[10, 25, 50]">
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="Date">
+          {{ "module.date.indicatedDate" | translate }}
+          <p-sortIcon field="Date"></p-sortIcon>
+        </th>
+        <th pSortableColumn="Day">
+          {{ "module.date.day" | translate }}
+          <p-sortIcon field="Day"></p-sortIcon>
+        </th>
+        <th pSortableColumn="Month">
+          {{ "module.date.month" | translate }}
+          <p-sortIcon field="Month"></p-sortIcon>
+        </th>
+        <th pSortableColumn="Year">
+          {{ "module.date.year" | translate }}
+          <p-sortIcon field="Year"></p-sortIcon>
+        </th>
+        <th pSortableColumn="MonthName">
+          {{ "module.date.month" | translate }}
+          <p-sortIcon field="MonthName"></p-sortIcon>
+        </th>
+        <th pSortableColumn="DayName">
+          {{ "module.date.dayName" | translate }}
+          <p-sortIcon field="DayName"></p-sortIcon>
+        </th>
+        <th pSortableColumn="HollyDayIts">
+          {{ "module.date.holydays" | translate }}
+          <p-sortIcon field="HollyDayIts"></p-sortIcon>
+        </th>
+        <th style="width: 8rem"></th>
+      </tr>
+      <tr>
+        <th>
+          <av-input-date [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [showIcon]="true" inputId="icon" [(ngModel)]="dateFilter.date" [label]="'Fecha indicada'"></av-input-date>
+        </th>
+        <th>
+          <av-input-number [label]="'module.date.day'|translate" [(ngModel)]="dateFilter.day"></av-input-number>
+        </th>
+        <th>
+          <av-input-number [label]="'module.date.month'|translate" [(ngModel)]="dateFilter.month"></av-input-number>
+        </th>
+        <th>
+          <av-input-number [label]="'module.date.year'|translate" [(ngModel)]="dateFilter.year"></av-input-number>
+        </th>
+        <th>
+          <av-input-text [label]="'module.date.month'|translate" [(ngModel)]="dateFilter.monthName"></av-input-text>
+        </th>
+        <th>
+          <av-input-text [label]="'module.date.dayName'|translate" [(ngModel)]="dateFilter.dayName"></av-input-text>
+        </th>
+        <th>
+          <p-triStateCheckbox placeholder="Activo" [(ngModel)]="dateFilter.hollyDayIts"></p-triStateCheckbox>
+        </th>
+        <th>
+          <av-button type="button" [label]="'module.date.btnFilter' | translate" icon="pi pi-search p-button-icon-left"  (click)="getPaginationAndFilter()" class="p-button-text"></av-button>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-datew let-editing="editing" let-ri="rowIndex">
+      <tr [pEditableRow]="datew">
+        <td pEditableColumn>
+          {{ datew.date | date: "dd/MM/yyyy" }}
+        </td>
+        <td pEditableColumn>
+          {{ datew.date | date: "dd" }}
+        </td>
+        <td pEditableColumn>
+          {{ datew.date | date: "MM" }}
+        </td>
+        <td pEditableColumn>
+          {{ datew.year }}
+        </td>
+        <td pEditableColumn>
+          {{ datew.monthName }}
+        </td>
+        <td pEditableColumn>
+          {{ datew.dayName }}
+        </td>
+        <td>
+           <p-checkbox [(ngModel)]="datew.hollyDayIts" binary="true" (click)="saverHoliday(datew)" inputId="binary">
+          </p-checkbox>
+        </td>
+        <td style="text-align: center">
+          <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-text"
+            (click)="deleteDate(datew)"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>
+<p-toast baseZIndex="10000"></p-toast>
+<p-confirmDialog [style]="{ width: '450px' }" [acceptLabel]="'module.date.btnAccept' | translate"
+  [rejectLabel]="'module.date.btnCancel' | translate"></p-confirmDialog>
+  <p-blockUI [blocked]="loading"><p-progressSpinner></p-progressSpinner></p-blockUI>

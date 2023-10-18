@@ -1,0 +1,28 @@
+<div *ngIf="!notFound">
+  <div class="row">
+    <div *ngFor="let module of modules" class="col-sm-4 col-md-3">
+      <div class="p-d-flex p-flex-wrap p-jc-center">
+        <a href="#{{module.url}}" class="p-m-2">
+          <p-card>
+            <div class="p-d-flex p-flex-column p-jc-center" style="width:300px;height:200px">
+              <span class="p-text-center"><img alt="Card" src="/assets/img/module/{{module.imageName}}"
+                  style="width:128px; margin-top:-10px"></span>
+              <span class="p-text-center p-text-bold">{{ module.name }}</span>
+            </div>
+          </p-card>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row" *ngIf="notFound">
+  <div class="col-sm-6 col-md-4">
+    <p-card>
+      <div class="p-d-flex p-flex-column p-jc-center" style="width:300px;height:200px">
+        <span class="p-text-center"><img alt="Card" src="/assets/img/module/default.png"
+          style="width:128px; margin-top:-10px"></span>
+        <span class="p-text-center p-text-bold">{{'module.home.module.mouduleNotFound'|translate}}</span>
+      </div>
+    </p-card>
+  </div>
+</div>

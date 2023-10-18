@@ -1,0 +1,162 @@
+<p-card>
+    <div class="p-field p-grid">
+      <div class="p-col-1">
+        <av-button type="button" [label]="'module.userCapacity.btnNew' | translate" icon="pi pi-plus p-button-icon-left"
+          class="p-button-text" (click)="openNew()"></av-button>
+      </div>
+      <!-- <div>
+        <av-button type="button" [label]="'module.dryIceSupply.btnDelete' | translate"
+          [icon]="'pi pi-minus-circle p-button-icon-left'" class="p-button-text" (click)="deleteSelectedDryIceSupplys()"
+          [disabled]="!selectedDryIceSupplys || !selectedDryIceSupplys.length"></av-button>
+      </div> -->
+    </div>
+  
+    <p-table #dt styleClass="p-datatable-sm p-datatable-responsive-demo" [value]="usercapacities" [lazy]="true"
+      (onLazyLoad)="loadDryIceSupplys($event)" [totalRecords]="totalRecords" [rows]="10" [paginator]="true"
+      [rowHover]="true" dataKey="id"
+      currentPageReportTemplate="Mostrar {first} a {last} de {{ totalRecords}} registros" [showCurrentPageReport]="true"
+      [rowsPerPageOptions]="[10, 25, 50]">
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="airWaybill">
+            {{ "module.userCapacity.originStationName" | translate }}
+            <p-sortIcon field="airWaybill"></p-sortIcon>
+          </th>
+          <th pSortableColumn="count">
+            {{ "module.userCapacity.destinationStationName" | translate }}
+            <p-sortIcon field="count"></p-sortIcon>
+          </th>
+          <th pSortableColumn="amountIce">
+            {{ "module.userCapacity.userName" | translate }}
+            <p-sortIcon field="amountIce"></p-sortIcon>
+          </th>
+          <th pSortableColumn="ejecutado">
+            {{ "module.userCapacity.active" | translate }}
+            <p-sortIcon field="ejecutado"></p-sortIcon>
+          </th>
+          <th style="width: 8rem"></th>
+        </tr>
+        <!-- <tr>
+          <th></th>
+          <th>
+            <av-input-text [label]="'module.dryIceSupply.airWaybill'|translate" [(ngModel)]="dryIceSupplyFind.airWaybill">
+            </av-input-text>
+          </th>
+          <th>
+            <av-input-number [label]="'module.dryIceSupply.amountIce'|translate" [(ngModel)]="dryIceSupplyFind.amountIce">
+            </av-input-number>
+          </th>
+          <th>
+            <av-input-number [label]="'module.dryIceSupply.dryIceSupplyCant'|translate"
+              [(ngModel)]="dryIceSupplyFind.dryIceSupplyCant">
+            </av-input-number>
+          </th>
+          <th>
+            <p-triStateCheckbox [(ngModel)]="dryIceSupplyFind.status" placeholder="Activo"></p-triStateCheckbox>
+          </th>
+          <th>
+            <p-triStateCheckbox [(ngModel)]="dryIceSupplyFind.active" placeholder="Activo"></p-triStateCheckbox>
+          </th>
+          <th>
+            <av-button [label]="'module.dryIceSupply.btnFilter' | translate" icon="pi pi-search" class="p-button-text"
+              (click)="getPaginationAndFilter()"></av-button>
+          </th>
+        </tr> -->
+      </ng-template>
+  
+      <ng-template pTemplate="body" let-userCapacity let-editing="editing" let-rowIndex="rowIndex">
+        <tr [pEditableRow]="userCapacity">
+          <td pEditableColumn>
+            {{ userCapacity.originStationName }}
+          </td>
+          <td pEditableColumn *ngIf="userCapacity.allDestination">
+            {{ 'module.userCapacity.allDestinationStation' | translate }}
+          </td>
+          <td pEditableColumn *ngIf="!userCapacity.allDestination">
+            {{ userCapacity.destinationStationName }}
+          </td>
+          <td pEditableColumn>
+            {{ userCapacity.userName }}
+          </td>
+          <td pEditableColumn>
+            {{ userCapacity.active ? "SI" : "NO" }}
+          </td>
+          <td style="text-align: center">
+            <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-text"
+              (click)="editUserCapacity(userCapacity)"></button>
+            <button pButton pRipple icon="pi pi-minus-circle" class="p-button-rounded p-button-text"
+              (click)="deleteDryIceSupply(userCapacity)"></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+  
+   <p-dialog [(visible)]="userCapacityDialog" [style]="{ width: '700px' }"
+    [header]="'module.userCapacity.title' | translate" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="p-fluid p-formgrid p-grid">
+          <div class="p-p-2 p-col-12" *ngIf="userCapacity.id !=0">
+            <av-user
+              [label]="'module.userCapacity.userName' | translate"
+              [selectionLabel]="'module.userCapacity.userName' | translate" [(ngModel)]="userEdit"></av-user>
+            <small class="p-p-2 p-invalid" *ngIf="submitted && userEdit.length <= 0">
+              {{"module.userCapacity.validation.userNameRequired" | translate}}
+            </small>
+          </div>
+          
+          <div class="p-p-2 p-col-6">
+            <av-station
+              [label]="'module.userCapacity.originStationName' | translate"
+              [selectionLabel]="'module.userCapacity.originStationName' | translate" [(ngModel)]="station"></av-station>
+            <small class="p-p-2 p-invalid" *ngIf="submitted && selectedStations.length <= 0">
+              {{"module.userCapacity.validation.originStationNameRequired" | translate}}
+            </small>
+          </div>
+          <div class="p-p-2 p-col-3">
+            <p-checkbox [binary]="true"
+              [label]="'module.userCapacity.allDestinationStation' | translate" [(ngModel)]="userCapacity.allDestination">
+            </p-checkbox>
+          </div>
+          <div class="p-p-2 p-col-3 vertical-align">
+            <p-checkbox [binary]="true"
+              [label]="'module.userCapacity.active' | translate" [(ngModel)]="userCapacity.active">
+            </p-checkbox>
+          </div>
+          <div class="p-p-2 p-col-12">
+            <av-station-autocomplete *ngIf= "!userCapacity.allDestination" [labelList]="'module.userCapacity.destinationStationName'"
+              [label]="'module.userCapacity.destinationStationName'" [selectionLabel]="'module.userCapacity.destinationStationName'|translate"
+              [(selectionstationsAvailable)]="selectionstationsAvailable" [(selectedStations)]="selectedStations">
+            </av-station-autocomplete>
+            <small class="p-p-2 p-invalid" *ngIf="submitted && selectedStations.length <= 0">
+              {{"module.userCapacity.validation.destinationStationNameRequired" | translate}}
+            </small>
+          </div>
+          <div class="p-p-2 p-col-12" *ngIf="userCapacity.id ==0">
+            <av-user-multiple-autocomplete  [labelList]="'module.userCapacity.userName'"
+              [label]="'module.userCapacity.userName'" [selectionLabel]="'module.userCapacity.userName'|translate"
+              [(selectionUsersAvailable)]="selectionUsersAvailable" [(selectedUsers)]="selectedUsers">
+            </av-user-multiple-autocomplete>
+            <small class="p-p-2 p-invalid" *ngIf="submitted && selectedUsers.length <= 0">
+              {{"module.userCapacity.validation.userNameRequired" | translate}}
+            </small>
+          </div>
+        </div>
+    </ng-template>
+  
+    <ng-template pTemplate="footer">
+      <av-button [label]="'module.userCapacity.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+        (click)="hideDialog()"></av-button>
+      <av-button [label]="'module.userCapacity.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+        (click)="saveUserCapacity()"></av-button>
+    </ng-template>
+  </p-dialog>
+  
+  <!--<p-toast baseZIndex="10000"></p-toast>
+  
+  <p-confirmDialog [style]="{ width: '450px' }" [acceptLabel]="'module.componentNames.btnAccept' | translate"
+    [rejectLabel]="'module.componentNames.btnCancel' | translate"></p-confirmDialog> -->
+  
+  <p-blockUI [blocked]="loading">
+    <p-progressSpinner></p-progressSpinner>
+  </p-blockUI>

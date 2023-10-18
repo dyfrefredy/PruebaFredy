@@ -1,0 +1,8 @@
+<div class="p-col-12">
+  <span class="p-float-label">
+    <p-dropdown [options]="options" [(ngModel)]="selectionServiceType" [filter]="filter" [disabled]="disabled" (onChange)="onChange()" optionLabel="description"  [showClear]="true">
+
+    </p-dropdown>
+    <label>{{label|translate}}</label>
+  </span>
+</div>

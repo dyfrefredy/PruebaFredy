@@ -1,0 +1,16 @@
+<div class="p-p-2">
+  <span class="p-float-label">
+    <p-dropdown [options]="options" [(ngModel)]="selectionPackingType" [filter]="filter" [disabled]="disabled"
+      (onChange)="onChange()" appendTo="body">
+      <ng-template let-item pTemplate="selectedItem">
+        <span>{{item.label}}</span>
+      </ng-template>
+      <ng-template let-opt pTemplate="item">
+        <div>
+          <div> {{opt.label}}</div>
+        </div>
+      </ng-template>
+    </p-dropdown>
+    <label>{{label|translate}}</label>
+  </span>
+</div>

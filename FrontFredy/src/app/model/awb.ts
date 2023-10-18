@@ -1,0 +1,44 @@
+export class Awb {
+  awbOrigin: string;
+  awbDestination: string;
+  totalNumberOfPieces: string;
+  weightCode: string;
+  totalStatedWeight: Number;
+  destination: string;
+  carrierCode: string;
+  shipperCustomerName: string;
+  shipperCustomerStreetAddress: string;
+  shipperStationCode: string;
+  shipperCustomerPlace: string;
+  shipperCustomerState: string;
+  shipperCustomerCountryCode: string;
+  shipperCustomerZipCode: string;
+  shipperCustomerPhoneNumber: Number;
+  shipperCustomerEmail: String;
+  shipperCustomerMobilePhoneNumber: Number;
+  consigneeCustomerName: string;
+  consigneeCustomerStreetAddress: string;
+  consigneeeStationCode: string;
+  consigneeCustomerPlace: string;
+  consigneeCustomerState: string;
+  consigneeCustomerCountryCode: string;
+  consigneeCustomerZipCode: string;
+  consigneeCustomerPhoneNumber: Number;
+  consigneeCustomerEmail: String;
+  consigneeCustomerMobilePhoneNumber: Number;
+  awbIssueDate: Date;
+  awbReferenceNumber: Number;
+  awbsupplementaryShipmentInformation: string;
+  awbshipmentDescription: string;
+  claimantName: String;
+  commentary: String;
+  zipCodeClaimant: String;
+  claimantAddress: String;
+  claimantFax: Number;
+  claimantPhone: Number;
+  claimantEmail: String;
+  invoiceNumber: Number;
+  commodityId: Number;
+  selectionReason: any;
+
+}

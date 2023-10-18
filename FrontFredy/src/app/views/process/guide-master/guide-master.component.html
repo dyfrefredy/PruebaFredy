@@ -1,0 +1,53 @@
+<p-card>
+  <ng-template pTemplate="content">
+    <form id="guideMasterHeaderForm" [formGroup]="guideMasterHeaderForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+      <div class="p-fluid p-formgrid p-grid">
+        <div class="p-p-2 p-col-3">
+          <av-input-date formControlName="flightDate" [ngModel]="masterGuide.flightDate" [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [showIcon]="true" inputId="icon" [label]="'module.master.fligthDate'">
+          </av-input-date>
+          <div *ngIf="submitted &&  f.flightDate.errors" class="p-p-2" style="min-width: 225px;">
+            <small class="p-invalid"
+              *ngIf="submitted && f.flightDate.errors">{{'module.master.validation.fligthDateRequired'|translate}}
+            </small>
+          </div>
+        </div>
+        <div class="p-p-2 p-col-3">
+          <av-airline formControlName="airlineId" [ngModel]="masterGuide.airlineId" [label]="'module.master.airlineId'|translate" ></av-airline>
+        </div>
+        <div class="p-p-2 p-col-2">
+          <av-input-number formControlName="flightNumber" [ngModel]="masterGuide.flightNumber" maxlength="4" [label]="'module.master.flightNumber' | translate" [ngClass]="{ 'p-invalid': submitted && f.flightNumber.errors }"></av-input-number>
+          <div *ngIf="submitted && ! f.flightNumber.errors" class="p-p-2" style="min-width: 225px">
+            <small class="p-invalid" *ngIf="submitted && !f.flightNumber.errors">{{"module.master.validation.flightNumberRequired" | translate}}</small>
+          </div>
+        </div>
+        <div class="p-p-4 p-col-1 p-grid p-nogutter p-justify-between">
+          <button pButton pRipple type="submit" (click)="getSkychain()" icon="pi pi-search" class="p-button-rounded p-button-success"></button>
+        </div>
+        <div class="p-p-2 p-col-3">
+          <av-skychain [options]="options" formControlName="skychainId" [(ngModel)]="masterGuide.skychainId" [label]="'module.master.skychainId'|translate" ></av-skychain>
+          <div *ngIf="submitted && ! f.skychainId.errors" class="p-p-2" style="min-width: 225px">
+            <small class="p-invalid" *ngIf="submitted && !f.skychainId.errors">{{"module.master.validation.skychainIdRequired" | translate}}</small>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="card" hidden="true" >
+      <p-steps [model]="items" [(activeIndex)]="activeIndex" [readonly]="true"></p-steps>
+    </div>
+    <div hidden="true">
+      <app-guide-master-detail *ngIf="activeIndex == 0"></app-guide-master-detail>
+      <app-guide-master-sender *ngIf="activeIndex == 1"></app-guide-master-sender>
+      <app-guide-master-conveyor *ngIf="activeIndex == 2"></app-guide-master-conveyor>
+      <app-guide-master-consignee *ngIf="activeIndex == 3"></app-guide-master-consignee>
+      <app-guide-master-destination *ngIf="activeIndex == 4"></app-guide-master-destination>
+      <app-guide-master-cargo *ngIf="activeIndex == 5"></app-guide-master-cargo>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="p-grid p-nogutter p-justify-between">
+      <p-button [label]="'module.master.btnBack'| translate" (onClick)="prevPage()" [disabled]="activeIndex==0" icon="pi pi-angle-left"></p-button>
+      <p-button *ngIf="activeIndex != 6" [label]="'module.master.btnNext'| translate" (onClick)="nextPage()" [disabled]="activeIndex==6" icon="pi pi-angle-right" iconPos="right"></p-button>
+      <p-button *ngIf="activeIndex == 6" [label]="'module.master.btnSave'| translate" icon="pi pi-check-right"></p-button>
+  </div>
+  </ng-template>
+</p-card>

@@ -1,0 +1,885 @@
+<p-card>
+    <form id="bookingForm" [formGroup]="bookingForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+        <div class="p-fluid p-formgrid p-grid">
+            <div class="p-p-2 p-col-3">
+                <av-input-text label="{{'module.booking.name' | translate}}*" formControlName="userName"
+                    [(ngModel)]="booking.userName" [disabled]="true">
+                </av-input-text>
+            </div>
+            <div class="p-p-2 p-col-3">
+                <av-input-text label="{{'module.booking.customer' | translate}}" formControlName="customer"
+                    [(ngModel)]="booking.company" [disabled]="true">
+                </av-input-text>
+            </div>
+            <div class="p-p-2 p-col-3">
+                <av-input-text label="{{'module.booking.docNum' | translate}}*" formControlName="docNum"
+                    [(ngModel)]="booking.docNum">
+                </av-input-text>
+                <div *ngIf="submitted && f.docNum.errors" class="p-p-2">
+                    <small class="p-invalid" *ngIf="f.docNum.errors.required">
+                        {{"module.booking.validation.docNumRequired" | translate}}
+                    </small>
+                </div>
+            </div>
+            <div class="p-p-2 p-col-3">
+                <av-quotation formControlName="quotationId" [email]="userLogin.email"
+                    [label]="'module.booking.quotationId' | translate"
+                    [selectionLabel]="'module.booking.quotationId' | translate" [(ngModel)]="quotation"
+                    (childQuotation)="getQuotation()">
+                </av-quotation>
+            </div>
+            <div class="p-p-2 p-col-3">
+                <av-station formControlName="originStation" required
+                    [label]="'module.booking.originStationName' | translate"
+                    [selectionLabel]="'module.booking.originStationName' | translate" [(ngModel)]="originStation"
+                    [disabled]="true">
+                </av-station>
+                <div *ngIf="submitted && f.originStation.errors" class="p-p-2">
+                    <small class="p-invalid" *ngIf="f.originStation.errors.required">
+                        {{"module.booking.validation.originStationNameRequired" | translate}}
+                    </small>
+                </div>
+            </div>
+            <div class="p-p-2 p-col-3">
+                <av-station formControlName="destinationCity" required
+                    [label]="'module.booking.destinationStationName' | translate"
+                    [selectionLabel]="'module.booking.destinationStationName' | translate"
+                    [(ngModel)]="destinationCity">
+                </av-station>
+                <div *ngIf="submitted && f.destinationCity.errors" class="p-p-2">
+                    <small class="p-invalid" *ngIf="f.destinationCity.errors.required">
+                        {{"module.booking.validation.destinationStationNameRequired" | translate}}
+                    </small>
+                </div>
+            </div>
+            <div class="p-p-2 p-col-3">
+                <av-input-date formControlName="estimatedDeliveryDate" [(ngModel)]="booking.estimatedDeliveryDate"
+                    [monthNavigator]="true" [showTime]="true" [yearNavigator]="true" yearRange="2000:2050"
+                    [showIcon]="true" inputId="icon" [label]="'module.booking.estimatedDate' | translate">
+                </av-input-date>
+                <div *ngIf="submitted &&  f.estimatedDeliveryDate.errors" class="p-p-2" style="min-width: 225px;">
+                    <small class="p-invalid"
+                        *ngIf="submitted && f.estimatedDeliveryDate.errors">{{'module.booking.validation.estimatedDateRequired'|translate}}
+                    </small>
+                </div>
+            </div>
+            <div class="p-p-2 p-col-3">
+                <av-load-type label="{{'module.booking.commodity' | translate}}*"
+                    selectedLabel="{{'module.componentNames.select' | translate}}" formControlName="loadTypeId"
+                    [(ngModel)]="booking.loadTypeId" (change)="loadTypeChange()" (selectPerishable)="selectedPerishable($event)">
+                </av-load-type>
+                <div *ngIf="submitted && f.loadTypeId.errors" class="p-p-2">
+                    <small class="p-invalid" *ngIf="f.loadTypeId.errors.required">
+                        {{"module.booking.validation.loadTypeRequired" | translate}}
+                    </small>
+                </div>
+            </div>
+            <div class="p-p-2 p-col-3">
+                <av-payment-mode label="{{'module.booking.paymentMode' | translate}}*"
+                    selectedLabel="{{'module.booking.paymentMode' | translate}}" formControlName="paymentMode"
+                    [(ngModel)]="booking.paymentMode"></av-payment-mode>
+                <div *ngIf="submitted && f.paymentMode.errors" class="p-p-2">
+                    <small class="p-invalid" *ngIf="f.paymentMode.errors.required">
+                        {{"module.booking.validation.paymentModeRequired" | translate}}
+                    </small>
+                </div>
+            </div>
+            <!--
+            <div class="p-p-2 p-col-3">
+                <av-input-number label="{{'module.booking.numberPieces' | translate}}*" formControlName="piece"
+                    [(ngModel)]="booking.piece"></av-input-number>
+                <div class="p-p-2">
+                    <small class="p-invalid" *ngIf="submitted && f.piece.errors">
+                        {{"module.booking.validation.numberPiecesRequired" | translate}}
+                    </small>
+                </div>
+            </div>
+            <div class="p-p-2 p-col-3">
+                <av-input-number label="{{'module.booking.weightKgs' | translate}}" formControlName="weightKgs"
+                    [(ngModel)]="booking.weightKgs"></av-input-number>
+                <div class="p-p-2">
+                    <small class="p-invalid" *ngIf="submitted && f.weightKgs.errors">
+                        {{"module.booking.validation.weightKgsRequired" | translate}}
+                    </small>
+                </div>
+            </div>
+            -->
+            <div class="p-p-2 p-col-3">
+                <av-input-number label="{{'module.booking.volume' | translate}}" formControlName="volume"
+                    [(ngModel)]="booking.volume"></av-input-number>
+                <div class="p-p-2" *ngIf="submitted && (!booking.volume || booking.volume <=0)">
+                    <small class="p-invalid" *ngIf="booking.bookingDetails.length <= 0 &&
+                    (booking.bookingDetails.length <= 0 && booking.loadTypeId != loadTypeService.pharmaceutical) ||
+                    (booking.loadTypeId == loadTypeService.pharmaceutical && usingPharma.containers.length <= 0)">
+                        {{"module.booking.validation.volumeRequired" | translate}}
+                    </small>
+                </div>
+            </div>
+            <!--
+            <div class="p-p-2 p-col-3">
+                <av-measurement-unit-type formControlName="measurementUnit"
+                    label="{{'module.booking.weightUnit'|translate}}*"
+                    [selectionLabel]="'module.booking.weightUnit'|translate" [(ngModel)]="booking.weightKgs">
+                </av-measurement-unit-type>
+                <div *ngIf="submitted && f.measurementUnit.errors" class="p-p-2">
+                    <small class="p-invalid" *ngIf="f.measurementUnit.errors.required">
+                        {{"module.booking.validation.weightUnitRequired" | translate}}
+                    </small>
+                </div>
+                    <div class="p-p-2 p-text-italic p-text-justify">
+                        <small>
+                            {{"module.quote.quotation.weightUnitDesc" | translate}}
+                        </small>
+                    </div>
+            </div>
+            <div class="p-p-2 p-col-3">
+                <av-input-number label="{{'module.booking.chargeableWeight' | translate}}*"
+                    formControlName="chargeableWeight" [(ngModel)]="booking.chargeableWeight"></av-input-number>
+                <div class="p-p-2">
+                    <small class="p-invalid" *ngIf="submitted && f.chargeableWeight.errors">
+                        {{"module.booking.validation.chargeableWeightRequired" | translate}}
+                    </small>
+                </div>
+            </div>
+            -->
+            <div class="p-p-2 p-col-3">
+                <av-input-number label="{{'module.booking.rate' | translate}}*" formControlName="rate"
+                    [(ngModel)]="booking.rate"></av-input-number>
+                <div class="p-p-2">
+                    <small class="p-invalid" *ngIf="submitted && f.rate.errors">
+                        {{"module.booking.validation.rateRequired" | translate}}
+                    </small>
+                </div>
+            </div>
+            <div class="p-p-2 p-col-3">
+                <av-input-text label="{{'module.booking.shc' | translate}}" formControlName="shc"
+                    [(ngModel)]="booking.shc">
+                </av-input-text>
+                <!--<div *ngIf="submitted && f.name.errors" class="p-invalid">
+                        <div *ngIf="f.name.errors.required" class="p-p-2">
+                            {{"module.booking.validation.shcRequired" | translate}}
+                        </div>
+                    </div>-->
+            </div>
+            <div class="p-p-2 p-col-3">
+                <av-input-text label="{{'module.booking.bookingInstruction' | translate}}"
+                    formControlName="bookingInstruction" [(ngModel)]="booking.bookingInstruction">
+                </av-input-text>
+            </div>
+            <div class="p-p-2 p-col-3">
+                <!--
+                    <div class="p-p-2">
+                        <p-checkbox formControlName="removable" [binary]="true" label="{{'module.booking.removable' | translate}}*"
+                            [(ngModel)]="booking.removable">
+                        </p-checkbox>
+                    </div>
+                    -->
+                <av-cargo-stackable formControlName="removable" label="{{'module.booking.removable' | translate}}*"
+                    [(ngModel)]="booking.removable">
+                </av-cargo-stackable>
+                <div *ngIf="submitted && f.removable.errors" class="p-p-2">
+                    <small class="p-invalid" *ngIf="f.removable.errors.required">
+                        {{"module.booking.validation.removableRequired" | translate}}
+                    </small>
+                </div>
+            </div>
+            <div class="p-p-2 p-col-3">
+                <av-input-date formControlName="estimatedFlightDate" [(ngModel)]="booking.estimatedFlightDate"
+                    [monthNavigator]="true" [showTime]="true" [yearNavigator]="true" yearRange="2000:2050"
+                    [showIcon]="true" inputId="icon" label="{{'module.booking.estimatedFlightDate' | translate}}*">
+                </av-input-date>
+                <div *ngIf="submitted &&  f.estimatedFlightDate.errors" class="p-p-2" style="min-width: 225px;">
+                    <small class="p-invalid"
+                        *ngIf="submitted && f.estimatedFlightDate.errors">{{'module.booking.validation.estimatedFlightDateRequired'|translate}}
+                    </small>
+                </div>
+            </div>
+            <div class="p-p-2 p-col-3">
+                <av-input-text label="{{'module.booking.flightNumber' | translate}}" formControlName="flightNumber"
+                    [(ngModel)]="booking.flightNumber"></av-input-text>
+                <div class="p-p-2">
+                    <small class="p-invalid" *ngIf="submitted && f.flightNumber.errors">
+                        {{"module.booking.validation.flightNumberRequired" | translate}}
+                    </small>
+                </div>
+            </div>
+            <div class="p-p-2 p-col-6">
+                <av-shipper-user formControlName="shipperInformation" required
+                    label="{{'module.booking.shipper' | translate}}" (childShipperDialog)="getShipper()"
+                    [selectionLabel]="'module.booking.shipper' | translate" [(ngModel)]="shipperInfo"
+                    [userId]="booking.userId">
+                </av-shipper-user>
+                <!--
+                    <div *ngIf="submitted && f.shipperInformation.errors" class="p-invalid">
+                        <div *ngIf="f.shipperInformation.errors.required" class="p-p-2">
+                            {{"module.booking.validation.shipperRequired" | translate}}
+                        </div>
+                    </div>
+                    -->
+            </div>
+            <div class="p-p-2 p-col-6">
+                <av-consignee-user formControlName="consigneeInformation" required
+                    label="{{'module.booking.consignee' | translate}}" (childConsigneeDialog)="getConsignee()"
+                    [selectionLabel]="'module.booking.consignee' | translate" [(ngModel)]="consigneeInfo"
+                    [userId]="booking.userId">
+                </av-consignee-user>
+                <!--
+                    <div *ngIf="submitted && f.consigneeInformation.errors" class="p-invalid">
+                        <div *ngIf="f.consigneeInformation.errors.required" class="p-p-2">
+                            {{"module.booking.validation.consigneeRequired" | translate}}
+                        </div>
+                    </div>
+                    -->
+            </div>
+            <div class="p-p-2 p-col-6">
+                <av-input-text-area formControlName="description" [(ngModel)]="booking.description"
+                    label="{{'module.booking.description' | translate}}*"></av-input-text-area>
+                <div *ngIf="submitted && f.description.errors" class="p-p-2">
+                    <small class="p-invalid" *ngIf="f.description.errors.required">
+                        {{"module.booking.validation.descriptionRequired" | translate}}
+                    </small>
+                </div>
+            </div>
+            <div class="p-p-2 p-col-6">
+                <av-input-text-area formControlName="comment" [(ngModel)]="booking.comment"
+                    [label]="'module.booking.comment'|translate"></av-input-text-area>
+            </div>
+        </div>
+    </form>
+
+    <form id="bookingDetailsForm" [formGroup]="bookingDetailsForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+        <div class="p-fluid p-formgrid p-grid">
+            <div class="p-col-2">
+                <av-input-number label="{{'module.booking.details.numberPieces' | translate}}"
+                    formControlName="numberPieces" [(ngModel)]="bookingDetail.pieces"
+                    onkeypress="return event.charCode >= 48"></av-input-number>
+                <div class="p-p-2">
+                    <small class="p-invalid" *ngIf="submittedDetail && fDetail.numberPieces.errors">
+                        {{"module.booking.details.validation.numberPiecesRequired" | translate}}
+                    </small>
+                </div>
+            </div>
+            <div class="p-col-1">
+                <av-input-number formControlName="weight" label="module.booking.details.weight"
+                    [(ngModel)]="bookingDetail.weight" onkeypress="return event.charCode >= 48">
+                </av-input-number>
+                <div class="p-p-2">
+                    <small class="p-invalid"
+                        *ngIf="submittedDetail && fDetail.weight.errors">{{"module.booking.details.validation.weightRequired"
+                        |
+                        translate}}</small>
+                </div>
+            </div>
+            <div class="p-col-2">
+                <av-measurement-unit-type formControlName="weightUnitId"
+                    [label]="'module.booking.details.weightUnit'|translate"
+                    [selectionLabel]="'module.componentNames.select'|translate" [(ngModel)]="bookingDetail.weightUnitId"
+                    (sendDesc)="receiveMeasurementUnit($event)">
+                </av-measurement-unit-type>
+                <div class="p-p-2">
+                    <small class="p-invalid" *ngIf="submittedDetail && fDetail.weightUnitId.errors">
+                        {{"module.booking.details.validation.weightUnitRequired" | translate}}</small>
+                </div>
+            </div>
+            <div class="p-col-1">
+                <av-input-number formControlName="depth" label="module.booking.details.depth"
+                    [(ngModel)]="bookingDetail.depth" onkeypress="return event.charCode >= 48">
+                </av-input-number>
+                <div class="p-p-2">
+                    <small class="p-invalid" *ngIf="submittedDetail && fDetail.depth.errors">
+                        {{"module.booking.details.validation.depthRequired" | translate}}
+                    </small>
+                </div>
+            </div>
+            <div class="p-col-1">
+                <av-input-number formControlName="width" label="module.booking.details.width"
+                    [(ngModel)]="bookingDetail.width" onkeypress="return event.charCode >= 48"></av-input-number>
+                <div class="p-p-2">
+                    <small class="p-invalid" *ngIf="submittedDetail && fDetail.width.errors">
+                        {{"module.booking.details.validation.widthRequired" | translate}}
+                    </small>
+                </div>
+            </div>
+            <div class="p-col-1">
+                <av-input-number formControlName="high" label="module.booking.details.high"
+                    [(ngModel)]="bookingDetail.high" onkeypress="return event.charCode >= 48"></av-input-number>
+                <div class="p-p-2">
+                    <small class="p-invalid"
+                        *ngIf="submittedDetail && fDetail.high.errors">{{"module.booking.details.validation.highRequired" |
+                        translate}}</small>
+                </div>
+            </div>
+            <div class="p-col-2">
+                <av-weight-unit-type formControlName="lengthUnitId"
+                    [label]="'module.booking.details.lengthUnit'|translate"
+                    [selectionLabel]="'module.componentNames.select'|translate" [(ngModel)]="bookingDetail.lengthUnitId"
+                    (sendDescription)="receiveLengthUnit($event)">
+                </av-weight-unit-type>
+                <div class="p-p-2">
+                    <small class="p-invalid" *ngIf="submittedDetail && fDetail.lengthUnitId.errors">
+                        {{"module.booking.details.validation.lengthUnitRequired" | translate}}</small>
+                </div>
+            </div>
+            <div class="p-p-2 text-right">
+                <av-button [label]="'module.booking.details.btnAdd' | translate" icon="pi pi-plus"
+                    class="p-button-text" (click)="addDetails()"></av-button>
+            </div>
+        </div>
+    </form>
+
+    <p-table #dt [value]="booking.bookingDetails" [rows]="10" [rowHover]="true" dataKey="id"
+        [showCurrentPageReport]="true" [rowsPerPageOptions]="[10, 25, 50]" styleClass="p-datatable-responsive-demo">
+        <ng-template pTemplate="header">
+            <tr>
+                <th class="text-center">
+                    {{ "module.booking.details.numberPieces" | translate }}
+                </th>
+                <th class="text-center">
+                    {{ "module.booking.details.weight" | translate }}
+                </th>
+                <th class="text-center">
+                    {{ "module.booking.details.weightUnit" | translate }}
+                </th>
+                <th class="text-center">
+                    {{ "module.booking.details.depth" | translate }}
+                </th>
+                <th class="text-center">
+                    {{ "module.booking.details.width" | translate }}
+                </th>
+                <th class="text-center">
+                    {{ "module.booking.details.high" | translate }}
+                </th>
+                <th class="text-center">
+                    {{ "module.booking.details.lengthUnit" | translate }}
+                </th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-bd let-rowIndex="rowIndex">
+            <tr>
+                <td pEditableColumn>
+                    {{ bd.pieces }}
+                </td>
+                <td pEditableColumn>
+                    {{ bd.weight }}
+                </td>
+                <td pEditableColumn>
+                    {{ bd.weightUnitDesc }}
+                </td>
+                <td pEditableColumn>
+                    {{ bd.depth }}
+                </td>
+                <td pEditableColumn>
+                    {{ bd.width }}
+                </td>
+                <td pEditableColumn>
+                    {{ bd.high }}
+                </td>
+                <td pEditableColumn>
+                    {{ bd.lengthUnitDesc }}
+                </td>
+                <td style="text-align: center">
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-text"
+                        (click)="deleteDetail(rowIndex)"></button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <div *ngIf="submitted && !validateBookingDetailsOk" class="p-invalid">
+        <div *ngIf="((!booking.volume || booking.volume <=0) && booking.bookingDetails.length <= 0) &&
+                              (booking.bookingDetails.length <= 0 && booking.loadTypeId != loadTypeService.pharmaceutical) ||
+                              (booking.loadTypeId == loadTypeService.pharmaceutical && usingPharma.containers.length <= 0)"
+            class="p-p-2">
+            {{"module.booking.validation.quotationDetailRequired" | translate}}
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="text-right">
+            <av-button *ngIf="bookingCreatedSuccessfully==true" [label]="'module.componentNames.btnNew' | translate"
+                class="p-ripple" type="button" icon="pi pi-plus" [disabled]="disableSave" (click)="newBooking()">
+            </av-button>
+            <av-button *ngIf="bookingCreatedSuccessfully==false" type="button"
+                [label]="'module.componentNames.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+                (click)="warningShowDialog()"></av-button>
+        </div>
+    </ng-template>
+
+    <p-dialog [(visible)]="shipperDialog" [style]="{ width: '50%', heigth: '500px' }"
+        [header]="'module.shipper.title' | translate" [modal]="true" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+            <form id="shipperForm" [formGroup]="shipperForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+                <div class="p-fluid p-formgrid p-grid">
+                    <div class="p-p-2 p-col-6">
+                        <av-input-text label="{{'module.shipper.name' | translate}}" formControlName="name"
+                            [(ngModel)]="shipperInfo.name">
+                        </av-input-text>
+                        <div *ngIf="submittedShipper && g.name.errors" class="p-invalid">
+                            <div *ngIf="g.name.errors.required" class="p-p-2">
+                                {{"module.shipper.validation.nameRequired" | translate}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-p-2 p-col-6">
+                        <av-input-text label="{{'module.shipper.address' | translate}}" formControlName="address"
+                            [(ngModel)]="shipperInfo.address">
+                        </av-input-text>
+                        <div *ngIf="submittedShipper && g.address.errors" class="p-invalid">
+                            <div *ngIf="g.address.errors.required" class="p-p-2">
+                                {{"module.shipper.validation.addressRequired" | translate}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-p-2 p-col-6">
+                        <av-input-text label="{{'module.shipper.zipCode' | translate}}" formControlName="zipCode"
+                            [(ngModel)]="shipperInfo.zipCode">
+                        </av-input-text>
+                        <div *ngIf="submittedShipper && g.zipCode.errors" class="p-invalid">
+                            <div *ngIf="g.zipCode.errors.required" class="p-p-2">
+                                {{"module.shipper.validation.zipCodeRequired" | translate}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-p-2 p-col-6">
+                        <av-input-text label="{{'module.shipper.telephoneNumber' | translate}}"
+                            formControlName="telephoneNumber" [(ngModel)]="shipperInfo.telephoneNumber">
+                        </av-input-text>
+                        <div *ngIf="submittedShipper && g.telephoneNumber.errors" class="p-invalid">
+                            <div *ngIf="g.telephoneNumber.errors.required" class="p-p-2">
+                                {{"module.shipper.validation.telephoneNumberRequired" | translate}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-p-2 p-col-6">
+                        <av-input-text label="{{'module.shipper.email' | translate}}" formControlName="email"
+                            [(ngModel)]="shipperInfo.email">
+                        </av-input-text>
+                        <div *ngIf="submittedShipper && g.email.errors" class="p-invalid">
+                            <div *ngIf="g.email.errors.required" class="p-p-2">
+                                {{"module.shipper.validation.emailRequired" | translate}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-p-2 p-col-6">
+                        <av-city-autocomplete formControlName="city" [label]="'module.shipper.city'"
+                            [selectionLabel]="'module.shipper.city'|translate" [(ngModel)]="cityShipper">
+                        </av-city-autocomplete>
+                        <div *ngIf="submittedShipper && g.city.errors" class="p-invalid">
+                            <div *ngIf="g.city.errors.required" class="p-p-2">
+                                {{"module.shipper.cityrequired" | translate}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <av-button type="button" [label]="'module.guideAcceptance.popupPharmaCare.btnSave' | translate"
+                icon="pi pi-save" class="p-button-text" (click)="saveShipper()"></av-button>
+        </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="consigneeDialog" [style]="{ width: '50%', heigth: '500px' }"
+        [header]="'module.consignee.title' | translate" [modal]="true" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+            <form id="consigneeForm" [formGroup]="consigneeForm"
+                class="form-horizontal ng-untouched ng-pristine ng-valid">
+                <div class="p-fluid p-formgrid p-grid">
+                    <div class="p-p-2 p-col-6">
+                        <av-input-text label="{{'module.consignee.name' | translate}}" formControlName="name"
+                            [(ngModel)]="consigneeInfo.name">
+                        </av-input-text>
+                        <div *ngIf="submittedConsignee && h.name.errors" class="p-invalid">
+                            <div *ngIf="h.name.errors.required" class="p-p-2">
+                                {{"module.consignee.validation.nameRequired" | translate}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-p-2 p-col-6">
+                        <av-input-text label="{{'module.consignee.address' | translate}}" formControlName="address"
+                            [(ngModel)]="consigneeInfo.address">
+                        </av-input-text>
+                        <div *ngIf="submittedConsignee && h.address.errors" class="p-invalid">
+                            <div *ngIf="h.address.errors.required" class="p-p-2">
+                                {{"module.consignee.validation.addressRequired" | translate}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-p-2 p-col-6">
+                        <av-input-text label="{{'module.consignee.zipCode' | translate}}" formControlName="zipCode"
+                            [(ngModel)]="consigneeInfo.zipCode">
+                        </av-input-text>
+                        <div *ngIf="submittedConsignee && h.zipCode.errors" class="p-invalid">
+                            <div *ngIf="h.zipCode.errors.required" class="p-p-2">
+                                {{"module.consignee.validation.zipCodeRequired" | translate}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-p-2 p-col-6">
+                        <av-input-text label="{{'module.consignee.telephoneNumber' | translate}}"
+                            formControlName="telephoneNumber" [(ngModel)]="consigneeInfo.telephoneNumber">
+                        </av-input-text>
+                        <div *ngIf="submittedConsignee && h.telephoneNumber.errors" class="p-invalid">
+                            <div *ngIf="h.telephoneNumber.errors.required" class="p-p-2">
+                                {{"module.consignee.validation.telephoneNumberRequired" | translate}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-p-2 p-col-6">
+                        <av-input-text label="{{'module.consignee.email' | translate}}" formControlName="email"
+                            [(ngModel)]="consigneeInfo.email">
+                        </av-input-text>
+                        <div *ngIf="submittedConsignee && h.email.errors" class="p-invalid">
+                            <div *ngIf="h.email.errors.required" class="p-p-2">
+                                {{"module.consignee.validation.emailRequired" | translate}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-p-2 p-col-6">
+                        <av-city-autocomplete formControlName="city" [label]="'module.consignee.city'"
+                            [selectionLabel]="'module.consignee.city'|translate" [(ngModel)]="cityConsignee">
+                        </av-city-autocomplete>
+                        <div *ngIf="submittedConsignee && h.city.errors" class="p-invalid">
+                            <div *ngIf="h.city.errors.required" class="p-p-2">
+                                {{"module.consignee.cityrequired" | translate}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <av-button type="button" [label]="'module.guideAcceptance.popupPharmaCare.btnSave' | translate"
+                icon="pi pi-save" class="p-button-text" (click)="consigneeSave()"></av-button>
+        </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="warningDialog" [style]="{ width: '50%', heigth: '500px' }"
+        [header]="'module.booking.warning' | translate" [modal]="true" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+            <div class="p-fluid p-formgrid p-grid">
+                <div class="p-p-2 p-col-12">
+                    <p>{{'module.booking.msgWarning' | translate}}</p>
+                </div>
+                <div class="p-p-2  p-col-12 p-text-italic p-text-justify">
+                    <small>
+                        {{warningBooking}}
+                    </small>
+                </div>
+
+            </div>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <av-button type="button" [label]="'module.componentNames.btnAccept' | translate" icon="pi pi-save"
+                class="p-button-text" (click)="saveBooking()"></av-button>
+        </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="commodityAnimalDialog" [style]="{ width: '50%', heigth: '500px' }"
+        [header]="'module.quote.quotation.liveAnimal' | translate" [modal]="true" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+            <div class="p-fluid p-formgrid p-grid">
+                <div class="p-p-2 p-col-12">
+                    <av-input-number label="{{'module.quote.quotation.amount' | translate}}"
+                        [(ngModel)]="booking.quotationAnimal.animalAmount">
+                    </av-input-number>
+                </div>
+            </div>
+
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <av-button type="button" [label]="'module.guideAcceptance.popupPharmaCare.btnSave' | translate"
+                class="p-button-text" (click)="commodityAnimalDialog = false"></av-button>
+            <av-button type="button" [label]="'module.guideAcceptance.popupPharmaCare.btnCancel' | translate"
+                class="p-button-text" (click)="commodityAnimalDialog = false"></av-button>
+        </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="perishablesDialog" [style]="{ width: '450px' }"
+        [header]="'module.booking.perishables.title' | translate" [modal]="true" styleClass="p-fluid"
+        [closable]="false">
+        <ng-template pTemplate="content">
+            <av-yes-no selectedLabel="{{'module.componentNames.select' | translate}}"
+                label="{{'module.booking.perishables.temperatureControl' | translate}}"
+                [(ngModel)]="temperatureControl">
+            </av-yes-no>
+            <av-temperature-range *ngIf="temperatureControl == 'Yes'"
+                selectedLabel="{{'module.componentNames.select' | translate}}"
+                label="{{'module.booking.perishables.temperatureRange' | translate}}" [(ngModel)]="perishable.id">
+            </av-temperature-range>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <av-button [label]="'module.componentNames.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+                (click)="hidePerishablesDialog()"></av-button>
+            <av-button [label]="'module.componentNames.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+                (click)="createPerishable()"></av-button>
+        </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="pharmaDialog" [style]="{ width: '700px' }"
+        [header]="'module.booking.pharma.title' | translate" [modal]="true" styleClass="p-fluid" [closable]="false">
+        <ng-template pTemplate="content">
+            <av-input-number label="{{'module.booking.pharma.un' | translate}}"
+                [(ngModel)]="usingPharma.dangerousGoodsCode">
+            </av-input-number>
+            <av-yes-no selectedLabel="{{'module.componentNames.select' | translate}}"
+                label="{{'module.booking.pharma.temperatureControl' | translate}}"
+                [(ngModel)]="usingPharma.temperatureControl">
+            </av-yes-no>
+            <small class="p-p-2 p-invalid" *ngIf="submittedUsingPharma && !usingPharma.temperatureControl">
+                {{"module.booking.pharma.validation.temperatureControlRequired" | translate}}
+            </small>
+            <av-packing-type *ngIf="usingPharma.temperatureControl=='Yes'"
+                selectedLabel="{{'module.componentNames.select' | translate}}"
+                label="{{'module.booking.pharma.TypePackaging' | translate}}"
+                [(ngModel)]="usingPharma.packagingTypeAnswer">
+            </av-packing-type>
+            <small class="p-p-2 p-invalid"
+                *ngIf="submittedUsingPharma && (usingPharma.temperatureControl == 'Yes' && !usingPharma.packagingTypeAnswer)">
+                {{"module.booking.pharma.validation.packagingTypeRequired" | translate}}
+            </small>
+            <av-input-number *ngIf="usingPharma.packagingTypeAnswer=='Passive' && usingPharma.temperatureControl=='Yes'"
+                label="{{'module.booking.pharma.packagingLifetime' | translate}}"
+                [(ngModel)]="usingPharma.packagingPassive.packagingLifetime">
+            </av-input-number>
+            <av-input-text *ngIf="usingPharma.packagingTypeAnswer=='Passive' && usingPharma.temperatureControl=='Yes'"
+                label="{{'module.booking.pharma.packagingDescription' | translate}}"
+                [(ngModel)]="usingPharma.packagingPassive.packagingDescription">
+            </av-input-text>
+
+            <form *ngIf="usingPharma.packagingTypeAnswer=='Active' && usingPharma.temperatureControl=='Yes'"
+                id="quoteDetailsForm" [formGroup]="containerForm"
+                class="form-horizontal ng-untouched ng-pristine ng-valid">
+                <div class="p-fluid p-formgrid p-grid">
+                    <div class="p-p-2 p-col-4">
+                        <av-input-number formControlName="quantityContainers"
+                            label="{{'module.booking.pharma.containers.quantityContainers' | translate}}*"
+                            [(ngModel)]="container.quantityContainer" onkeypress="return event.charCode >= 48">
+                        </av-input-number>
+                        <small class="p-p-2 p-invalid"
+                            *ngIf="submittedContainer && fContainer.quantityContainers.errors">
+                            {{"module.booking.pharma.containers.validation.quantityContainersRequired" | translate}}
+                        </small>
+                    </div>
+                    <div class="p-p-2 p-col-4">
+                        <av-container-type formControlName="containerTypeId"
+                            selectedLabel="{{'module.componentNames.select' | translate}}"
+                            label="{{'module.booking.pharma.containers.typeContainer' | translate}}*"
+                            [(ngModel)]="container.containerTypeId"
+                            (sendDescription)="receiveDescContainerType($event)">
+                        </av-container-type>
+                        <small class="p-p-2 p-invalid" *ngIf="submittedContainer && fContainer.containerTypeId.errors">
+                            {{"module.booking.pharma.containers.validation.typeContainerRequired" | translate}}
+                        </small>
+                    </div>
+                    <div class="p-p-2 p-col-4">
+                        <av-temperature-range formControlName="temperatureRangeId"
+                            selectedLabel="{{'module.componentNames.select' | translate}}"
+                            label="{{'module.booking.pharma.containers.temperatureRange' | translate}}*"
+                            [(ngModel)]="container.temperatureRangeId"
+                            (sendDescription)="receiveDescTemperatureRange($event)">
+                        </av-temperature-range>
+                        <small class="p-p-2 p-invalid"
+                            *ngIf="submittedContainer && fContainer.temperatureRangeId.errors">
+                            {{"module.booking.pharma.containers.validation.temperatureRangeRequired" | translate}}
+                        </small>
+                    </div>
+                    <div class="p-p-2 p-col-4">
+                        <av-yes-no formControlName="dryIceRessupply"
+                            selectedLabel="{{'module.componentNames.select' | translate}}"
+                            label="{{'module.booking.pharma.containers.dryIceRessupplyAnswer' | translate}}*"
+                            [(ngModel)]="container.dryIceResupplyAnswer" variableName="dryIceRessupplyAnswer"
+                            (sendVariableName)="receiveVariableName($event)">
+                        </av-yes-no>
+                        <small class="p-p-2 p-invalid" *ngIf="submittedContainer && fContainer.dryIceRessupply.errors">
+                            {{"module.booking.pharma.containers.validation.dryIceRessupplyAnswerRequired" |
+                            translate}}
+                        </small>
+                    </div>
+                    <div class="p-p-2 p-col-3">
+                        <av-yes-no formControlName="positioning"
+                            selectedLabel="{{'module.componentNames.select' | translate}}"
+                            label="{{'module.booking.pharma.containers.positioningAnswer' | translate}}*"
+                            [(ngModel)]="container.positioningAnswer" variableName="positioningAnswer"
+                            (sendVariableName)="receiveVariableName($event)">
+                        </av-yes-no>
+                        <small class="p-p-2 p-invalid" *ngIf="submittedContainer && fContainer.positioning.errors">
+                            {{"module.booking.pharma.containers.validation.positioningRequired" | translate}}
+                        </small>
+                    </div>
+                    <div class="p-p-2 p-col-3">
+                        <av-yes-no formControlName="repositioning"
+                            selectedLabel="{{'module.componentNames.select' | translate}}"
+                            label="{{'module.booking.pharma.containers.repositioningAnswer' | translate}}*"
+                            [(ngModel)]="container.repositioningAnswer" variableName="repositioningAnswer"
+                            (sendVariableName)="receiveVariableName($event)">
+                        </av-yes-no>
+                        <small class="p-p-2 p-invalid" *ngIf="submittedContainer && fContainer.repositioning.errors">
+                            {{"module.booking.pharma.containers.validation.repositioningRequired" | translate}}
+                        </small>
+                    </div>
+                    <div class="p-p-2 text-right p-col-2">
+                        <av-button [label]="'module.componentNames.btnAdd' | translate" icon="pi pi-plus"
+                            class="p-button-text" (click)="addBookingContainer()"></av-button>
+                    </div>
+                </div>
+            </form>
+            <p-table *ngIf="usingPharma.packagingTypeAnswer=='Active' && usingPharma.temperatureControl=='Yes'" #dt
+                [value]="usingPharma.containers" [rows]="10" [rowHover]="true" dataKey="id"
+                [showCurrentPageReport]="true" 
+                styleClass="p-datatable-responsive-demo">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th class="text-center">
+                            {{ "module.booking.pharma.containers.quantityContainers" | translate }}
+                        </th>
+                        <th class="text-center">
+                            {{ "module.booking.pharma.containers.typeContainer" | translate }}
+                        </th>
+                        <th class="text-center">
+                            {{ "module.booking.pharma.containers.temperatureRange" | translate }}
+                        </th>
+                        <th class="text-center">
+                            {{ "module.booking.pharma.containers.dryIceRessupplyAnswer" | translate }}
+                        </th>
+                        <th class="text-center">
+                            {{ "module.booking.pharma.containers.positioningAnswer" | translate }}
+                        </th>
+                        <th class="text-center">
+                            {{ "module.booking.pharma.containers.repositioningAnswer" | translate }}
+                        </th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-qtd let-rowIndex="rowIndex">
+                    <tr>
+                        <td pEditableColumn>
+                            {{ qtd.quantityContainer }}
+                        </td>
+                        <td pEditableColumn>
+                            {{ qtd.containerTypeDesc }}
+                        </td>
+                        <td pEditableColumn>
+                            {{ qtd.temperatureRangeDesc }}
+                        </td>
+                        <td pEditableColumn>
+                            {{ qtd.dryIceResupplyAnswer }}
+                        </td>
+                        <td pEditableColumn>
+                            {{ qtd.positioningAnswer }}
+                        </td>
+                        <td pEditableColumn>
+                            {{ qtd.repositioningAnswer }}
+                        </td>
+                        <td style="text-align: center">
+                            <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-text"
+                                (click)="deleteBookingContainer(rowIndex)"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            <small class="p-p-2 p-invalid"
+            *ngIf="submittedUsingPharma && usingPharma.temperatureControl == 'Yes' && usingPharma.packagingTypeAnswer == 'Active' && usingPharma.container.length < 1">
+                {{"module.booking.pharma.validation.containerRequired" | translate}}
+            </small>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <av-button [label]="'module.componentNames.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+                (click)="cancelPharmaDialog()"></av-button>
+            <av-button [label]="'module.componentNames.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+                (click)="savePharmaDialog()"></av-button>
+        </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="dryIceDialog" [style]="{ width: '450px' }"
+        [header]="'module.booking.pharma.containers.dryIceRessupply.title' | translate" [modal]="true" styleClass="p-fluid"
+        [closable]="false">
+        <ng-template pTemplate="content">
+            <form id="dryIceResupplyForm" [formGroup]="dryIceResupplyForm"
+                class="form-horizontal ng-untouched ng-pristine ng-valid">
+                <div class="p-fluid p-formgrid p-grid">
+                    <div class="p-p-2 p-col-12">
+                        <av-input-number formControlName="quantity"
+                            label="{{'module.booking.pharma.containers.dryIceRessupply.quantity' | translate}}*"
+                            [(ngModel)]="container.dryIceResupply.quantity"></av-input-number>
+                        <small class="p-p-2 p-invalid" *ngIf="submittedDryIce && fDryIceResupply.quantity.errors">
+                            {{"module.booking.pharma.containers.dryIceRessupply.validation.quantityRequired" | translate}}
+                        </small>
+                    </div>
+                    <div class="p-p-2 p-col-12">
+                        <av-station formControlName="station"
+                            label="{{'module.booking.pharma.containers.dryIceRessupply.station' | translate}}*"
+                            [selectionLabel]="'module.booking.pharma.containers.dryIceRessupply.station'|translate"
+                            [(ngModel)]="container.dryIceResupply.station">
+                        </av-station>
+                        <small class="p-p-2 p-invalid" *ngIf="submittedDryIce && fDryIceResupply.station.errors">
+                            {{"module.booking.pharma.containers.dryIceRessupply.validation.stationRequired" | translate}}
+                        </small>
+                    </div>
+                </div>
+            </form>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <av-button [label]="'module.componentNames.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+                (click)="cancelDryIceDialog()"></av-button>
+            <av-button [label]="'module.componentNames.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+                (click)="createDryIceDialog()"></av-button>
+        </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="positioningDialog" [style]="{ width: '450px' }"
+        [header]="'module.booking.pharma.containers.positioning.title' | translate" [modal]="true" styleClass="p-fluid"
+        [closable]="false">
+        <ng-template pTemplate="content">
+            <av-station label="{{'module.booking.pharma.containers.positioning.originStation' | translate}}*"
+                [selectionLabel]="'module.booking.pharma.containers.positioning.originStation'|translate"
+                [(ngModel)]="container.positioning.originStation">
+            </av-station>
+            <small class="p-p-2 p-invalid"
+                *ngIf="submittedPositioning && !this.usingPharma.container.positioning.originStation">
+                {{"module.booking.pharma.containers.positioning.validation.originStationRequired" | translate}}
+            </small>
+            <av-station label="{{'module.booking.pharma.containers.positioning.destinationStation' | translate}}*"
+                [selectionLabel]="'module.booking.pharma.containers.positioning.destinationStation'|translate"
+                [(ngModel)]="container.positioning.destinationStation">
+            </av-station>
+            <small class="p-p-2 p-invalid"
+                *ngIf="submittedPositioning && !this.usingPharma.container.positioning.destinationStation">
+                {{"module.booking.pharma.containers.positioning.validation.destinationStationRequired" | translate}}
+            </small>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <av-button [label]="'module.componentNames.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+                (click)="cancelPositioning()"></av-button>
+            <av-button [label]="'module.componentNames.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+                (click)="createPositioning()"></av-button>
+        </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="repositioningDialog" [style]="{ width: '450px' }"
+        [header]="'module.booking.pharma.containers.repositioning.title' | translate" [modal]="true"
+        styleClass="p-fluid" [closable]="false">
+        <ng-template pTemplate="content">
+            <av-station label="{{'module.booking.pharma.containers.repositioning.station' | translate}}*"
+                [selectionLabel]="'module.booking.pharma.containers.repositioning.station'|translate"
+                [(ngModel)]="container.repositioningStation">
+            </av-station>
+            <small class="p-p-2 p-invalid" *ngIf="submittedRepositioning && !this.container.repositioningStation">
+                {{"module.booking.pharma.containers.repositioning.validation.stationRequired" | translate}}
+            </small>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <av-button [label]="'module.componentNames.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+                (click)="cancelRepositioning()"></av-button>
+            <av-button [label]="'module.componentNames.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+                (click)="createRepositioning()"></av-button>
+        </ng-template>
+    </p-dialog>
+</p-card>
+
+<p-toast baseZIndex="10000"></p-toast>
+
+<div class="overlay" *ngIf="loading">
+    <div class="spinner">
+        <img src="assets/img/ZZ5H.gif" />
+    </div>
+</div>

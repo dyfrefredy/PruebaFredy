@@ -1,0 +1,22 @@
+<p-card>
+  <form id="importSkychainForm" [formGroup]="importSkychainForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+    <div class="p-fluid">
+      <div class="p-field">
+        <p-fileUpload name="myfile[]" accept=".csv" customUpload="true" (uploadHandler)="uploader($event)" [chooseLabel]="'module.importSkychain.btnSelected'|translate"
+        [uploadLabel]="'module.importSkychain.btnUploadFile'|translate" [cancelLabel]="'module.importSkychain.btnCancel'|translate"></p-fileUpload>
+      </div>
+      <div class="p-field">
+        <div class="p-grid">
+          <div class="p-col-4">
+            <av-input-date formControlName="flightDate" [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [showIcon]="true" inputId="icon" [(ngModel)]="importSkychain.flightDate" [label]="'module.importSkychain.fligthDate'"></av-input-date>
+            <div *ngIf="submitted &&  f.flightDate.errors" class="p-p-2" style="min-width: 225px;">
+              <small class="p-invalid"
+                *ngIf="submitted && f.flightDate.errors">{{'module.importSkychain.validation.fligthDateRequired'|translate}}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</p-card>
+<p-messages [severity]="severity" [(value)]="msgs"></p-messages>

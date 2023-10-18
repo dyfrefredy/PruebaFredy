@@ -1,0 +1,58 @@
+import { BookingDetails } from "./booking-details";
+import { BookingHistoryStatus } from "./booking-history-status";
+import { Consignee } from "./consignee";
+import { Quotation } from "./quotation";
+import { QuotationAnimal } from "./quotationAnimal";
+import { Shipper } from "./shipper";
+import { Station } from "./station";
+import { User } from "./user";
+import { UsingPerishable } from "./using-perishable";
+import { UsingPharma } from "./using-pharma";
+
+export class BookingModel {
+  id: Number;
+  userId: Number;
+  userName: String;
+  company: String;
+  docNum: String;
+  quotationId: Number;
+  orgStationId: Number;
+  destStationId: Number;
+  estimatedDeliveryDate: Date;
+  loadTypeId: Number;
+  piece: Number;
+  weightKgs: Number;
+  volume: Number;
+  measurementUnitId: Number;
+  chargeableWeight: Number;
+  rate: Number;
+  shc: String;
+  description: String;
+  bookingInstruction: String;
+  shipperInformationId: Number;
+  shipperInformation: Shipper;
+  consigneeInformationId: Number;
+  consigneeInformation: Consignee;
+  removable: String;
+  flightNumber: String;
+  estimatedFlightDate: Date;
+  paymentMode: String;
+  comment: string;
+  createdUserId: Number;
+  quotation: Quotation;
+  user: User;
+  orgStation: Station;
+  destStation: Station;
+  loadTypeName: String;
+  createdDate: Date;
+  updatedDate: Date;
+  updatedUserId: Number;
+  creationDateTimeZone: any;
+
+  bookingHistoryStatus: BookingHistoryStatus[];
+  bookingHistoryLastStatus: BookingHistoryStatus;
+  quotationAnimal: QuotationAnimal;
+  usingPerishable: UsingPerishable;
+  usingPharma: UsingPharma;
+  bookingDetails: BookingDetails[];
+}

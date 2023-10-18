@@ -1,0 +1,16 @@
+<div class="p-p-2">
+  <span class="p-float-label">
+    <p-autoComplete #t [suggestions]="options" [(ngModel)]="selectionUser" (completeMethod)="filterUsersByName($event)"
+      (onSelect)="onSelect($event)" (onDropdownClick)="onDropdownClick($event)" optionValue="id" [multiple]="multiple"
+      [forceSelection]="forceSelection" [dropdownIcon]="'pi pi-search'" [minLength]="minLength" field="firstName"
+      [dropdown]="dropdown" appendTo="body">
+      <ng-template let-item pTemplate="item">
+        <div>{{item.firstName }} {{item.lastName}} </div>
+      </ng-template>
+      <ng-template let-value pTemplate="selectedItem">
+        <span style="font-size:18px">{{value}}</span>
+      </ng-template>
+    </p-autoComplete>
+    <label>{{label|translate}}</label>
+  </span>
+</div>

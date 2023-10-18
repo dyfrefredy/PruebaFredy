@@ -1,0 +1,63 @@
+<app-header
+  [navbarBrandRouterLink]="['/home/home']"
+  [fixed]="true"
+  [navbarBrandFull]="{src: 'assets/img/brand/avianca-cargo-logo-white.jpg', width: 170, height: 45, alt: 'Avianca Logo'}"
+  [navbarBrandMinimized]="{src: 'assets/img/brand/avianca-logo-white-minimal.svg', width: 30, height: 30, alt: 'Avianca Logo'}"
+  [sidebarToggler]="'lg'">
+  <ul class="nav navbar-nav ml-auto">
+    <!-- <li class="nav-item" *ngIf="this.countPharma > 0">
+      <a [routerLink]="this.countPharma > 0 ? ['/pharma/guide-dashboard']:[]" class="nav-link">
+        <i class="icon-bell"></i><span class="badge badge-pill badge-info">{{this.countPharma}}</span>
+      </a>
+    </li> -->
+    <span class="form-inline">
+      <a class="nav-link" (click)="switchLang(this.userSetting.lang)"  href="#" >{{lblLanguage}}</a>
+    </span>
+    <li placement="bottom right" class="c-header-nav-item px-3">
+      <span *ngIf="authService.loggedIn" class="nav-link">{{welcome}}, {{this.user==null?'':this.user.email}}</span>
+    </li>
+    <li>
+      <a *ngIf="authService.loggedIn" class="nav-link" (click)="logout()" href="#"><i class="icon-logout"></i> &nbsp;{{lblLogout}}</a>
+    </li>
+  </ul>
+</app-header>
+<div class="app-body">
+  <!-- Main content -->
+  <main class="main">
+    <!-- Breadcrumb -->
+    <!-- breaking change 'cui-breadcrumb' -->
+    <!-- <cui-breadcrumb> -->
+    <!-- Breadcrumb Menu-->
+    <ol class="breadcrumb">
+      <app-custom-breadcrumb>
+      </app-custom-breadcrumb>
+    </ol>
+    <!-- </cui-breadcrumb> -->
+    <!-- deprecation warning for 'app-breadcrumb' -->
+    <!--<ol class="breadcrumb">-->
+    <!--<app-breadcrumb></app-breadcrumb>-->
+    <!--&lt;!&ndash; Breadcrumb Menu&ndash;&gt;-->
+    <!--<li class="breadcrumb-menu d-md-down-none">-->
+    <!--<div class="btn-group" role="group" aria-label="Button group with nested dropdown">-->
+    <!--<a class="btn" href="#"><i class="icon-speech"></i></a>-->
+    <!--<a class="btn" [routerLink]="['/dashboard']"><i class="icon-graph"></i> &nbsp;Dashboard</a>-->
+    <!--<a class="btn" href="#"><i class="icon-settings"></i> &nbsp;Settings</a>-->
+    <!--</div>-->
+    <!--</li>-->
+    <!--</ol>-->
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
+    </div><!-- /.container-fluid -->
+  </main>
+  <app-sidebar #appSidebar [fixed]="true" [display]="'lg'" [minimized]="sidebarMinimized" (minimizedChange)="toggleMinimize($event)">
+    <app-sidebar-nav [navItems]="navItems" [perfectScrollbar] [disabled]="appSidebar.minimized"></app-sidebar-nav>
+    <app-sidebar-minimizer></app-sidebar-minimizer>
+  </app-sidebar>
+</div>
+<app-footer>
+  <span><a href="https://avianca.com">Cargo Apps</a> &copy; 2020.</span>
+  <span class="ml-auto">Powered by <a href="https://avianca.com">Cargo Apps</a></span>
+</app-footer>
+
+<p-confirmDialog [style]="{ width: '450px' }" [acceptLabel]="'module.componentNames.btnAccept' | translate"
+  [rejectLabel]="'module.componentNames.btnCancel' | translate"></p-confirmDialog>

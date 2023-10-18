@@ -1,0 +1,158 @@
+<p-card>
+  <div class="p-field p-grid">
+    <div class="p-col-1">
+      <av-button type="button" [label]="'module.airline.btnNew' | translate" icon="pi pi-plus p-button-icon-left"
+        class="p-button-text" (click)="openNew()"></av-button>
+    </div>
+    <div class="p-col-1">
+      <av-button type="button" [label]="'module.airline.btnDelete' | translate"
+        [icon]="'pi pi-minus-circle p-button-icon-left'" class="p-button-text" (click)="deleteSelectedAirlines()"
+        [disabled]="!selectedAirlines || !selectedAirlines.length"></av-button>
+    </div>
+  </div>
+
+  <p-table #dt styleClass="p-datatable-sm p-datatable-responsive-demo" [value]="airlines" [lazy]="true" (onLazyLoad)="loadAirlines($event)" [totalRecords]="totalRecords"
+    [rows]="10" [paginator]="true" [globalFilterFields]="['iataCod', 'airlineCod', 'nit', 'name', 'dv']"
+    [showCurrentPageReport]="true" currentPageReportTemplate="Mostrar {first} a {last} de {{ totalRecords }} registros"
+    [(selection)]="selectedAirlines" [rowHover]="true" dataKey="id" [rowsPerPageOptions]="[10, 25, 50]">
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 3rem">
+          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+        </th>
+        <th pSortableColumn="airlineCod">
+          {{ "module.airline.airlineCode" | translate }}
+          <p-sortIcon field="airlineCod"></p-sortIcon>
+        </th>
+        <th pSortableColumn="iataCod">
+          {{ "module.airline.iataCode" | translate }}
+          <p-sortIcon field="iataCod"></p-sortIcon>
+        </th>
+        <th pSortableColumn="name">
+          {{ "module.airline.name" | translate }}
+          <p-sortIcon field="name"></p-sortIcon>
+        </th>
+        <th pSortableColumn="nit">
+          {{ "module.airline.nit" | translate }}
+          <p-sortIcon field="nit"></p-sortIcon>
+        </th>
+        <th pSortableColumn="dv">
+          {{ "module.airline.dv" | translate }}
+          <p-sortIcon field="dv"></p-sortIcon>
+        </th>
+        <th pSortableColumn="active">
+          {{ "module.airline.active" | translate }}
+          <p-sortIcon field="active"></p-sortIcon>
+        </th>
+        <th style="width: 8rem"></th>
+      </tr>
+      <tr>
+        <th></th>
+        <th>
+          <av-input-text [label]="'module.airline.airlineCode'|translate" [(ngModel)]="airlineFilter.airlineCod">
+          </av-input-text>
+        </th>
+        <th>
+          <av-input-text [label]="'module.airline.iataCode'|translate" [(ngModel)]="airlineFilter.iataCod">
+          </av-input-text>
+        </th>
+        <th>
+          <av-input-text [label]="'module.airline.name'|translate" [(ngModel)]="airlineFilter.name"></av-input-text>
+        </th>
+        <th>
+          <av-input-number [label]="'module.airline.nit'|translate" [(ngModel)]="airlineFilter.nit"></av-input-number>
+        </th>
+        <th>
+          <av-input-number [label]="'module.airline.dv'|translate" [(ngModel)]="airlineFilter.dv"></av-input-number>
+        </th>
+        <th>
+          <p-triStateCheckbox [(ngModel)]="airlineFilter.active" placeholder="Activo"></p-triStateCheckbox>
+        </th>
+        <th>
+          <av-button [label]="'module.airline.btnFilter' | translate" icon="pi pi-search" class="p-button-text"
+            (click)="getPaginationAndFilter()"></av-button>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-airline>
+      <tr [pEditableRow]="airline">
+        <td>
+          <p-tableCheckbox [value]="airline"></p-tableCheckbox>
+        </td>
+        <td pEditableColumn>
+          {{ airline.airlineCod }}
+        </td>
+        <td pEditableColumn>
+          {{ airline.iataCod }}
+        </td>
+        <td pEditableColumn>
+          {{ airline.name }}
+        </td>
+        <td pEditableColumn>
+          {{ airline.nit }}
+        </td>
+        <td pEditableColumn>
+          {{ airline.dv }}
+        </td>
+        <td pEditableColumn>
+          {{ airline.active ? "SI" : "NO" }}
+        </td>
+        <td style="text-align: center">
+          <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-text"
+            (click)="editAirline(airline)"></button>
+          <button pButton pRipple icon="pi pi-minus-circle" class="p-button-rounded p-button-text"
+            (click)="deleteAirline(airline)"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>
+<p-dialog [(visible)]="airlineDialog" [style]="{ width: '450px' }" [header]="'module.airline.title' | translate"
+  [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <form id="airlineForm" [formGroup]="airlineForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+      <av-input-text hidden formControlName="id" [label]="'module.airline.id' | translate" [(ngModel)]="airline.id">
+      </av-input-text>
+      <av-input-text [maxlength]="3" formControlName="airlineCod" [label]="'module.airline.airlineCode' | translate"
+        [ngClass]="{ 'p-invalid': submitted && f.airlineCod.errors }" [(ngModel)]="airline.airlineCod"></av-input-text>
+      <div *ngIf="submitted && !airline.airlineCod" class="p-p-2" style="min-width: 225px">
+        <small class="p-invalid" *ngIf="submitted && !airline.airlineCod">{{
+          "module.airline.validation.airlineCodRequired" | translate
+          }}</small>
+      </div>
+      <av-input-text [maxlength]="2" formControlName="iataCod" [label]="'module.airline.iataCode' | translate"
+        [ngClass]="{ 'p-invalid': submitted && f.iataCod.errors }" [(ngModel)]="airline.iataCod"></av-input-text>
+      <div *ngIf="submitted && !airline.iataCod" class="p-p-2" style="min-width: 225px">
+        <small class="p-invalid" *ngIf="submitted && !airline.iataCod">{{
+          "module.airline.validation.iataCodRequired" | translate
+          }}</small>
+      </div>
+      <av-input-text [maxlength]="50" formControlName="name" [label]="'module.airline.name' | translate"
+        [(ngModel)]="airline.name"></av-input-text>
+      <div class="p-formgroup-inline">
+        <av-input-number [maxlength]="15" formControlName="nit" [label]="'module.airline.nit' | translate" size="11"
+          [(ngModel)]="airline.nit"></av-input-number>
+        <av-input-number [maxlength]="2" formControlName="dv" [label]="'module.airline.dv' | translate" size="1"
+          [(ngModel)]="airline.dv"></av-input-number>
+      </div>
+      <div class="p-p-2" style="min-width: 225px">
+        <p-checkbox formControlName="active" [binary]="true" [label]="'module.airline.active' | translate"
+          [(ngModel)]="airline.active">
+        </p-checkbox>
+      </div>
+    </form>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <av-button [label]="'module.airline.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+      (click)="hideDialog()"></av-button>
+    <av-button [label]="'module.airline.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+      (click)="saveAirline()"></av-button>
+  </ng-template>
+</p-dialog>
+<p-toast baseZIndex="10000"></p-toast>
+<p-confirmDialog [style]="{ width: '450px' }" [acceptLabel]="'module.airline.btnAccept' | translate"
+  [rejectLabel]="'module.airline.btnCancel' | translate"></p-confirmDialog>
+<p-blockUI [blocked]="loading">
+  <p-progressSpinner></p-progressSpinner>
+</p-blockUI>

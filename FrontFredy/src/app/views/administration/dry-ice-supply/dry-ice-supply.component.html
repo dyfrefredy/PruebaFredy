@@ -1,0 +1,196 @@
+<p-card>
+  <div class="p-field p-grid">
+    <div class="p-col-1">
+      <av-button type="button" [label]="'module.dryIceSupply.btnNew' | translate" icon="pi pi-plus p-button-icon-left"
+        class="p-button-text" (click)="openNew()"></av-button>
+    </div>
+    <div>
+      <av-button type="button" [label]="'module.dryIceSupply.btnDelete' | translate"
+        [icon]="'pi pi-minus-circle p-button-icon-left'" class="p-button-text" (click)="deleteSelectedDryIceSupplys()"
+        [disabled]="!selectedDryIceSupplys || !selectedDryIceSupplys.length"></av-button>
+    </div>
+  </div>
+
+  <p-table #dt styleClass="p-datatable-sm p-datatable-responsive-demo" [value]="dryIceSupplys" [lazy]="true"
+    (onLazyLoad)="loadDryIceSupplys($event)" [totalRecords]="totalRecords" [rows]="10" [paginator]="true"
+    [(selection)]="selectedDryIceSupplys" [rowHover]="true" dataKey="id"
+    currentPageReportTemplate="Mostrar {first} a {last} de {{ totalRecords}} registros" [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 25, 50]">
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 3rem">
+          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+        </th>
+        <th pSortableColumn="airWaybill">
+          {{ "module.dryIceSupply.airWaybill" | translate }}
+          <p-sortIcon field="airWaybill"></p-sortIcon>
+        </th>
+        <th pSortableColumn="amountIce">
+          {{ "module.dryIceSupply.amountIce" | translate }}
+          <p-sortIcon field="amountIce"></p-sortIcon>
+        </th>
+        <th pSortableColumn="count">
+          {{ "module.dryIceSupply.dryIceSupplyCant" | translate }}
+          <p-sortIcon field="count"></p-sortIcon>
+        </th>
+        <th pSortableColumn="ejecutado">
+          {{ "module.dryIceSupply.status" | translate }}
+          <p-sortIcon field="ejecutado"></p-sortIcon>
+        </th>
+        <th pSortableColumn="active">
+          {{ "module.dryIceSupply.activeDryIceSupply" | translate }}
+          <p-sortIcon field="active"></p-sortIcon>
+        </th>
+        <th style="width: 8rem"></th>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <av-input-text [label]="'module.dryIceSupply.airWaybill'|translate" [(ngModel)]="dryIceSupplyFind.airWaybill">
+          </av-input-text>
+        </td>
+        <td>
+          <av-input-number [label]="'module.dryIceSupply.amountIce'|translate" [(ngModel)]="dryIceSupplyFind.amountIce">
+          </av-input-number>
+        </td>
+        <td>
+          <av-input-number [label]="'module.dryIceSupply.dryIceSupplyCant'|translate"
+            [(ngModel)]="dryIceSupplyFind.dryIceSupplyCant">
+          </av-input-number>
+        </td>
+        <td>
+          <p-triStateCheckbox [(ngModel)]="dryIceSupplyFind.status" placeholder="Activo"></p-triStateCheckbox>
+        </td>
+        <td>
+          <p-triStateCheckbox [(ngModel)]="dryIceSupplyFind.active" placeholder="Activo"></p-triStateCheckbox>
+        </td>
+        <td>
+          <av-button [label]="'module.dryIceSupply.btnFilter' | translate" icon="pi pi-search" class="p-button-text"
+            (click)="getPaginationAndFilter()"></av-button>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-dryIceSupply let-editing="editing" let-ri="rowIndex">
+      <tr [pEditableRow]="dryIceSupply">
+        <td>
+          <p-tableCheckbox [value]="dryIceSupply"></p-tableCheckbox>
+        </td>
+        <td pEditableColumn>
+          {{ dryIceSupply.airWaybill }}
+        </td>
+        <td pEditableColumn>
+          {{ dryIceSupply.amountIce }}
+        </td>
+        <td pEditableColumn>
+          {{ dryIceSupply.dryIceSupplyCant }}
+        </td>
+        <td pEditableColumn>
+          {{ dryIceSupply.status ? "SI" : "NO" }}
+        </td>
+        <td pEditableColumn>
+          {{ dryIceSupply.active ? "SI" : "NO" }}
+        </td>
+        <td style="text-align: center">
+          <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-text"
+            (click)="editDryIceSupply(dryIceSupply)"></button>
+          <button pButton pRipple icon="pi pi-minus-circle" class="p-button-rounded p-button-text"
+            (click)="deleteDryIceSupply(dryIceSupply)"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>
+
+<p-dialog [(visible)]="dryIceSupplyDialog" [style]="{ width: '700px' }"
+  [header]="'module.dryIceSupply.title' | translate" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <form id="dryIceSupplyForm" [formGroup]="dryIceSupplyForm"
+      class="form-horizontal ng-untouched ng-pristine ng-valid">
+      <div class="p-fluid p-formgrid p-grid">
+        <div class="p-p-2 p-col-6">
+          <av-awb-autocomplete formControlName="airWaybill" [label]="'module.dryIceSupply.airWaybill'"
+            [selectionLabel]="'module.dryIceSupply.airWaybill'|translate" [(ngModel)]="dryIceSupply.airWaybill">
+          </av-awb-autocomplete>
+          <small class="p-p-2 p-invalid" *ngIf="submitted && !dryIceSupply.airWaybill">
+            {{"module.dryIceSupply.validation.airWaybillRequired" | translate}}
+          </small>
+        </div>
+        <div class="p-p-2 p-col-6">
+          <av-input-number label="{{'module.dryIceSupply.amountIce' | translate}}" formControlName="amountIce"
+            [(ngModel)]="dryIceSupply.amountIce">
+          </av-input-number>
+          <small class="p-p-2 p-invalid" *ngIf="submitted && !dryIceSupply.amountIce">
+            {{"module.dryIceSupply.validation.amountIceRequired" | translate}}
+          </small>
+        </div>
+        <div class="p-p-2 p-col-12">
+          <av-station formControlName="dryIceSupplyStations" required
+            [label]="'module.dryIceSupply.stationsAvailable' | translate"
+            [selectionLabel]="'module.dryIceSupply.stationsAvailable' | translate" [(ngModel)]="station"></av-station>
+          <small class="p-p-2 p-invalid" *ngIf="submitted && selectedStations.length <= 0">
+            {{"module.dryIceSupply.validation.dryIceSupplyStationsRequired" | translate}}
+          </small>
+        </div>
+        <div class="p-p-2 p-col-12">
+          <p-checkbox formControlName="active" [binary]="true"
+            [label]="'module.dryIceSupply.activeDryIceSupply' | translate" [(ngModel)]="dryIceSupply.active">
+          </p-checkbox>
+        </div>
+      </div>
+    </form>
+    <p-table #dt styleClass="p-datatable-sm p-datatable-responsive-demo"
+      [value]="dryIceSupply.waybillRpaDryIceSupply" [totalRecords]="totalRecords" [rows]="10" [rowHover]="true"
+      dataKey="id"
+      *ngIf="dryIceSupplyTable"
+      currentPageReportTemplate="Mostrar {first} a {last} de {{ totalRecords}} registros" [showCurrentPageReport]="true"
+      [rowsPerPageOptions]="[10, 25, 50]">
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="createUserName">
+            {{ "module.dryIceSupply.createdUserName" | translate }}
+            <p-sortIcon field="createdUserName"></p-sortIcon>
+          </th>
+          <th pSortableColumn="remark">
+            {{ "module.dryIceSupply.remark" | translate }}
+            <p-sortIcon field="remark"></p-sortIcon>
+          </th>
+          <th pSortableColumn="createdDate">
+            {{ "module.dryIceSupply.createdDate" | translate }}
+            <p-sortIcon field="createdDate"></p-sortIcon>
+          </th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-waybillRpaDryIceSupply let-ri="rowIndex">
+        <tr>
+          <td pEditableColumn>
+            {{ waybillRpaDryIceSupply.createdUserName }}
+          </td>
+          <td pEditableColumn>
+            {{ waybillRpaDryIceSupply.remark }}
+          </td>
+          <td pEditableColumn>
+            {{ waybillRpaDryIceSupply.createdDate }}
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <av-button [label]="'module.dryIceSupply.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+      (click)="hideDialog()"></av-button>
+    <av-button [label]="'module.dryIceSupply.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+      (click)="saveDryIceSupply()"></av-button>
+  </ng-template>
+</p-dialog>
+
+<p-toast baseZIndex="10000"></p-toast>
+
+<p-confirmDialog [style]="{ width: '450px' }" [acceptLabel]="'module.componentNames.btnAccept' | translate"
+  [rejectLabel]="'module.componentNames.btnCancel' | translate"></p-confirmDialog>
+
+<p-blockUI [blocked]="loading">
+  <p-progressSpinner></p-progressSpinner>
+</p-blockUI>

@@ -1,0 +1,21 @@
+<p-card>
+  <form id="importDian1166Form" [formGroup]="importDiam166Form" class="form-horizontal ng-untouched ng-pristine ng-valid">
+    <div class="p-fluid">
+      <div class="p-field">
+        <p-fileUpload name="myfile[]" accept=".txt" customUpload="true" (uploadHandler)="uploader($event)" [chooseLabel]="'module.importDian1166.btnSelected'|translate"
+        [uploadLabel]="'module.importDian1166.btnUploadFile'|translate" [cancelLabel]="'module.importDian1166.btnCancel'|translate"></p-fileUpload>
+      </div>
+      <div class="p-field">
+        <div class="p-grid">
+          <div class="p-col-4">
+            <av-airline formControlName="airlineId" [label]="'module.importDian1166.airlineId'|translate" [(ngModel)]="importDiam1166.airlineId"></av-airline>
+            <div *ngIf="submitted &&  f.airlineId.errors" class="p-p-2" style="min-width: 225px;">
+              <small class="p-invalid"
+                *ngIf="submitted && f.airlineId.errors">{{'module.importDian1166.validation.airlineIdRequired'|translate}}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</p-card>

@@ -1,0 +1,106 @@
+<p-card>
+  <div class="p-field p-grid">
+    <div class="p-col-1">
+      <av-button type="button" [label]="'module.componentNames.btnNew' | translate" icon="pi pi-plus p-button-icon-left"
+        class="p-button-text" (click)="openNew()"></av-button>
+    </div>
+    <div class="p-col-1">
+      <av-button type="button" [label]="'module.componentNames.btnDisabled' | translate"
+        [icon]="'pi pi-minus-circle p-button-icon-left'" class="p-button-text"
+        (click)="deleteSelectedExternalUserGroupTypes()"
+        [disabled]="!selectedExternalUserGroupTypes || !selectedExternalUserGroupTypes.length"></av-button>
+    </div>
+  </div>
+
+  <p-table #dt styleClass="p-datatable-sm p-datatable-responsive-demo" [value]="externalUserGroupTypes" [lazy]="true"
+    (onLazyLoad)="loadExternalUserGroupTypes($event)" [totalRecords]="totalRecords" [rows]="10" [paginator]="true"
+    [(selection)]="selectedExternalUserGroupTypes" [rowHover]="true" dataKey="id"
+    currentPageReportTemplate="Mostrar {first} a {last} de {{ totalRecords}} registros" [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 25, 50]">
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 3rem">
+          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+        </th>
+        <th pSortableColumn="name">
+          {{ "module.externalUserGroupType.name" | translate }}
+          <p-sortIcon field="name"></p-sortIcon>
+        </th>
+        <th pSortableColumn="active">
+          {{ "module.externalUserGroupType.active" | translate }}
+          <p-sortIcon field="active"></p-sortIcon>
+        </th>
+        <th style="width: 8rem"></th>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <av-input-text [label]="'module.externalUserGroupType.name'|translate"
+            [(ngModel)]="externalUserGroupTypeFind.name">
+          </av-input-text>
+        </td>
+        <td>
+          <p-triStateCheckbox [(ngModel)]="externalUserGroupTypeFind.active" placeholder="Activo"></p-triStateCheckbox>
+        </td>
+        <td>
+          <av-button [label]="'module.componentNames.btnFilter' | translate" icon="pi pi-search" class="p-button-text"
+            (click)="getPaginationAndFilter()"></av-button>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-externalUserGroupType let-editing="editing" let-ri="rowIndex">
+      <tr [pEditableRow]="externalUserGroupType">
+        <td>
+          <p-tableCheckbox [value]="externalUserGroupType"></p-tableCheckbox>
+        </td>
+        <td pEditableColumn>
+          {{ externalUserGroupType.name }}
+        </td>
+        <td pEditableColumn>
+          {{ externalUserGroupType.active ? "SI" : "NO" }}
+        </td>
+        <td style="text-align: center">
+          <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-text"
+            (click)="editExternalUserGroupType(externalUserGroupType)"></button>
+          <button pButton pRipple icon="pi pi-minus-circle" class="p-button-rounded p-button-text"
+            (click)="deleteExternalUserGroupType(externalUserGroupType)"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>
+
+<p-dialog [(visible)]="externalUserGroupTypeDialog" [style]="{ width: '450px' }"
+  [header]="'module.externalUserGroupType.dialogTitle' | translate" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <form id="externalUserGroupTypeForm" [formGroup]="externalUserGroupTypeForm"
+      class="form-horizontal ng-untouched ng-pristine ng-valid">
+      <av-input-text hidden formControlName="id" [label]="'module.externalUserGroupType.id' | translate"
+        [(ngModel)]="externalUserGroupType.id">
+      </av-input-text>
+      <av-input-text formControlName="name" [maxlength]="100" label="module.externalUserGroupType.name"
+        [(ngModel)]="externalUserGroupType.name"></av-input-text>
+      <div class="p-p-2" style="min-width: 225px">
+        <p-checkbox formControlName="active" [binary]="true" [label]="'module.externalUserGroupType.active' | translate"
+          [(ngModel)]="externalUserGroupType.active">
+        </p-checkbox>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <av-button [label]="'module.componentNames.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+      (click)="hideDialog()"></av-button>
+    <av-button [label]="'module.componentNames.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+      (click)="saveExternalUserGroupType(externalUserGroupType)"></av-button>
+  </ng-template>
+</p-dialog>
+
+<p-toast baseZIndex="10000"></p-toast>
+
+<p-confirmDialog [style]="{ width: '450px' }" [acceptLabel]="'module.externalUserGroupType.btnAccept' | translate"
+  [rejectLabel]="'module.externalUserGroupType.btnCancel' | translate"></p-confirmDialog>
+
+<p-blockUI [blocked]="loading">
+  <p-progressSpinner></p-progressSpinner>
+</p-blockUI>

@@ -1,0 +1,16 @@
+<div class="p-col-12 p-p-2">
+  <span class="p-float-label">
+    <p-autoComplete [suggestions]="options" (completeMethod)="filterCitysByName($event)" (onSelect)="onSelect($event)"
+      optionValue="id" forceSelection="true" dropdownIcon="pi pi-search" [disabled]="disabled" [minLength]="minLength"
+      field="name" [dropdown]="dropdown" [(ngModel)]="selectioncompanysAvailable" appendTo="body"
+      (onClear)="onClear()">
+      <ng-template let-item pTemplate="item">
+        <div>{{ item.name }} </div>
+      </ng-template>
+      <ng-template let-value pTemplate="selectedItem">
+        <div>{{value}}</div>
+      </ng-template>
+    </p-autoComplete>
+    <label>{{label|translate}}</label>
+  </span>
+</div>

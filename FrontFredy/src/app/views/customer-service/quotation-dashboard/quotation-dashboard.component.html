@@ -1,0 +1,415 @@
+<p-card>
+  <p-table #dt styleClass="p-datatable-sm p-datatable-responsive-demo" [value]="quotationData" [lazy]="true"
+    (onLazyLoad)="loadQuotation($event)" [totalRecords]="totalRecords" [rows]="10" [paginator]="true" [rowHover]="true"
+    dataKey="id" currentPageReportTemplate="{{'module.componentNames.currentPageReport' | translate }}"
+    [showCurrentPageReport]="true" [rowsPerPageOptions]="[5,10, 25, 50]" [resizableColumns]="true" [autoLayout]="true">
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="id">
+          <div class="p-fluid p-p-2">
+            {{ "module.quote.dashboard.tblData.header.id" | translate }} ###
+            <p-sortIcon field="id"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="creationDate">
+          <div class="p-fluid p-p-2">
+            {{ "module.quote.dashboard.tblData.header.creationDate" | translate }}
+            <p-sortIcon field="creationDate"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="company">
+          <div class="p-fluid p-p-2">
+            {{ "module.quote.dashboard.tblData.header.company" | translate }}
+            <p-sortIcon field="company"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="name">
+          <div class="p-fluid p-p-2">
+            {{ "module.quote.dashboard.tblData.header.name" | translate }}
+            <p-sortIcon field="name"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="originStationId">
+          <div class="p-fluid p-p-2">
+            {{"module.quote.dashboard.tblData.header.originCityId" | translate}}
+            <p-sortIcon field="originStationId"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="destinationStationId">
+          <div class="p-fluid p-p-2">
+            {{"module.quote.dashboard.tblData.header.destinationCityId" | translate}}
+            <p-sortIcon field="destinationStationId"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="lblLoadType">
+          <div class="p-fluid p-p-2">
+            {{ "module.quote.dashboard.tblData.header.lblLoadType" | translate }}
+            <p-sortIcon field="lblLoadType"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="status">
+          <div class="p-fluid p-p-2">
+            {{ "module.quote.dashboard.tblData.header.status" | translate }}
+            <p-sortIcon field="status"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="statusDatetime">
+          <div class="p-fluid p-p-2">
+            {{ "module.quote.dashboard.tblData.header.statusDatetime" | translate }}
+            <p-sortIcon field="statusDatetime"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="user">
+          <div class="p-fluid p-p-2">
+            {{ "module.quote.dashboard.tblData.header.user" | translate }}
+            <p-sortIcon field="user"></p-sortIcon>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <av-input-number [(ngModel)]="quotationFind.id"></av-input-number>
+        </td>
+        <td>
+          <av-input-date [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [showIcon]="true"
+            inputId="icon" [(ngModel)]="quotationFind.creationDate"></av-input-date>
+        </td>
+        <td>
+          <av-input-text [(ngModel)]="quotationFind.company"></av-input-text>
+        </td>
+        <td>
+          <av-input-text [(ngModel)]="quotationFind.name"></av-input-text>
+        </td>
+        <td>
+          <av-station [(ngModel)]="originStation" [dropdown]="false" (sendStation)="receiveOriginStation($event)">
+          </av-station>
+        </td>
+        <td>
+          <av-station [(ngModel)]="destinationStation" [dropdown]="false"
+            (sendStation)="receiveDestinationStation($event)">
+          </av-station>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            <av-load-type [(ngModel)]="quotationFind.loadTypeId"></av-load-type>
+          </div>
+        </td>
+        <td>
+          <p-dropdown [options]="status" [(ngModel)]="quotationFind.status" appendTo="body"></p-dropdown>
+        </td>
+        <td>
+          <av-input-date [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [showIcon]="true"
+            inputId="icon" [(ngModel)]="quotationFind.quotationAsignment.updatedDate"></av-input-date>
+        </td>
+        <td>
+          <av-user-autocomplete [(ngModel)]="userAsignmentFind" (sendUser)="receiveUser($event)" [dropdown]="false" [userLoginId]= "user.id">
+          </av-user-autocomplete>
+        </td>
+        <td>
+          <av-button [label]="'module.componentNames.btnFilter' | translate" icon="pi pi-search" class="p-button-text"
+            (click)="getPaginationAndFilter()"></av-button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-quotation let-i="rowIndex">
+      <tr>
+        <td>
+          <div class="p-fluid p-p-2">
+            {{quotation.id}}
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            {{quotation.creationDate | date:'yyyy-MMM-dd HH:MM'}}
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            {{quotation.company}}
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            {{quotation.name}}
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            {{quotation.originStationDesc}}
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            {{quotation.destinationStationDesc}}
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            {{quotation.loadType}}
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            {{quotation.quotationStatus?.quotationStatusName | translate}}
+          </div>
+          <!-- <div class="p-fluid p-p-2" *ngIf="!quotation.quotationAsignment">
+            {{"module.quote.user.statuses.pending" | translate}}
+          </div>
+          <div class="p-fluid p-p-2" *ngIf="quotation.quotationAsignment && !quotation.quotationAsignment.onHold">
+            {{"module.quote.user.statuses.assigned" | translate}}
+          </div>
+          <div class="p-fluid p-p-2" *ngIf="quotation.quotationAsignment && quotation.quotationAsignment.onHold">
+            {{"module.quote.user.statuses.onHold" | translate}}
+          </div> -->
+        </td>
+        <td>
+          <div class="p-fluid p-p-2" *ngIf="quotation.quotationAsignment">
+            {{ quotation.quotationAsignment.updatedDate | date:'yyyy-MMM-dd hh:mm' }}
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            {{ quotation.quotationAsignment ? quotation.quotationAsignment.userAsignmentFirstName + " " +
+            quotation.quotationAsignment.userAsignmentLastName : "" }}
+          </div>
+        </td>
+        <td>
+          <av-button [label]="'module.quote.dashboard.tblData.header.detail' | translate " icon="pi pi-plus"
+            class="p-button-text" (click)="openQuoteDetails(quotation)">
+          </av-button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>
+
+<p-dialog [(visible)]="quoteDetailsDialog" [style]="{ width: '800px', heigth : '500px' }"
+  [header]="'module.quote.dashboard.popup.title' | translate" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <div class="">
+      <div class="p-fluid p-formgrid p-grid">
+        <div class="p-p-2 p-col-2">
+          <b>{{ "module.quote.dashboard.popup.lblName" | translate }}:</b>
+          <br>
+          <span>{{quoteDetails.name}}</span>
+        </div>
+        <div class="p-p-2 p-col-2">
+          <b>{{ "module.quote.dashboard.popup.lblOriginCityId" | translate }}:</b>
+          <br>
+          <span>{{quoteDetails.originStationDesc}}</span>
+        </div>
+        <div class="p-p-2 p-col-2">
+          <b>{{ "module.quote.dashboard.popup.lblDestinationCityId" | translate }}:</b>
+          <br>
+          <span>{{quoteDetails.destinationStationDesc}}</span>
+        </div>
+        <div class="p-p-2 p-col-2">
+          <b>{{ "module.quote.dashboard.popup.lblLoadType" | translate }}:</b>
+          <br>
+          <span>{{quoteDetails.loadType}}</span>
+          <span *ngIf="quoteDetails.quotationAnimal != null">({{quoteDetails.quotationAnimal.animalAmount}})</span>
+        </div>
+        <div class="p-p-2 p-col-2">
+          <b>{{ "module.quote.dashboard.popup.stackable" | translate }}:</b>
+          <br>
+          <span>{{quoteDetails.removable}}</span>
+        </div>
+        <div class="p-p-2 p-col-2">
+          <b>{{ "module.quote.dashboard.popup.chargeableWeight" | translate }}:</b>
+          <br>
+          <span>{{quoteDetails.chargableWeight}}</span>
+        </div>
+        <!-- <div class="p-p-2 p-col-2" *ngIf="quoteDetails.loadTypeId == 5">
+          <b>{{ "module.quote.dashboard.popup.liveAnimal" | translate }}:</b>
+          <br>
+          <span>{{quoteDetails.chargableWeight}}</span>
+        </div> -->
+      </div>
+
+      <div class="p-p-2 p-col-12">
+        <av-input-text-area [(ngModel)]="quoteDetails.description"
+          label="{{'module.quote.quotation.description' | translate}}*" [disabled]="true"></av-input-text-area>
+      </div>
+      <div *ngIf="quoteDetails.loadTypeId == loadTypeService.perishable">
+        <div class="p-grid">
+          <b class="p-col-2 ">{{ "module.quote.dashboard.popup.perishable.temperatureControl" | translate }}:</b>
+          <b class="p-col-2">{{ "module.quote.dashboard.popup.perishable.temperatureRange" | translate }}:</b>
+        </div>
+        <div class="p-grid">
+          <span class="p-col-2">{{quoteDetails.usingPerishable ? "Yes" : "No"}}</span>
+          <span class="p-col-2">{{quoteDetails.usingPerishable?.perishable?.name}}</span>
+        </div>
+      </div>
+      <div *ngIf="quoteDetails.loadTypeId == loadTypeService.pharmaceutical && quoteDetails.usingPharma">
+        <div class="p-grid">
+          <b class="p-col-2">{{ "module.quote.dashboard.popup.pharma.dangerousGoodsCode" | translate }}:</b>
+          <b class="p-col-2">{{ "module.quote.dashboard.popup.pharma.temperatureControl" | translate }}:</b>
+        </div>
+        <div class="p-grid">
+          <span class="p-col-2">{{ quoteDetails.usingPharma?.dangerousGoodsCode }}</span>
+          <span class="p-col-2">{{ quoteDetails.usingPharma?.temperatureControl }}</span>
+          <av-button
+            *ngIf="quoteDetails.loadTypeId == loadTypeService.pharmaceutical && quoteDetails.usingPharma?.temperatureControl == 'Yes'"
+            [label]="'module.quote.dashboard.popup.btnDetailPharma' | translate" icon="pi pi-plus" class="p-button-text"
+            (click)="detailPharma()"></av-button>
+        </div>
+      </div>
+      <br>
+      <p-table #dt [value]="quotationDetailsData" [lazy]="true" (onLazyLoad)="loadQuotationDetails($event)"
+        [totalRecords]="totalRecordsDatails" [rows]="5" [paginator]="false" [rowHover]="true" dataKey="id"
+        currentPageReportTemplate="{{'module.componentNames.currentPageReportDetails.show' | translate }} {{totalRecordsDatails}}
+        {{'module.componentNames.currentPageReportDetails.records' | translate }}" [showCurrentPageReport]="true"
+        styleClass="p-datatable-responsive-demo">
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="numberPieces">
+              {{ "module.quote.quoteDetails.numberPieces" | translate }}
+            </th>
+            <th pSortableColumn="weight">
+              {{ "module.quote.quoteDetails.weight" | translate }}
+            </th>
+            <th pSortableColumn="weightUnit">
+              {{ "module.quote.quoteDetails.weightUnit" | translate }}
+            </th>
+            <th pSortableColumn="depth">
+              {{ "module.quote.quoteDetails.depth" | translate }}
+            </th>
+            <th pSortableColumn="width">
+              {{ "module.quote.quoteDetails.width" | translate }}
+            </th>
+            <th pSortableColumn="high">
+              {{ "module.quote.quoteDetails.high" | translate }}
+            </th>
+            <th pSortableColumn="lengthUnit">
+              {{ "module.quote.quoteDetails.lengthUnit" | translate }}
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-quoteDetails let-editing="editing" let-ri="rowIndex">
+          <tr [pEditableRow]="quoteDetails">
+            <td pEditableColumn>
+              {{ quoteDetails.pieces }}
+            </td>
+            <td pEditableColumn>
+              {{ quoteDetails.weight }}
+            </td>
+            <td pEditableColumn>
+              {{ quoteDetails.weightUnitDesc }}
+            </td>
+            <td pEditableColumn>
+              {{ quoteDetails.depth }}
+            </td>
+            <td pEditableColumn>
+              {{ quoteDetails.width }}
+            </td>
+            <td pEditableColumn>
+              {{ quoteDetails.high }}
+            </td>
+            <td pEditableColumn>
+              {{ quoteDetails.lengthUnitDesc }}
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <div class="p-grid">
+        <span class="p-col-3">
+          <av-input-number label="{{'module.quote.dashboard.popup.lblRate' | translate}}"
+            [(ngModel)]="quoteApproval.rate" type="numeric">
+          </av-input-number>
+          <div class="p-p-2">
+            <small class="p-invalid" *ngIf="submitted && !quoteApproval.rate">
+              {{"module.quote.dashboard.popup.validation.rateRequired" | translate}}
+            </small>
+          </div>
+        </span>
+        <span class="p-col-9">
+          <av-input-text label="{{'module.quote.dashboard.popup.lblComents' | translate}}"
+            [(ngModel)]="quoteApproval.comments">
+          </av-input-text>
+        </span>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <av-button *ngIf="quotationAsignment.onHold != true" [label]="'module.quote.dashboard.popup.btnOnHold' | translate" icon="pi pi-times"
+      class="p-button-text" (click)="onHold()"></av-button>
+    <av-button [label]="'module.quote.dashboard.popup.btnRejectQuote' | translate" icon="pi pi-times"
+      class="p-button-text" (click)="approval(customerServiceStatus.cancelled)"></av-button>
+    <av-button [label]="'module.quote.dashboard.popup.btnConfirmQuote' | translate" icon="pi pi-save"
+      class="p-button-text" (click)="approval(customerServiceStatus.confirmed)"></av-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="pharmaDialog" [style]="{ width: '700px' }"
+  [header]="'module.quote.dashboard.popup.pharma.title' | translate" [modal]="true" styleClass="p-fluid" [closable]="false">
+  <ng-template pTemplate="content">
+    <av-input-text label="{{'module.quote.dashboard.popup.pharma.TypePackaging' | translate}}"
+      [(ngModel)]="quoteDetails.usingPharma.packagingTypeAnswer" [disabled]="true">
+    </av-input-text>
+    <av-input-number
+      *ngIf="quoteDetails.usingPharma.packagingTypeAnswer=='Passive' && quoteDetails.usingPharma.temperatureControl=='Yes'"
+      label="{{'module.quote.dashboard.popup.pharma.packagingLifetime' | translate}}"
+      [(ngModel)]="quoteDetails.usingPharma.packagingPassive.packagingLifetime" [disabled]="true">
+    </av-input-number>
+    <av-input-text
+      *ngIf="quoteDetails.usingPharma.packagingTypeAnswer=='Passive' && quoteDetails.usingPharma.temperatureControl=='Yes'"
+      label="{{'module.quote.dashboard.popup.pharma.packagingDescription' | translate}}"
+      [(ngModel)]="quoteDetails.usingPharma.packagingPassive.packagingDescription" [disabled]="true">
+    </av-input-text>
+    <p-table
+      *ngIf="quoteDetails.usingPharma.packagingTypeAnswer=='Active' && quoteDetails.usingPharma.temperatureControl=='Yes'"
+      #dt [value]="quoteDetails.usingPharma.containers" [rows]="10" [rowHover]="true" dataKey="id" [showCurrentPageReport]="true"
+      [rowsPerPageOptions]="[10, 25, 50]" styleClass="p-datatable-responsive-demo">
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="width" class="text-center">
+            {{ "module.quote.dashboard.popup.pharma.containers.quantityContainers" | translate }}
+          </th>
+          <th pSortableColumn="weight" class="text-center">
+            {{ "module.quote.dashboard.popup.pharma.containers.typeContainer" | translate }}
+          </th>
+          <th pSortableColumn="depth" class="text-center">
+            {{ "module.quote.dashboard.popup.pharma.containers.temperatureRange" | translate }}
+          </th>
+          <th pSortableColumn="width" class="text-center">
+            {{ "module.quote.dashboard.popup.pharma.containers.dryIceRessupplyAnswer" | translate }}
+          </th>
+          <th pSortableColumn="high" class="text-center">
+            {{ "module.quote.dashboard.popup.pharma.containers.positioningAnswer" | translate }}
+          </th>
+          <th pSortableColumn="high" class="text-center">
+            {{ "module.quote.dashboard.popup.pharma.containers.repositioningAnswer" | translate }}
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-qtd let-rowIndex="rowIndex">
+        <tr>
+          <td pEditableColumn>
+            {{ qtd.quantityContainer }}
+          </td>
+          <td pEditableColumn>
+            {{ qtd.containerType.description }}
+          </td>
+          <td pEditableColumn>
+            {{ qtd.temperatureRange.name }}
+          </td>
+          <td pEditableColumn>
+            {{ qtd.dryIceResupplyAnswer }}
+          </td>
+          <td pEditableColumn>
+            {{ qtd.positioningAnswer }}
+          </td>
+          <td pEditableColumn>
+            {{ qtd.repositioningAnswer }}
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <av-button [label]="'module.componentNames.btnClose' | translate" icon="pi pi-times" class="p-button-text"
+      (click)="pharmaDialog=false"></av-button>
+  </ng-template>
+</p-dialog>
+
+<p-toast baseZIndex="10000"></p-toast>

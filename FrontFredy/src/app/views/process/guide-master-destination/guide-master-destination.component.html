@@ -1,0 +1,25 @@
+<form id="guideMasterDestinationForm" [formGroup]="guideMasterDestinationForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+  <div class="p-fluid p-formgrid p-grid">
+    <div class="p-p-2 p-col-4">
+      <av-skychain formControlName="countryDestination" [label]="'module.master.countryDestination'|translate"></av-skychain>
+      <div *ngIf="submitted && ! f.countryDestination.errors" class="p-p-2" style="min-width: 225px">
+        <small class="p-invalid"
+          *ngIf="submitted && !f.countryDestination.errors">{{"module.master.validation.countryDestinationRequired" | translate}}</small>
+      </div>
+    </div>
+    <div class="p-p-2 p-col-4">
+      <av-skychain formControlName="stateDestination" [label]="'module.master.stateDestination'|translate"></av-skychain>
+      <div *ngIf="submitted && ! f.stateDestination.errors" class="p-p-2" style="min-width: 225px">
+        <small class="p-invalid"
+          *ngIf="submitted && !f.stateDestination.errors">{{"module.master.validation.stateDestinationRequired" | translate}}</small>
+      </div>
+    </div>
+    <div class="p-p-2 p-col-4">
+      <av-skychain formControlName="cityDestination" [label]="'module.master.cityDestination'|translate"></av-skychain>
+      <div *ngIf="submitted && ! f.cityDestination.errors" class="p-p-2" style="min-width: 225px">
+        <small class="p-invalid"
+          *ngIf="submitted && !f.cityDestination.errors">{{"module.master.validation.cityDestinationRequired" | translate}}</small>
+      </div>
+    </div>
+  </div>
+</form>

@@ -1,0 +1,193 @@
+<p-card>
+    <form id="upload" [formGroup]="uploadForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+        <div class="p-fluid p-formgrid p-grid">
+            <div class="p-p-2 p-col-3">
+                <!--
+                <av-company formControlName="company" label="{{'module.CBP.uploadFile.selectCompany' | translate}}*"
+                    [selectionLabel]="'module.CBP.uploadFile.selectCompany' | translate" [(ngModel)]="company"
+                    (sendCompany)="receiveCompany($event)">
+                </av-company>
+                -->
+                <av-company-ddl formControlName="company" label="{{'module.CBP.uploadFile.selectCompany' | translate}}"
+                    [(ngModel)]="companyId">
+                </av-company-ddl>
+                <div *ngIf="submitted && uf.company.errors" class="p-invalid p-p-2">
+                    <small *ngIf="uf.company.errors.required" class="p-invalid">
+                        {{
+                        "module.CBP.uploadFile.validation.companyValidation" | translate
+                        }}
+                    </small>
+                </div>
+            </div>
+            <div class="p-p-2 p-col-9">
+                <div class="p-d-flex p-flex-wrap p-jc-end">
+                    <a href="../../../../assets/excel/PlantillaCBP.xlsx" download="PlantillaCBP" class="p-m-2">
+                        <p-card>
+                            <div class="p-d-flex p-flex-column p-jc-center" style="width: 150px; height: 1px">
+                                <span class="p-text-center p-text-bold">
+                                    <img alt="Card" style="width: 32px; margin-top: -5px"
+                                        src="/assets/img/module/excel.svg" />
+                                        {{ "module.CBP.uploadFile.downloadFileFormat" | translate }}
+                                </span>
+                            </div>
+                        </p-card>
+                    </a>
+                </div>
+            </div>
+            <div class="p-p-2 p-col-3">
+                <av-input-text [maxlength]="3" label="{{'module.CBP.uploadFile.prefix' | translate}}*" formControlName="prefix">
+                </av-input-text>
+                <div *ngIf="uf.prefix.invalid && (uf.prefix.dirty || submitted)" class="p-p-2" style="min-width: 225px">
+                    <small class="p-invalid">
+                        {{ "module.CBP.uploadFile.validation.prefixValidation" | translate }}
+                    </small>
+                </div>
+            </div>
+            <div class="p-p-2 p-col-3">
+                <av-input-text [maxlength]="8" label="{{'module.CBP.uploadFile.docNum' | translate}}*" formControlName="docNum">
+                </av-input-text>
+                <div *ngIf="uf.docNum.invalid && (uf.docNum.dirty || submitted)" class="p-p-2" style="min-width: 225px">
+                    <small class="p-invalid">
+                        {{ "module.CBP.uploadFile.validation.docNumValidation" | translate }}
+                    </small>
+                </div>
+            </div>
+            <div class="p-p-2 p-d-flex p-ai-center p-jc-left">
+                <av-button [label]="'module.CBP.uploadFile.accept' | translate" class="p-button-text" (click)="validateAwb()">
+                </av-button>
+            </div>
+        </div>
+    </form>
+
+</p-card>
+<p></p>
+<p-card *ngIf="isUploadFile">
+    <form id="upload" [formGroup]="attachmentForm" class="p-p-2 form-horizontal ng-untouched ng-pristine ng-valid">
+        <div class="p-fluid p-formgrid p-grid">
+            <div class="p-p-2 p-col-6">
+                <av-input-text [label]="'module.CBP.uploadFile.attachment' | translate" [(ngModel)]="attachment"
+                    formControlName="attachment"></av-input-text>
+                <div class="p-p-2 p-col-3">
+                    <input style="display: none"
+                        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                        type="file" (change)="selectFile($event)" #fileInput />
+                </div>
+            </div>
+            <div class="p-p-2 p-col-2">
+                <av-button [label]="'module.directClaims.loadFile.btnSelected' | translate" icon="pi pi-file"
+                    class="p-button-text" (click)="fileInput.click()"></av-button>
+            </div>
+        </div>
+    </form>
+    <div class="p-fluid p-formgrid p-grid" *ngIf="attachmentName != null">
+        <div class="p-p-2 p-col-12">
+            <h3>{{attachmentName}}</h3>
+            <small class="p-p-2 p-invalid" *ngIf="validFileBack==false">
+                {{ "module.CBP.uploadFile.invalidFileExtension" | translate }}
+              </small>
+        </div>
+        <div class="p-p-2 p-col-12" *ngIf="validSelectedFile">
+            <h3>{{'module.CBP.uploadFile.maxSize' | translate}}</h3>
+        </div>        
+        <div class="p-p-2 p-col-2" *ngIf="!validSelectedFile && validFileBack">
+            <av-button [label]="'module.CBP.uploadFile.upload' | translate" icon="pi pi-file" class="p-button-text"
+                (click)="validUpload()"></av-button>
+        </div>
+    </div>
+</p-card>
+<p-dialog [(visible)]="errorUploadDialog" [style]="{ width: '850px' }"
+    [header]="'module.CBP.uploadFile.errorUpload' | translate" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+
+        <p-table [(value)]="searchUpload" styleClass="p-datatable-responsive-demo table-striped"
+            [showCurrentPageReport]="true" [rowHover]="true" dataKey="id" [autoLayout]="true">
+
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th style="min-width:100px">
+                        {{ "module.CBP.searchFile.fileName" | translate }}
+                    </th>
+                    <th style="min-width:90px">
+                        {{ "module.CBP.searchFile.description" | translate }}
+                    </th>
+                    <th style="min-width:90px">
+                        {{ "module.CBP.searchFile.date" | translate }}
+                    </th>
+                    <th style="min-width:110px">
+                        {{ "module.CBP.searchFile.user" | translate }}
+                    </th>
+                    <th style="min-width:100px">
+                        {{ "module.CBP.searchFile.line" | translate }}
+                    </th>
+
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-search>
+                <tr>
+                    <td>
+                        {{ search.fileName }}
+                    </td>
+                    <td>
+                        {{ search.fileType }}
+                    </td>
+                    <td>
+                        {{ search.date | date:'yyyy-MM-dd  hh:mm' }}
+                    </td>
+                    <td>
+                        {{ search.userName }}
+                    </td>
+                    <td>
+                        {{ search.line }}
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <av-button [label]="'module.componentNames.btnClose' | translate" icon="pi pi-times" class="p-button-text"
+            (click)="errorUploadDialog = false"></av-button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="successUploadDialog" [style]="{ width: '450px' }"
+    [header]="'module.CBP.uploadFile.successUpload' | translate" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <p>{{'module.CBP.uploadFile.successUpload' | translate}}</p>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <av-button [label]="'module.componentNames.btnClose' | translate" icon="pi pi-times" class="p-button-text"
+            (click)="successUploadDialog = false"></av-button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="overwriteDialog" [style]="{ width: '450px' }"
+    [header]="'module.CBP.uploadFile.overwrite' | translate" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="p-fluid p-formgrid p-grid">
+            <div class="p-p-2 p-col-12">
+                <p>{{updateFileInResume.createDate}}</p>
+            </div>
+            <div class="p-p-2 p-col-12">
+                <p>{{updateFileInResume.userCreate.firstName}}</p>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <av-button [label]="'module.airline.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+            (click)="overwriteDialog = false"></av-button>
+            <av-button [label]="'module.CBP.uploadFile.upload' | translate" icon="pi pi-save" class="p-button-text"
+            (click)="overwrite()"></av-button>
+    </ng-template>
+</p-dialog>
+<p-toast baseZIndex="10000"></p-toast>
+<p-confirmDialog [header]="'module.CBP.moduleName' | translate" icon="pi pi-exclamation-triangle"
+    [style]="{ width: '50vw' }" [baseZIndex]="10000">
+</p-confirmDialog>
+<div class="overlay" *ngIf="loading">
+    <div class="spinner">
+        <img src="assets/img/ZZ5H.gif" />
+    </div>
+</div>

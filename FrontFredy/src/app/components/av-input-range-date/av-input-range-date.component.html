@@ -1,0 +1,9 @@
+<div class="p-col-12 p-p-2">
+    <span class="p-float-label">
+      <p-calendar appendTo="body" [(ngModel)]="value" [showTime]="showTime" [defaultDate]="defaultDate" [placeholder]="placeholder" [monthNavigator]="monthNavigator" [yearNavigator]="yearNavigator" [yearRange]="yearRange" [dateFormat]="format"
+        [locale]="calendar" [showIcon]="showIcon" [disabled]="disabled" (ngModelChange)="onChange()" selectionMode="range">
+      </p-calendar>
+      <label>{{label|translate}}</label>
+    </span>
+  </div>
+  

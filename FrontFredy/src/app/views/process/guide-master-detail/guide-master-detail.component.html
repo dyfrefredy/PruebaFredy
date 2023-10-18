@@ -1,0 +1,36 @@
+<form id="guideMasterDetailForm" [formGroup]="guideMasterDetailForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+  <div class="p-fluid p-formgrid p-grid">
+    <div class="p-p-2 p-col-5">
+      <av-travel-document-type formControlName="travelDocumentType" [label]="'module.master.travelDocumentType'|translate"></av-travel-document-type>
+      <div *ngIf="submitted && ! f.travelDocumentType.errors" class="p-p-2" style="min-width: 225px">
+        <small class="p-invalid"
+          *ngIf="submitted && !f.travelDocumentType.errors">{{"module.master.validation.travelDocumentTypeRequired" | translate}}</small>
+      </div>
+    </div>
+    <div class="p-p-2 p-col-3">
+      <av-input-number [maxlength]="2" formControlName="numberChildDocs" [label]="'module.master.numberChildDocs' | translate"
+        size="1"></av-input-number>
+    </div>
+    <div class="p-p-2 p-col-4">
+      <av-station formControlName="adminCode" [selectionLabel]="'Seleccione el código de administración'" [label]="'module.master.adminCode'|translate"></av-station>
+      <div *ngIf="submitted && ! f.adminCode.errors" class="p-p-2" style="min-width: 225px">
+        <small class="p-invalid"
+          *ngIf="submitted && !f.adminCode.errors">{{"module.master.validation.adminCodeRequired" | translate}}</small>
+      </div>
+    </div>
+    <div class="p-p-2 p-col-6">
+      <av-country formControlName="shippingCountry" [label]="'module.master.shippingCountry'|translate"></av-country>
+      <div *ngIf="submitted && ! f.shippingCountry.errors" class="p-p-2" style="min-width: 225px">
+        <small class="p-invalid"
+          *ngIf="submitted && !f.shippingCountry.errors">{{"module.master.validation.shippingCountryRequired" | translate}}</small>
+      </div>
+    </div>
+    <div class="p-p-2 p-col-6">
+      <av-airport formControlName="shippingPlaceCode" [label]="'module.master.shippingPlaceCode'|translate"></av-airport>
+      <div *ngIf="submitted && ! f.shippingPlaceCode.errors" class="p-p-2" style="min-width: 225px">
+        <small class="p-invalid"
+          *ngIf="submitted && !f.shippingPlaceCode.errors">{{"module.master.validation.shippingPlaceCodeRequired" | translate}}</small>
+      </div>
+    </div>
+  </div>
+</form>

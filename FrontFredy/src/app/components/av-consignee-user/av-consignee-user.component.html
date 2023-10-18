@@ -1,0 +1,19 @@
+<div class="p-col-12 p-p-2">
+    <div class="p-inputgroup">
+        <button pButton pRipple icon="pi pi-align-justify" class="p-col-1" (click)="showConsignee()"></button>
+        <span class="p-float-label">
+            <p-autoComplete class="p-col-11" [suggestions]="options" (completeMethod)="filterCitysByName($event)"
+                (onSelect)="onSelect($event)" optionValue="id" forceSelection="true" dropdownIcon="pi pi-search"
+                [disabled]="disabled" [minLength]="minLength" field="name" [dropdown]="true"
+                [(ngModel)]="selectionstationsAvailable" appendTo="body">
+                <ng-template let-item pTemplate="item">
+                    <div>{{item.name}}</div>
+                </ng-template>
+                <ng-template let-value pTemplate="selectedItem">
+                    <div>{{value.name}}</div>
+                </ng-template>
+            </p-autoComplete>
+            <label>{{label|translate}}</label>
+        </span>
+    </div>
+</div>

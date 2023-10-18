@@ -1,0 +1,40 @@
+<form id="guideMasterConveyorForm" [formGroup]="guideMasterConveyorForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+  <div class="p-fluid p-formgrid p-grid">
+    <div class="p-p-2 p-col-6">
+      <av-airline formControlName="airlineId" [label]="'module.master.airlineId'|translate" ></av-airline>
+      <div *ngIf="submitted && ! f.airlineId.errors" class="p-p-2" style="min-width: 225px">
+        <small class="p-invalid" *ngIf="submitted && !f.airlineId.errors">{{"module.master.validation.airlineIdRequired" | translate}}</small>
+      </div>
+    </div>
+    <div class="p-p-2 p-col-6">
+      <av-skychain formControlName="documentTypeConveyor" [label]="'module.master.documentTypeConveyor'|translate"></av-skychain>
+      <div *ngIf="submitted && ! f.documentTypeConveyor.errors" class="p-p-2" style="min-width: 225px">
+        <small class="p-invalid"
+          *ngIf="submitted && !f.documentTypeConveyor.errors">{{"module.master.validation.documentTypeConveyorRequired" | translate}}</small>
+      </div>
+    </div>
+    <div class="p-p-2 p-col-5">
+      <av-input-number formControlName="nit" [label]="'module.master.nit' | translate" [ngClass]="{ 'p-invalid': submitted && f.nit.errors }"></av-input-number>
+      <div *ngIf="submitted && ! f.nit.errors" class="p-p-2" style="min-width: 225px">
+        <small class="p-invalid" *ngIf="submitted && !f.nit.errors">{{"module.master.validation.nitRequired" | translate}}</small>
+      </div>
+    </div>
+    <div class="p-p-2 p-col-4">
+      <av-input-number formControlName="dv" [label]="'module.master.dv' | translate" [ngClass]="{ 'p-invalid': submitted && f.dv.errors }"></av-input-number>
+      <div *ngIf="submitted && ! f.dv.errors" class="p-p-2" style="min-width: 225px">
+        <small class="p-invalid" *ngIf="submitted && !f.dv.errors">{{"module.master.validation.dvRequired" | translate}}</small>
+      </div>
+    </div>
+    <div class="p-p-2 p-col-3">
+        <span>
+          Disponibilidad 1166:
+        </span>
+        <span>
+          :: 1166 ::
+        </span>
+        <span>
+          [+]
+        </span>
+    </div>
+  </div>
+</form>

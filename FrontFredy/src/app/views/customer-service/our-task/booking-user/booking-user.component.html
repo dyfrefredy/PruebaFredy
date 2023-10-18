@@ -1,0 +1,257 @@
+<p-card>
+    <p-table #dt [value]="bookingData" [lazy]="true" (onLazyLoad)="loadBooking($event)" [totalRecords]="totalRecords"
+      [rows]="10" [paginator]="true" [rowHover]="true" dataKey="id"
+      currentPageReportTemplate="{{'module.componentNames.currentPageReport' | translate }}"
+      [showCurrentPageReport]="true" [rowsPerPageOptions]="[5,10, 25, 50]" styleClass="p-datatable-responsive-demo"
+      [resizableColumns]="true" [autoLayout]="true">
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="id">
+            <div class="p-fluid p-p-2">
+              {{ "module.bookingUser.id" | translate }} ###
+              <p-sortIcon field="id"></p-sortIcon>
+            </div>
+          </th>
+          <th pSortableColumn="creationDate">
+            <div class="p-fluid p-p-2">
+              {{ "module.bookingUser.date" | translate }}
+              <p-sortIcon field="creationDate"></p-sortIcon>
+            </div>
+          </th>
+          <th pSortableColumn="company">
+            <div class="p-fluid p-p-2">
+              {{ "module.bookingUser.company" | translate }}
+              <p-sortIcon field="company"></p-sortIcon>
+            </div>
+          </th>
+          <th pSortableColumn="userName">
+            <div class="p-fluid p-p-2">
+              {{ "module.bookingUser.userName" | translate }}
+              <p-sortIcon field="userName"></p-sortIcon>
+            </div>
+          </th>
+          <th pSortableColumn="origin">
+            <div class="p-fluid p-p-2">
+              {{ "module.bookingUser.origin" | translate }}
+              <p-sortIcon field="origin"></p-sortIcon>
+            </div>
+          </th>
+          <th pSortableColumn="destination">
+            <div class="p-fluid p-p-2">
+              {{"module.bookingUser.destination" | translate}}
+              <p-sortIcon field="destination"></p-sortIcon>
+            </div>
+          </th>
+          <th pSortableColumn="cargoType">
+            <div class="p-fluid p-p-2">
+              {{"module.bookingUser.cargoType" | translate}}
+              <p-sortIcon field="cargoType"></p-sortIcon>
+            </div>
+          </th>
+          <th pSortableColumn="chargeableWeight">
+            <div class="p-fluid p-p-2">
+              {{ "module.bookingUser.chargeableWeight" | translate }}
+              <p-sortIcon field="chargeableWeight"></p-sortIcon>
+            </div>
+          </th>
+          <th pSortableColumn="flightDate">
+            <div class="p-fluid p-p-2">
+              {{ "module.bookingUser.flightDate" | translate }}
+              <p-sortIcon field="flightDate"></p-sortIcon>
+            </div>
+          </th>
+          <th pSortableColumn="status">
+            <div class="p-fluid p-p-2">
+              {{ "module.bookingUser.status" | translate }}
+              <p-sortIcon field="status"></p-sortIcon>
+            </div>
+          </th>
+          <th pSortableColumn="statusDatetime">
+            <div class="p-fluid p-p-2">
+              {{ "module.bookingUser.statusTime" | translate }}
+              <p-sortIcon field="statusDatetime"></p-sortIcon>
+            </div>
+          </th>
+          <th pSortableColumn="user">
+            <div class="p-fluid p-p-2">
+              {{ "module.bookingUser.user" | translate }}
+              <p-sortIcon field="user"></p-sortIcon>
+            </div>
+          </th>
+          <th>
+            <div class="p-fluid p-p-2">
+              {{ "module.bookingUser.detail" | translate }}
+            </div>
+          </th>
+        </tr>
+        <tr>
+          <td>
+            <av-input-number [(ngModel)]="bookingFind.id"></av-input-number>
+          </td>
+          <td>
+            <av-input-date [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [showIcon]="true"
+              inputId="icon" [(ngModel)]="bookingFind.createdDate"></av-input-date>
+          </td>
+          <td>
+            <av-input-text [(ngModel)]="this.bookingFind.user.userCtsDetail.companyName"></av-input-text>
+          </td>
+          <td>
+            <av-input-text [(ngModel)]="bookingFind.user.firstName"></av-input-text>
+          </td>
+          <td>
+            <av-station [(ngModel)]="originStation" (sendStation)="receiveOriginStation($event)" [dropdown]="false"></av-station>
+          </td>
+          <td>
+            <av-station [(ngModel)]="destinationStation" (sendStation)="receiveDestinationStation($event)" [dropdown]="false">
+            </av-station>
+          </td>
+          <td>
+            <div class="p-fluid p-p-2">
+              <av-load-type [(ngModel)]="bookingFind.loadTypeId" selectedLabel="{{'module.bookingUser.all' | translate}}"></av-load-type>
+            </div>
+          </td>
+          <td>
+            <av-input-number [(ngModel)]="bookingFind.chargeableWeight"></av-input-number>
+          </td>
+          <td>
+            <av-input-date [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [showIcon]="true"
+              inputId="icon" [(ngModel)]="bookingFind.estimatedFlightDate"></av-input-date>
+          </td>
+          <td>
+            <p-dropdown [options]="status" [(ngModel)]="bookingHistoryStatusFind.bookingStatusId" appendTo="body"></p-dropdown>
+          </td>
+          <td>
+            <av-input-date [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [showIcon]="true"
+              inputId="icon" [(ngModel)]="bookingHistoryStatusFind.createdDate"></av-input-date>
+          </td>
+          <td>
+            <av-user-autocomplete [(ngModel)]="bookingHistoryStatusFind.user" (sendUser)="receiveUser($event)" [dropdown]="false" [userLoginId]= "user.id">
+            </av-user-autocomplete>
+          </td>
+          <td>
+            <av-button [label]="'module.componentNames.btnFilter' | translate" icon="pi pi-search" class="p-button-text"
+              (click)="getPaginationAndFilter()"></av-button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-booking let-i="rowIndex">
+        <tr>
+          <td>
+            <div class="p-fluid p-p-2">
+              {{booking.id}}
+            </div>
+          </td>
+          <td>
+            <div class="p-fluid p-p-2">
+              {{booking.createdDate | date:'yyyy-MMM-dd HH:MM'}}
+            </div>
+          </td>
+          <td>
+            <div class="p-fluid p-p-2">
+              {{booking.company}}
+            </div>
+          </td>
+          <td>
+            <div class="p-fluid p-p-2">
+              {{booking.userName}}
+            </div>
+          </td>
+          <td>
+            <div class="p-fluid p-p-2">
+              {{booking.orgStation.name}}
+            </div>
+          </td>
+          <td>
+            <div class="p-fluid p-p-2">
+              {{booking.destStation.name}}
+            </div>
+          </td>
+          <td>
+            <div class="p-fluid p-p-2">
+              {{booking.loadType.description}}
+            </div>
+          </td>
+          <td>
+            <div class="p-fluid p-p-2">
+              {{booking.chargeableWeight}}
+            </div>
+          </td>
+          <td>
+            <div class="p-fluid p-p-2">
+              {{booking.estimatedFlightDate | date:'yyyy-MMM-dd'}}
+            </div>
+          </td>
+          <td>
+            <div class="p-fluid p-p-2">
+              {{ booking.bookingHistoryLastStatus?.bookingStatus?.name }}
+            </div>
+          </td>
+          <td>
+            <div class="p-fluid p-p-2">
+              {{ booking.bookingHistoryLastStatus?.createdDate | date:'yyyy-MMM-dd HH:mm' }}
+            </div>
+          </td>
+          <td>
+            <div class="p-fluid p-p-2">
+              {{ booking.bookingHistoryLastStatus?.user?.firstName }}
+            </div>
+          </td>
+          <td>
+            <div *ngIf="!comeRole">
+              <av-button *ngIf="!booking.bookingHistoryLastStatus?.userAssigmentId" [label]="'module.quote.user.assign'"
+                icon="pi pi-plus" class="p-button-text" (click)="openAssignUser(booking)">
+              </av-button>
+              <av-button *ngIf="booking.bookingHistoryLastStatus?.userAssigmentId" [label]="'module.quote.user.reAssign'"
+                icon="pi pi-pencil" class="p-button-text" (click)="openReAssignUser(booking)">
+              </av-button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+  
+  <p-dialog [(visible)]="bookingDialog" [style]="{ width: '800px', heigth : '500px' }"
+    [header]="'module.quote.user.popupTitle' | translate" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+      <div>
+        <div class="p-grid">
+          <b class="p-col-4">{{ "module.quote.dashboard.popup.lblOriginCityId" | translate }}:</b>
+          <b class="p-col-4">{{ "module.quote.dashboard.popup.lblDestinationCityId" | translate }}:</b>
+          <b class="p-col-4">{{ "module.quote.dashboard.popup.lblLoadType" | translate }}:</b>
+        </div>
+        <div class="p-grid">
+          <span class="p-col-4">{{bookingDetails.orgStation.name}}</span>
+          <span class="p-col-4">{{bookingDetails.destStation.name}}</span>
+          <span class="p-col-4">{{bookingDetails.loadType.description}}</span>
+        </div>
+        
+        <form id="userForm" [formGroup]="userAsignmentForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+          <div class="p-grid">
+            <span class="p-col-12">
+              <!--Validación de rol de acuerdo a Bug308280-->
+              <av-user-autocomplete label="{{'module.quote.user.user' | translate}}" [(ngModel)]="userAsignment"
+                formControlName="userAsignment" [disabled]="user.roleId!=roleService.customerServiceAdm" [userLoginId]= "user.id">
+              </av-user-autocomplete>
+              <small class="p-p-2 p-invalid" *ngIf="submitted && !userAsignment">
+                {{"module.quote.user.validation.userAsignmentRequired" | translate}}
+              </small>
+              <small class="p-p-2 p-invalid" *ngIf="userChange==false">
+                {{"module.quote.user.validation.userChangeRequired" | translate}}
+              </small>
+            </span>
+          </div>
+        </form>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+      <av-button [label]="'module.componentNames.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+        (click)="hideDialog()"></av-button>
+      <av-button [label]="'module.componentNames.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+        (click)="saveAsignment()"></av-button>
+    </ng-template>
+  </p-dialog>
+  
+  <p-toast baseZIndex="10000"></p-toast>
+  
+  

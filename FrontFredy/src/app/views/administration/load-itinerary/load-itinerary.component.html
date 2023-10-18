@@ -1,0 +1,10 @@
+<p-card>
+  <p-fileUpload name="myfile[]"
+                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                customUpload="true" (uploadHandler)="uploader($event)"
+                [chooseLabel]="'module.importItinerary.btnSelected'|translate"
+                [uploadLabel]="'module.importItinerary.btnUploadFile'|translate"
+                [cancelLabel]="'module.importItinerary.btnCancel'|translate">
+  </p-fileUpload>
+</p-card>
+<p-messages [severity]="severity" [(value)]="msgs"></p-messages>

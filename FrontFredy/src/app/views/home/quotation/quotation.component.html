@@ -1,0 +1,633 @@
+<p-card>
+  <form id="quotationForm" [formGroup]="quotationForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+    <div class="p-fluid p-formgrid p-grid">
+      <div class="p-p-2 p-col-6">
+        <av-input-text label="{{'module.quote.quotation.name' | translate}}*" formControlName="name"
+          [(ngModel)]="quotation.name" [disabled]="isLogin">
+        </av-input-text>
+        <div *ngIf="submitted && f.name.errors" class="p-invalid">
+          <div *ngIf="f.name.errors.required" class="p-p-2">
+            {{"module.quote.quotation.validation.nameRequired" | translate}}
+          </div>
+        </div>
+      </div>
+      <div class="p-p-2 p-col-6">
+        <av-input-text label="{{'module.quote.quotation.email' | translate}}*" formControlName="email"
+          [(ngModel)]="quotation.email" [disabled]="isLogin">
+        </av-input-text>
+        <div *ngIf="submitted && f.email.errors" class="p-invalid">
+          <div *ngIf="f.email.errors.required" class="p-p-2">
+            {{"module.quote.quotation.validation.emailRequired" | translate}}
+          </div>
+        </div>
+        <div *ngIf="submitted && f.email.errors" class="p-invalid">
+          <div *ngIf="f.email.errors.email" class="p-p-2">
+            {{"module.quote.quotation.validation.emailinvalid" | translate}}
+          </div>
+        </div>
+      </div>
+      <div class="p-p-2 p-col-6">
+        <av-input-text label="{{'module.quote.quotation.company' | translate}}" formControlName="company"
+          [(ngModel)]="quotation.company" [disabled]="isLogin">
+        </av-input-text>
+      </div>
+      <div class="p-p-2 p-col-6">
+        <av-customer-type formControlName="customerTypeId" label="{{'module.quote.quotation.customerTypeId' | translate}}*"
+          selectedLabel="{{'module.quote.quotation.selectedCustomerType' | translate}}"
+          [(ngModel)]="quotation.customerTypeId" [disabled]="isLogin"></av-customer-type>
+        <div *ngIf="submitted && f.customerTypeId.errors" class="p-invalid">
+          <div *ngIf="f.customerTypeId.errors.required" class="p-p-2">
+            {{"module.quote.quotation.validation.customerTypeIdRequired" | translate}}
+          </div>
+        </div>
+      </div>
+      <div class="p-p-2 p-col-6">
+        <av-station formControlName="originCity" label="{{'module.quote.quotation.originCityId' | translate}}*"
+          [selectionLabel]="'module.quote.quotation.originCityId' | translate" [(ngModel)]="originCity" [disabled]="true">
+        </av-station>
+        <div *ngIf="submitted && f.originCity.errors" class="p-invalid">
+          <div *ngIf="f.originCity.errors.required" class="p-p-2">
+            {{"module.quote.quotation.validation.originCityIdRequired" | translate}}
+          </div>
+        </div>
+      </div>
+      <div class="p-p-2 p-col-6">
+        <av-station formControlName="destinationCity" label="{{'module.quote.quotation.destinationCityId' | translate}}*"
+          [selectionLabel]="'module.quote.quotation.destinationCityId'|translate" [(ngModel)]="destinationCity">
+        </av-station>
+        <div *ngIf="submitted && f.destinationCity.errors" class="p-invalid">
+          <div *ngIf="f.destinationCity.errors.required" class="p-p-2">
+            {{"module.quote.quotation.validation.destinationCityIdRequired" | translate}}
+          </div>
+        </div>
+      </div>
+      <div class="p-p-2 p-col-6">
+        <av-load-type label="{{'module.quote.quotation.loadTypeId' | translate}}*"
+          selectedLabel="{{'module.quote.quotation.selectedLoadType' | translate}}" formControlName="loadTypeId"
+          [(ngModel)]="quotation.loadTypeId" (change)="loadTypeChange()" [filter]="true"></av-load-type>
+        <div *ngIf="submitted && f.loadTypeId.errors" class="p-invalid">
+          <div *ngIf="f.loadTypeId.errors.required" class="p-p-2">
+            {{"module.quote.quotation.validation.loadTypeIdRequired" | translate}}
+          </div>
+        </div>
+      </div>
+      <div class="p-p-2 p-col-6">
+        <!--<div class="p-p-2">
+          <p-checkbox formControlName="removable" [binary]="true"
+            [label]="'module.quote.quotation.removable' | translate" [(ngModel)]="quotation.removable">
+          </p-checkbox>
+        </div>-->
+        <av-cargo-stackable formControlName="removable" selectedLabel="{{'module.quote.quotation.selectedLoadType' | translate}}"
+        label="{{'module.quote.quotation.removable' | translate}}*" [(ngModel)]="quotation.removable" >
+        </av-cargo-stackable>
+        <div *ngIf="submitted && f.removable.errors" class="p-invalid">
+          <div *ngIf="f.removable.errors.required" class="p-p-2">
+            {{"module.quote.quotation.validation.removableRequired" | translate}}
+          </div>
+        </div>
+      </div>
+      <div class="p-p-2 p-col-6">
+        <av-input-text label="{{'module.quote.quotation.customerQuoteId' | translate}}"
+          formControlName="customerQuoteId" [(ngModel)]="quotation.customerQuoteId">
+        </av-input-text>
+      </div>
+      <div class="p-col-6 p-p-2">
+        <div class="p-inputgroup">
+          <span class="p-float-label">
+            <input [ngClass]="ngClass" type="text" pInputText [(ngModel)]="quotation.optionalEmail" style="width: 100%"
+              formControlName="emailOption" disabled="true">
+            <button type="button" pButton pRipple icon="pi pi-search" styleClass="p-button-warn"
+              (click)="emailDialog = true"></button>
+            <label>{{'module.quote.quotation.otherEmail'|translate}}</label>
+          </span>
+        </div>
+      </div>
+      <!-- <div class="p-p-2 p-col-6">
+        <span class="p-float-label">
+          <div class="p-inputgroup">
+            <input [ngClass]="ngClass" type="text" pInputText [(ngModel)]="quotation.optionalEmail" 
+            formControlName="emailOption">
+            <button type="button" pButton pRipple icon="pi pi-search" styleClass="p-button-warn"
+              (click)="emailDialog = true"></button>
+          </div>
+          <label>{{'module.quote.quotation.otherEmail'|translate}}</label>
+        </span>
+      </div> -->
+      <div class="p-p-2 p-col-12">
+        <av-input-text-area formControlName="description" [(ngModel)]="quotation.description"
+          label="{{'module.quote.quotation.description' | translate}}*"></av-input-text-area>
+        <div *ngIf="submitted && f.description.errors" class="p-invalid">
+          <div *ngIf="f.description.errors.required" class="p-p-2">
+            {{"module.quote.quotation.validation.descriptionRequired" | translate}}
+          </div>
+        </div>
+      </div>
+      <!--
+      <div class="p-p-2 p-col-6">
+        <div class="p-p-2 p-text-italic p-text-justify">
+          <small style="font-weight: bold;">
+            {{ "module.quote.quotation.weightUnitDescInitial" | translate}}
+          </small>
+          <small>
+            {{"module.quote.quotation.weightUnitDesc" | translate}}
+          </small>
+        </div>
+      </div>
+      <div class="p-p-2 p-col-6">
+        <div class="p-p-2 p-text-italic p-text-justify">
+          <small style="font-weight: bold;">
+            {{"module.quote.quotation.lengthUnitDescInitial" | translate}}
+          </small>
+          <small>
+            {{"module.quote.quotation.lengthUnitDesc" | translate}}
+          </small>
+        </div>
+      </div>
+      -->
+    </div>
+  </form>
+
+  <h5 class="p-text-center p-text-bold">{{'module.quote.quotation.titleDetail'|translate}}</h5>
+
+  <form id="quoteDetailsForm" [formGroup]="quoteDetailsForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+    <div>
+      <div class="p-fluid p-formgrid p-grid">
+        <div class="p-col-2">
+          <av-input-number label="{{'module.quote.quotation.numberPieces' | translate}}" formControlName="numberPieces"
+            [(ngModel)]="quoteDetails.pieces" onkeypress="return event.charCode >= 48"></av-input-number>
+          <div class="p-p-2">
+            <small class="p-invalid" *ngIf="submitted2 && f2.numberPieces.errors">
+              {{"module.quote.quotation.validation.numberPiecesRequired" | translate}}
+            </small>
+          </div>
+        </div>
+        <div class="p-col-1">
+          <av-input-number formControlName="weight" label="module.quote.quoteDetails.weight"
+            [(ngModel)]="quoteDetails.weight" onkeypress="return event.charCode >= 48">
+          </av-input-number>
+          <div class="p-p-2">
+            <small class="p-invalid"
+              *ngIf="submitted2 && f2.weight.errors">{{"module.quote.quoteDetails.validation.weightRequired" |
+              translate}}</small>
+          </div>
+        </div>
+        <div class="p-col-2">
+          <av-measurement-unit-type formControlName="weightUnitId" [label]="'module.quote.quoteDetails.weightUnit'|translate"
+            [selectionLabel]="'module.componentNames.select'|translate" [(ngModel)]="quoteDetails.weightUnitId"
+            (sendDesc)="receiveMeasurementUnit($event)"></av-measurement-unit-type>
+          <div class="p-p-2">
+            <small class="p-invalid" *ngIf="submitted2 && f2.weightUnitId.errors">
+              {{"module.quote.quoteDetails.validation.weightUnitRequired" | translate}}</small>
+          </div>
+        </div>
+        <div class="p-col-1">
+          <av-input-number formControlName="depth" label="module.quote.quoteDetails.depth"
+            [(ngModel)]="quoteDetails.depth" onkeypress="return event.charCode >= 48">
+          </av-input-number>
+          <div class="p-p-2">
+            <small class="p-invalid" *ngIf="submitted2 && f2.depth.errors">
+              {{"module.quote.quoteDetails.validation.depthRequired" | translate}}
+            </small>
+          </div>
+        </div>
+        <div class="p-col-1">
+          <av-input-number formControlName="width" label="module.quote.quoteDetails.width"
+            [(ngModel)]="quoteDetails.width" onkeypress="return event.charCode >= 48"></av-input-number>
+          <div class="p-p-2">
+            <small class="p-invalid" *ngIf="submitted2 && f2.width.errors">
+              {{"module.quote.quoteDetails.validation.widthRequired" | translate}}
+            </small>
+          </div>
+        </div>
+        <div class="p-col-1">
+          <av-input-number formControlName="high" label="module.quote.quoteDetails.high"
+            [(ngModel)]="quoteDetails.high" onkeypress="return event.charCode >= 48"></av-input-number>
+          <div class="p-p-2">
+            <small class="p-invalid"
+              *ngIf="submitted2 && f2.high.errors">{{"module.quote.quoteDetails.validation.highRequired" |
+              translate}}</small>
+          </div>
+        </div>
+        <div class="p-col-2">
+          <av-weight-unit-type formControlName="lengthUnitId" [label]="'module.quote.quoteDetails.lengthUnit'|translate"
+            [selectionLabel]="'module.componentNames.select'|translate" [(ngModel)]="quoteDetails.lengthUnitId"
+            (sendDescription)="receiveLengthUnit($event)">
+          </av-weight-unit-type>
+          <div class="p-p-2">
+            <small class="p-invalid" *ngIf="submitted2 && f2.lengthUnitId.errors">
+              {{"module.quote.quoteDetails.validation.lengthUnitRequired" | translate}}</small>
+          </div>
+        </div>
+        <div class="p-p-2 text-right">
+          <av-button [label]="'module.quote.quoteDetails.btnAdd' | translate" icon="pi pi-plus" class="p-button-text"
+            (click)="addQuoteDetails()"></av-button>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div>
+    <p-table #dt [value]="listQuoteDetails" [rows]="10" [rowHover]="true" dataKey="id" [showCurrentPageReport]="true"
+      [rowsPerPageOptions]="[10, 25, 50]" styleClass="p-datatable-responsive-demo">
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="width" class="text-center">
+            {{ "module.quote.quotation.numberPieces" | translate }}
+          </th>
+          <th pSortableColumn="weight" class="text-center">
+            {{ "module.quote.quoteDetails.weight" | translate }}
+          </th>
+          <th pSortableColumn="weightUnit" class="text-center">
+            {{ "module.quote.quoteDetails.weightUnit" | translate }}
+          </th>
+          <th pSortableColumn="depth" class="text-center">
+            {{ "module.quote.quoteDetails.depth" | translate }}
+          </th>
+          <th pSortableColumn="width" class="text-center">
+            {{ "module.quote.quoteDetails.width" | translate }}
+          </th>
+          <th pSortableColumn="high" class="text-center">
+            {{ "module.quote.quoteDetails.high" | translate }}
+          </th>
+          <th pSortableColumn="lengthUnit" class="text-center">
+            {{ "module.quote.quoteDetails.lengthUnit" | translate }}
+          </th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-qtd let-rowIndex="rowIndex">
+        <tr>
+          <td pEditableColumn>
+            {{ qtd.pieces }}
+          </td>
+          <td pEditableColumn>
+            {{ qtd.weight }}
+          </td>
+          <td pEditableColumn>
+            {{ qtd.weightUnitDesc }}
+          </td>
+          <td pEditableColumn>
+            {{ qtd.depth }}
+          </td>
+          <td pEditableColumn>
+            {{ qtd.width }}
+          </td>
+          <td pEditableColumn>
+            {{ qtd.high }}
+          </td>
+          <td pEditableColumn>
+            {{ qtd.lengthUnitDesc }}
+          </td>
+          <td style="text-align: center">
+            <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-text"
+              (click)="deleteQuoteDetails(rowIndex)"></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+  <div>
+    <div *ngIf="submitted && validateQuotationDetailsOk" class="p-invalid">
+      <div *ngIf="listQuoteDetails.length <= 0 &&
+        (listQuoteDetails.length <= 0 && quotation.loadTypeId != loadTypeService.pharmaceutical) ||
+        (quotation.loadTypeId == loadTypeService.pharmaceutical && usingPharma.containers.length <= 0)"
+        class="p-p-2">
+        {{"module.quote.quotation.validation.quotationDetailRequired" | translate}}
+      </div>
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <div class="text-right">
+      <av-button *ngIf="quotationCreatedSuccessfully==true" [label]="'module.componentNames.btnNew' | translate"
+        class="p-ripple" type="button" icon="pi pi-plus" [disabled]="disableSave" (click)="newQuotation()"></av-button>
+      <av-button *ngIf="quotationCreatedSuccessfully==false" [label]="'module.componentNames.btnSave' | translate"
+        class="p-ripple" type="button" icon="pi pi-save" [disabled]="disableSave" (click)="save()"></av-button>
+    </div>
+  </ng-template>
+</p-card>
+
+<p-dialog [(visible)]="perishablesDialog" [style]="{ width: '450px' }"
+  [header]="'module.quote.quotation.perishables.title' | translate" [modal]="true" styleClass="p-fluid" [closable]="false">
+  <ng-template pTemplate="content">
+    <av-yes-no selectedLabel="{{'module.componentNames.select' | translate}}"
+    label="{{'module.quote.quotation.perishables.temperatureControl' | translate}}" [(ngModel)]="temperatureControl" >
+    </av-yes-no>
+    <av-temperature-range *ngIf="temperatureControl == 'Yes'" selectedLabel="{{'module.componentNames.select' | translate}}"
+    label="{{'module.quote.quotation.perishables.temperatureRange' | translate}}" [(ngModel)]="perishable.id" >
+    </av-temperature-range>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <av-button [label]="'module.componentNames.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+      (click)="hidePerishablesDialog()"></av-button>
+    <av-button [label]="'module.componentNames.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+      (click)="createPerishable()"></av-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="emailDialog" [style]="{ width: '50%', heigth: '500px' }"
+  [header]="'module.quote.quotation.addEmail' | translate" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <form id="emailForm" [formGroup]="emailForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+      <div class="p-fluid p-formgrid p-grid">
+        <div class="p-p-2 p-col-9">
+          <av-input-text label="{{'module.quote.quotation.email' | translate}}" formControlName="email"
+            [(ngModel)]="emailInput">
+          </av-input-text>
+        </div>
+        <div class="p-p-2 p-col-3">
+          <av-button type="button" [label]="'module.quote.quotation.add' | translate" icon="pi pi-plus"
+            class="p-button-text" (click)="addEmail()"></av-button>
+        </div>
+      </div>
+    </form>
+    <div>
+      <p-table #dt [value]="emails" [rows]="5" [rowHover]="true" dataKey="id" [showCurrentPageReport]="true"
+        [rowsPerPageOptions]="[10, 25, 50]" styleClass="p-datatable-responsive-demo">
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="width" class="text-center">
+              {{ "module.quote.quotation.email" | translate }}
+            </th>
+            <th>{{ "module.quote.quotation.option" | translate }}</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-qtd let-rowIndex="rowIndex">
+          <tr>
+            <td pEditableColumn>
+              {{ qtd.value }}
+            </td>
+            <td style="text-align: center">
+              <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-text"
+                (click)="deleteEmail(rowIndex)"></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <av-button type="button" [label]="'module.guideAcceptance.popupPharmaCare.btnSave' | translate" icon="pi pi-save"
+      class="p-button-text" (click)="saveEmail()"></av-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="quotationAnimalDialog" [style]="{ width: '50%', heigth: '500px' }"
+  [header]="'module.quote.quotation.liveAnimal' | translate" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+      <div class="p-fluid p-formgrid p-grid">
+        <div class="p-p-2 p-col-12">
+          <av-input-number label="{{'module.quote.quotation.amount' | translate}}"
+            [(ngModel)]="quotation.quotationAnimal.animalAmount">
+          </av-input-number>
+        </div>
+      </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <av-button type="button" [label]="'module.guideAcceptance.popupPharmaCare.btnSave' | translate"
+      class="p-button-text" (click)="quotationAnimalDialog = false"></av-button>
+    <av-button type="button" [label]="'module.guideAcceptance.popupPharmaCare.btnCancel' | translate"
+      class="p-button-text" (click)="quotationAnimalDialog = false"></av-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="pharmaDialog" [style]="{ width: '700px' }"
+  [header]="'module.quote.quotation.pharma.title' | translate" [modal]="true" styleClass="p-fluid" [closable]="false">
+  <ng-template pTemplate="content">
+    <av-input-number label="{{'module.quote.quotation.pharma.un' | translate}}" [(ngModel)]="usingPharma.dangerousGoodsCode">
+    </av-input-number>
+    <av-yes-no selectedLabel="{{'module.componentNames.select' | translate}}"
+      label="{{'module.quote.quotation.pharma.temperatureControl' | translate}}"
+      [(ngModel)]="usingPharma.temperatureControl">
+    </av-yes-no>
+    <small class="p-p-2 p-invalid" *ngIf="submittedUsingPharma && !usingPharma.temperatureControl">
+      {{"module.quote.quotation.pharma.validation.temperatureControlRequired" | translate}}
+    </small>
+    <av-packing-type *ngIf="usingPharma.temperatureControl=='Yes'"
+      selectedLabel="{{'module.componentNames.select' | translate}}"
+      label="{{'module.quote.quotation.pharma.TypePackaging' | translate}}" [(ngModel)]="usingPharma.packagingTypeAnswer">
+    </av-packing-type>
+    <small class="p-p-2 p-invalid"
+      *ngIf="submittedUsingPharma && (usingPharma.temperatureControl == 'Yes' && !usingPharma.packagingTypeAnswer)">
+      {{"module.quote.quotation.pharma.validation.packagingTypeRequired" | translate}}
+    </small>
+    <av-input-number *ngIf="usingPharma.packagingTypeAnswer=='Passive' && usingPharma.temperatureControl=='Yes'"
+      label="{{'module.quote.quotation.pharma.packagingLifetime' | translate}}"
+      [(ngModel)]="usingPharma.packagingPassive.packagingLifetime">
+    </av-input-number>
+    <av-input-text *ngIf="usingPharma.packagingTypeAnswer=='Passive' && usingPharma.temperatureControl=='Yes'"
+      label="{{'module.quote.quotation.pharma.packagingDescription' | translate}}"
+      [(ngModel)]="usingPharma.packagingPassive.packagingDescription">
+    </av-input-text>
+    
+    <form *ngIf="usingPharma.packagingTypeAnswer=='Active' && usingPharma.temperatureControl=='Yes'" id="quoteDetailsForm"
+      [formGroup]="containerForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+      <div class="p-fluid p-formgrid p-grid">
+        <div class="p-p-2 p-col-4">
+          <av-input-number formControlName="quantityContainers"
+            label="{{'module.quote.quotation.pharma.containers.quantityContainers' | translate}}*"
+            [(ngModel)]="container.quantityContainer" onkeypress="return event.charCode >= 48"></av-input-number>
+            <small class="p-p-2 p-invalid" *ngIf="submittedContainer && fContainer.quantityContainers.errors">
+              {{"module.quote.quotation.pharma.containers.validation.quantityContainersRequired" | translate}}
+            </small>
+        </div>
+        <div class="p-p-2 p-col-4">
+          <av-container-type formControlName="containerTypeId" selectedLabel="{{'module.componentNames.select' | translate}}"
+            label="{{'module.quote.quotation.pharma.containers.typeContainer' | translate}}*"
+            [(ngModel)]="container.containerTypeId" (sendDescription)="receiveDescContainerType($event)"></av-container-type>
+            <small class="p-p-2 p-invalid" *ngIf="submittedContainer && fContainer.containerTypeId.errors">
+              {{"module.quote.quotation.pharma.containers.validation.typeContainerRequired" | translate}}
+            </small>
+        </div>
+        <div class="p-p-2 p-col-4">
+          <av-temperature-range formControlName="temperatureRangeId" selectedLabel="{{'module.componentNames.select' | translate}}"
+            label="{{'module.quote.quotation.pharma.containers.temperatureRange' | translate}}*"
+            [(ngModel)]="container.temperatureRangeId" (sendDescription)="receiveDescTemperatureRange($event)">
+          </av-temperature-range>
+          <small class="p-p-2 p-invalid" *ngIf="submittedContainer && fContainer.temperatureRangeId.errors">
+            {{"module.quote.quotation.pharma.containers.validation.temperatureRangeRequired" | translate}}
+          </small>
+        </div>
+        <div class="p-p-2 p-col-4">
+          <av-yes-no formControlName="dryIceRessupply" selectedLabel="{{'module.componentNames.select' | translate}}"
+            label="{{'module.quote.quotation.pharma.containers.dryIceRessupplyAnswer' | translate}}*"
+            [(ngModel)]="container.dryIceResupplyAnswer" variableName="dryIceRessupplyAnswer"
+            (sendVariableName)="receiveVariableName($event)">
+          </av-yes-no>
+          <small class="p-p-2 p-invalid" *ngIf="submittedContainer && fContainer.dryIceRessupply.errors">
+            {{"module.quote.quotation.pharma.containers.validation.dryIceRessupplyAnswerRequired" | translate}}
+          </small>
+        </div>
+        <div class="p-p-2 p-col-3">
+          <av-yes-no formControlName="positioning" selectedLabel="{{'module.componentNames.select' | translate}}"
+            label="{{'module.quote.quotation.pharma.containers.positioningAnswer' | translate}}*"
+            [(ngModel)]="container.positioningAnswer" variableName="positioningAnswer"
+            (sendVariableName)="receiveVariableName($event)">
+          </av-yes-no>
+          <small class="p-p-2 p-invalid" *ngIf="submittedContainer && fContainer.positioning.errors">
+            {{"module.quote.quotation.pharma.containers.validation.positioningRequired" | translate}}
+          </small>
+        </div>
+        <div class="p-p-2 p-col-3">
+          <av-yes-no formControlName="repositioning" selectedLabel="{{'module.componentNames.select' | translate}}"
+            label="{{'module.quote.quotation.pharma.containers.repositioningAnswer' | translate}}*"
+            [(ngModel)]="container.repositioningAnswer" variableName="repositioningAnswer"
+            (sendVariableName)="receiveVariableName($event)">
+          </av-yes-no>
+          <small class="p-p-2 p-invalid" *ngIf="submittedContainer && fContainer.repositioning.errors">
+            {{"module.quote.quotation.pharma.containers.validation.repositioningRequired" | translate}}
+          </small>
+        </div>
+        <div class="p-p-2 text-right p-col-2">
+          <av-button [label]="'module.componentNames.btnAdd' | translate" icon="pi pi-plus" class="p-button-text"
+            (click)="addQuoteContainer()"></av-button>
+        </div>
+      </div>
+    </form>
+    <p-table *ngIf="usingPharma.packagingTypeAnswer=='Active' && usingPharma.temperatureControl=='Yes'" #dt
+      [value]="usingPharma.containers" [rows]="10" [rowHover]="true" dataKey="id" [showCurrentPageReport]="true"
+      [rowsPerPageOptions]="[10, 25, 50]" styleClass="p-datatable-responsive-demo">
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="width" class="text-center">
+            {{ "module.quote.quotation.pharma.containers.quantityContainers" | translate }}
+          </th>
+          <th pSortableColumn="weight" class="text-center">
+            {{ "module.quote.quotation.pharma.containers.typeContainer" | translate }}
+          </th>
+          <th pSortableColumn="depth" class="text-center">
+            {{ "module.quote.quotation.pharma.containers.temperatureRange" | translate }}
+          </th>
+          <th pSortableColumn="width" class="text-center">
+            {{ "module.quote.quotation.pharma.containers.dryIceRessupplyAnswer" | translate }}
+          </th>
+          <th pSortableColumn="high" class="text-center">
+            {{ "module.quote.quotation.pharma.containers.positioningAnswer" | translate }}
+          </th>
+          <th pSortableColumn="high" class="text-center">
+            {{ "module.quote.quotation.pharma.containers.repositioningAnswer" | translate }}
+          </th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-qtd let-rowIndex="rowIndex">
+        <tr>
+          <td pEditableColumn>
+            {{ qtd.quantityContainer }}
+          </td>
+          <td pEditableColumn>
+            {{ qtd.containerTypeDesc }}
+          </td>
+          <td pEditableColumn>
+            {{ qtd.temperatureRangeDesc }}
+          </td>
+          <td pEditableColumn>
+            {{ qtd.dryIceResupplyAnswer }}
+          </td>
+          <td pEditableColumn>
+            {{ qtd.positioningAnswer }}
+          </td>
+          <td pEditableColumn>
+            {{ qtd.repositioningAnswer }}
+          </td>
+          <td style="text-align: center">
+            <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-text"
+              (click)="deleteQuoteContainer(rowIndex)"></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+    <small class="p-p-2 p-invalid"
+      *ngIf="submittedUsingPharma && usingPharma.temperatureControl == 'Yes' && usingPharma.packagingTypeAnswer == 'Active' && usingPharma.container.length < 1">
+      {{"module.quote.quotation.pharma.validation.containerRequired" | translate}}
+    </small>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <av-button [label]="'module.componentNames.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+      (click)="cancelPharmaDialog()"></av-button>
+    <av-button [label]="'module.componentNames.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+      (click)="savePharmaDialog()"></av-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="dryIceDialog" [style]="{ width: '450px' }"
+  [header]="'module.quote.quotation.pharma.containers.dryIceRessupply.title' | translate" [modal]="true"
+  styleClass="p-fluid" [closable]="false">
+  <ng-template pTemplate="content">
+    <av-input-number label="{{'module.quote.quotation.pharma.containers.dryIceRessupply.quantity' | translate}}*"
+      [(ngModel)]="container.dryIceResupply.quantity"></av-input-number>
+    <small class="p-p-2 p-invalid"
+      *ngIf="submittedDryIce && (container.dryIceResupply.quantity == 0 || !container.dryIceRessupply.quantity)">
+      {{"module.quote.quotation.pharma.containers.dryIceRessupply.validation.quantityRequired" | translate}}
+    </small>
+    <av-station label="{{'module.quote.quotation.pharma.containers.dryIceRessupply.station' | translate}}*"
+      [selectionLabel]="'module.quote.quotation.pharma.containers.dryIceRessupply.station'|translate"
+      [(ngModel)]="container.dryIceResupply.station">
+    </av-station>
+    <small class="p-p-2 p-invalid" *ngIf="submittedDryIce && !this.container.dryIceResupply.station">
+      {{"module.quote.quotation.pharma.containers.dryIceRessupply.validation.stationRequired" | translate}}
+    </small>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <av-button [label]="'module.componentNames.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+      (click)="cancelDryIceDialog()"></av-button>
+    <av-button [label]="'module.componentNames.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+      (click)="createDryIceDialog()"></av-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="positioningDialog" [style]="{ width: '450px' }"
+  [header]="'module.quote.quotation.pharma.containers.positioning.title' | translate" [modal]="true"
+  styleClass="p-fluid" [closable]="false">
+  <ng-template pTemplate="content">
+    <av-station label="{{'module.quote.quotation.pharma.containers.positioning.originStation' | translate}}*"
+      [selectionLabel]="'module.quote.quotation.pharma.containers.positioning.originStation'|translate"
+      [(ngModel)]="container.positioning.originStation">
+    </av-station>
+    <small class="p-p-2 p-invalid"
+      *ngIf="submittedPositioning && !this.usingPharma.container.positioning.originStation">
+      {{"module.quote.quotation.pharma.containers.positioning.validation.originStationRequired" | translate}}
+    </small>
+    <av-station label="{{'module.quote.quotation.pharma.containers.positioning.destinationStation' | translate}}*"
+      [selectionLabel]="'module.quote.quotation.pharma.containers.positioning.destinationStation'|translate"
+      [(ngModel)]="container.positioning.destinationStation">
+    </av-station>
+    <small class="p-p-2 p-invalid"
+      *ngIf="submittedPositioning && !this.usingPharma.container.positioning.destinationStation">
+      {{"module.quote.quotation.pharma.containers.positioning.validation.destinationStationRequired" | translate}}
+    </small>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <av-button [label]="'module.componentNames.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+      (click)="cancelPositioning()"></av-button>
+    <av-button [label]="'module.componentNames.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+      (click)="createPositioning()"></av-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="repositioningDialog" [style]="{ width: '450px' }"
+  [header]="'module.quote.quotation.pharma.containers.repositioning.title' | translate" [modal]="true"
+  styleClass="p-fluid" [closable]="false">
+  <ng-template pTemplate="content">
+    <av-station label="{{'module.quote.quotation.pharma.containers.repositioning.station' | translate}}*"
+      [selectionLabel]="'module.quote.quotation.pharma.containers.repositioning.station'|translate"
+      [(ngModel)]="container.repositioningStation">
+    </av-station>
+    <small class="p-p-2 p-invalid"
+      *ngIf="submittedRepositioning && !this.container.repositioningStation">
+      {{"module.quote.quotation.pharma.containers.repositioning.validation.stationRequired" | translate}}
+    </small>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <av-button [label]="'module.componentNames.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+      (click)="cancelRepositioning()"></av-button>
+    <av-button [label]="'module.componentNames.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+      (click)="createRepositioning()"></av-button>
+  </ng-template>
+</p-dialog>
+
+<p-toast baseZIndex="10000" position="top-center"></p-toast>
+
+<div class="overlay" *ngIf="loading">
+  <div class="spinner">
+    <img src="assets/img/ZZ5H.gif" />
+  </div>
+</div>

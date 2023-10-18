@@ -1,0 +1,40 @@
+<p-card>
+    <form id="quotationForm" [formGroup]="quotationForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+        <div class="p-fluid p-formgrid p-grid">
+
+            <div class="p-p-2 p-col-12">
+                <av-quotation-rejected formControlName="rejected" [(ngModel)]="rejected"
+                    label="{{'module.quote.quotation.optionRejected' | translate}}">
+                </av-quotation-rejected>
+                <div *ngIf="submitted && f.rejected.errors" class="p-p-2">
+                    <small class="p-invalid" *ngIf="f.rejected.errors.required">
+                        {{"module.quote.quotation.validation.optionRejectedRequired" | translate}}
+                    </small>
+                </div>
+            </div>
+            <div class="p-p-2 p-col-12" *ngIf="rejected == 5">
+                <av-input-text-area formControlName="description" [(ngModel)]="description"
+                    label="{{'module.quote.quotation.description' | translate}}"></av-input-text-area>
+                <div *ngIf="submitted && f.description.errors" class="p-p-2">
+                    <small class="p-invalid" *ngIf="f.description.errors.required">
+                        {{"module.quote.quotation.validation.descriptionRequired" | translate}}
+                    </small>
+                </div>
+            </div>
+
+
+
+        </div>
+    </form>
+
+
+
+    <ng-template pTemplate="footer">
+        <div class="text-right">
+            <av-button [label]="'module.quote.quotation.btnSave' | translate" class="p-ripple" type="button"
+                icon="pi pi-save" (click)="save()"></av-button>
+        </div>
+    </ng-template>
+</p-card>
+
+<p-toast baseZIndex="10000" position="top-center"></p-toast>

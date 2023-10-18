@@ -1,0 +1,19 @@
+<div class="card">
+    <p-tabView styleClass="tabview-custom">
+      <p-tabPanel>
+        <ng-template pTemplate="header">
+          <i class="pi pi-eye p-mr-2"></i>
+          <span>{{'module.ourTaskDashboard.quotation' | translate}}</span>
+        </ng-template>
+        <app-quotation-user-assignment [comeRole]="comeRole"></app-quotation-user-assignment>
+      </p-tabPanel>
+      <p-tabPanel>
+        <ng-template pTemplate="header">
+          <i class="pi pi-check p-mr-2"></i>
+          <span>{{'module.ourTaskDashboard.booking' | translate}}</span>
+        </ng-template>
+        <booking-user [comeRole]="comeRole"></booking-user>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+  

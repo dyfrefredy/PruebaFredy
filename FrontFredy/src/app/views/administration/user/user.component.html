@@ -1,0 +1,501 @@
+<p-card>
+  <div class="p-field p-grid">
+    <div class="p-col-1">
+      <av-button type="button" [label]="'module.user.btnNew' | translate" icon="pi pi-plus p-button-icon-left"
+        class="p-button-text" (click)="openNew()"></av-button>
+    </div>
+    <div class="p-col-1">
+      <av-button type="button" [label]="'module.user.btnDisabled' | translate" [icon]="'pi pi-minus-circle p-button-icon-left'"
+        class="p-button-text" (click)="deleteSelectedUsers()" [disabled]="!selectedUsers || !selectedUsers.length">
+
+      </av-button>
+    </div>
+  </div>
+
+
+  <p-table #dt styleClass="p-datatable-sm p-datatable-responsive-demo" [value]="users" [lazy]="true" (onLazyLoad)="loadUsers($event)" [totalRecords]="totalRecords" [rows]="10"
+    [paginator]="true" [(selection)]="selectedUsers" [rowHover]="true" dataKey="id"
+    currentPageReportTemplate="Mostrar {first} a {last} de {{ totalRecords }} registros" [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 25, 50]">
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 3rem">
+          <div class="p-fluid p-p-2">
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </div>
+        </th>
+        <th pSortableColumn="firstName">
+          <div class="p-fluid p-p-2">
+            {{ "module.user.firstName" | translate }}
+            <p-sortIcon field="firstName"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="lastName">
+          <div class="p-fluid p-p-2">
+            {{ "module.user.lastName" | translate }}
+            <p-sortIcon field="lastName"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="CountryName">
+          <div class="p-fluid p-p-2">
+            {{ "module.user.countryId" | translate }}
+            <p-sortIcon field="CountryName"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="StateName">
+          <div class="p-fluid p-p-2">
+            {{ "module.user.stateId" | translate }}
+            <p-sortIcon field="StateName"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="CityName">
+          <div class="p-fluid p-p-2">
+            {{ "module.user.cityId" | translate }}
+            <p-sortIcon field="CityName"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="ROL.Description">
+          <div class="p-fluid p-p-2">
+            {{ "module.user.role" | translate }}
+            <p-sortIcon field="ROL.Description"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="MMB.Active">
+          {{ "module.user.active" | translate }}
+          <p-sortIcon field="MMB.Active"></p-sortIcon>
+        </th>
+        <th style="width: 8rem"></th>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <av-input-text [label]="'module.user.firstName'|translate" [(ngModel)]="userFind.firstName">
+          </av-input-text>
+        </td>
+        <td>
+          <av-input-text [label]="'module.user.lastName'|translate" [(ngModel)]="userFind.lastName">
+          </av-input-text>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            <p-dropdown
+              appendTo="body"
+              [options]="countries"
+              filter="true"
+              [(ngModel)]="userFind.countryId"
+              (onChange)="onChangeCountry(1)"
+            >
+              <ng-template let-item pTemplate="selectedItem">
+                <span>{{ item.label }}</span>
+              </ng-template>
+              <ng-template let-opt pTemplate="item">
+                <div>
+                  <div>{{ opt.label }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            <p-dropdown
+              appendTo="body"
+              [options]="statesFind"
+              filter="true"
+              [(ngModel)]="userFind.stateId"
+              (onChange)="onChangeState(1)"
+            >
+              <ng-template let-item pTemplate="selectedItem">
+                <span>{{ item.label }}</span>
+              </ng-template>
+              <ng-template let-opt pTemplate="item">
+                <div>
+                  <div>{{ opt.label }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            <p-dropdown
+              appendTo="body"
+              [options]="citiesFind"
+              filter="true"
+              [(ngModel)]="userFind.cityId"
+            >
+              <ng-template let-item pTemplate="selectedItem">
+                <span>{{ item.label }}</span>
+              </ng-template>
+              <ng-template let-opt pTemplate="item">
+                <div>
+                  <div>{{ opt.label }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </div>
+        </td>
+        <td>
+          <av-role label="{{'module.user.role' | translate}}" [(ngModel)]="userFind.roleId"></av-role>
+        </td>
+        <td>
+          <p-triStateCheckbox [(ngModel)]="userFind.active" placeholder="Activo"></p-triStateCheckbox>
+        </td>
+        <td>
+          <av-button [label]="'module.user.btnFilter' | translate" icon="pi pi-search" class="p-button-text"
+            (click)="getPaginationAndFilter()"></av-button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-user>
+      <tr [pEditableRow]="user">
+        <td>
+          <div class="p-fluid p-p-2">
+            <p-tableCheckbox [value]="user"></p-tableCheckbox>
+          </div>
+        </td>
+        <td pEditableColumn>
+          <div class="p-fluid p-p-2">
+            {{ user.firstName }}
+          </div>
+        </td>
+        <td pEditableColumn>
+          <div class="p-fluid p-p-2">
+            {{ user.lastName }}
+          </div>
+        </td>
+        <td pEditableColumn>
+          <div class="p-fluid p-p-2">
+            {{ user.countryDescription }}
+          </div>
+        </td>
+        <td pEditableColumn>
+          <div class="p-fluid p-p-2">
+            {{ user.stateDescription }}
+          </div>
+        </td>
+        <td pEditableColumn>
+          <div class="p-fluid p-p-2">
+            {{ user.cityDescription }}
+          </div>
+        </td>
+        <td pEditableColumn>
+          <div class="p-fluid p-p-2">
+            {{ user.roleDesc }}
+          </div>
+        </td>
+        <td pEditableColumn>
+          {{ user.active ? "SI" : "NO" }}
+        </td>
+        <td style="text-align: center">
+
+          <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-text"
+            (click)="editMember(user)"></button>
+          <button pButton pRipple icon="pi pi-minus-circle" class="p-button-rounded p-button-text"
+            (click)="deleteMember(user)"></button>
+
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>
+
+<p-dialog
+  [(visible)]="userDialog"
+  [style]="{ width: '800px' }"
+  [header]="'module.user.title' | translate"
+  [modal]="true"
+  styleClass="p-fluid"
+>
+  <ng-template pTemplate="content">
+    <form
+      id="userForm"
+      [formGroup]="userForm"
+      class="form-horizontal ng-untouched ng-pristine ng-valid"
+    >
+      <div class="p-fluid p-formgrid p-grid">
+        <div class="p-p-2 p-col-6">
+          <av-input-text
+            label="{{ 'module.user.firstName' | translate }}"
+            formControlName="firstName"
+            [(ngModel)]="user.firstName"
+          >
+          </av-input-text>
+          <small class="p-p-2 p-invalid" *ngIf="submitted && !user.firstName">
+            {{ "module.user.validation.firstNameRequired" | translate }}
+          </small>
+        </div>
+        <div class="p-p-2 p-col-6">
+          <av-input-text
+            label="{{ 'module.user.lastName' | translate }}"
+            formControlName="lastName"
+            [(ngModel)]="user.lastName"
+          >
+          </av-input-text>
+          <small class="p-p-2 p-invalid" *ngIf="submitted && !user.lastName">
+            {{ "module.user.validation.lastNameRequired" | translate }}
+          </small>
+        </div>
+        <div class="p-p-2 p-col-4">
+          <div class="p-p-2">
+            <span class="p-float-label">
+              <p-dropdown
+                formControlName="countryId"
+                [options]="countries"
+                filter="true"
+                [(ngModel)]="user.countryId"
+                (onChange)="onChangeCountry(2)"
+              >
+                <ng-template let-item pTemplate="selectedItem">
+                  <span>{{ item.label }}</span>
+                </ng-template>
+                <ng-template let-opt pTemplate="item">
+                  <div>
+                    <div>{{ opt.label }}</div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+              <label for="field-id">{{
+                "module.user.countryId" | translate
+              }}</label>
+            </span>
+          </div>
+          <small class="p-p-2 p-invalid" *ngIf="submitted && !user.countryId">
+            {{ "module.user.validation.countryIdRequired" | translate }}
+          </small>
+        </div>
+        <div class="p-p-2 p-col-4">
+          <div class="p-p-2">
+            <span class="p-float-label">
+              <p-dropdown
+                formControlName="stateId"
+                [options]="states"
+                filter="true"
+                [(ngModel)]="user.stateId"
+                (onChange)="onChangeState(2)"
+              >
+                <ng-template let-item pTemplate="selectedItem">
+                  <span>{{ item.label }}</span>
+                </ng-template>
+                <ng-template let-opt pTemplate="item">
+                  <div>
+                    <div>{{ opt.label }}</div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+              <label for="field-id">{{
+                "module.user.stateId" | translate
+              }}</label>
+            </span>
+          </div>
+        </div>
+        <div class="p-p-2 p-col-4">
+          <div class="p-p-2">
+            <span class="p-float-label">
+              <p-dropdown
+                formControlName="cityId"
+                [options]="cities"
+                filter="true"
+                [(ngModel)]="user.cityId"
+              >
+                <ng-template let-item pTemplate="selectedItem">
+                  <span>{{ item.label }}</span>
+                </ng-template>
+                <ng-template let-opt pTemplate="item">
+                  <div>
+                    <div>{{ opt.label }}</div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+              <label for="field-id">{{
+                "module.user.cityId" | translate
+              }}</label>
+            </span>
+          </div>
+          <small class="p-p-2 p-invalid" *ngIf="submitted && !user.cityId">
+            {{"module.user.validation.cityIdRequired" | translate}}
+          </small>
+        </div>
+        <div class="p-p-2 p-col-12">
+          <av-input-text
+            label="{{ 'module.user.email' | translate }}"
+            formControlName="email"
+            [(ngModel)]="user.email"
+          >
+          </av-input-text>
+          <small class="p-p-2 p-invalid" *ngIf="submitted && !user.email">
+            {{ "module.user.validation.emailRequired" | translate }}
+          </small>
+        </div>
+        <div class="p-p-2 p-col-6">
+          <av-role
+            label="{{ 'module.user.role' | translate }}"
+            formControlName="roleId"
+            [(ngModel)]="user.roleId"
+          >
+          </av-role>
+          <small class="p-p-2 p-invalid" *ngIf="submitted && !user.roleId">
+            {{ "module.user.validation.roleRequired" | translate }}
+          </small>
+        </div>
+        <div class="p-p-2 p-col-6">
+          <av-user-type
+            label="{{ 'module.user.userType' | translate }}"
+            formControlName="userTypeId"
+            [(ngModel)]="user.userTypeId"
+          >
+          </av-user-type>
+          <small class="p-p-2 p-invalid" *ngIf="submitted && !user.userTypeId">
+            {{ "module.user.validation.userTypeRequired" | translate }}
+          </small>
+        </div>
+        <div class="p-p-2 p-col-12">
+          <av-station-autocomplete
+            formControlName="userStations"
+            [labelList]="'module.user.selectedStations'"
+            [label]="'module.user.stationsAvailable'"
+            [selectionLabel]="'module.user.stationsAvailable' | translate"
+            [(selectionstationsAvailable)]="selectionstationsAvailable"
+            [(selectedStations)]="selectedStations"
+          >
+          </av-station-autocomplete>
+          <small
+            class="p-p-2 p-invalid"
+            *ngIf="submitted && selectedStations.length <= 0"
+          >
+            {{ "module.user.validation.stationsRequired" | translate }}
+          </small>
+        </div>
+        <div class="p-p-2 p-col-12" *ngIf="user.userTypeId == userTypeService.externalCustomer">
+          <av-group-assignment
+            formControlName="externalUserGroup"
+            [labelList]="'module.user.selectedGroup'"
+            [label]="'module.user.groupsAvailable'"
+            [selectionLabel]="'module.user.groupsAvailable' | translate"
+            [(selectionGroupsAvailable)]="selectionGroupsAvailable"
+            [(selectedGroups)]="selectedGroups">
+          </av-group-assignment>
+          <small
+            class="p-p-2 p-invalid"
+            *ngIf="submitted && selectedGroups.length <= 0 && user.userTypeId == userTypeService.externalCustomer"
+          >
+            {{ "module.user.validation.stationsRequired" | translate }}
+          </small>
+        </div>
+
+        <div class="p-fluid p-formgrid p-grid" *ngIf="user.userTypeId == externalCustomerId">
+          <div class="p-p-2 p-col-6">
+            <av-input-text label="{{'module.user.companyName' | translate}}" formControlName="companyName"
+              [(ngModel)]="user.userCtsDetail.companyName">
+            </av-input-text>
+          </div>
+          <div class="p-p-2 p-col-6">
+            <av-company-type label="{{'module.user.companyType' | translate}}" formControlName="companyTypeId"
+              [(ngModel)]="user.userCtsDetail.companyTypeId">
+            </av-company-type>
+          </div>
+          <div class="p-p-2 p-col-6">
+            <av-input-text label="{{'module.user.iataCode' | translate}}" formControlName="iataCode"
+              [(ngModel)]="user.userCtsDetail.iataCode">
+            </av-input-text>
+          </div>
+          <div class="p-p-2 p-col-6">
+            <av-input-text
+              label="{{ 'module.user.cassCode' | translate }}"
+              formControlName="cassCode"
+              [(ngModel)]="user.userCtsDetail.cassCode"
+            >
+            </av-input-text>
+          </div>
+          <div class="p-p-2 p-col-12">
+            <av-input-text
+              label="{{ 'module.user.address' | translate }}"
+              formControlName="address"
+              [(ngModel)]="user.userCtsDetail.address"
+            >
+            </av-input-text>
+          </div>
+          <div class="p-p-2 p-col-3">
+            <av-input-number
+              label="{{ 'module.user.postalCode' | translate }}"
+              formControlName="postalCode"
+              [(ngModel)]="user.userCtsDetail.postalCode"
+            >
+            </av-input-number>
+          </div>
+          <div class="p-p-2 p-col-5">
+            <av-input-number
+              label="{{ 'module.user.phoneNumber' | translate }}"
+              formControlName="phoneNumber"
+              [(ngModel)]="user.userCtsDetail.phoneNumber"
+            >
+            </av-input-number>
+          </div>
+          <div class="p-p-2 p-col-6">
+            <av-input-text
+              label="{{ 'module.user.mobileNumber' | translate }}"
+              formControlName="mobileNumber"
+              [(ngModel)]="user.userCtsDetail.mobileNumber"
+            >
+            </av-input-text>
+          </div>
+          <div class="p-p-2 p-col-6">
+            <av-input-text
+              label="{{ 'module.user.fax' | translate }}"
+              formControlName="fax"
+              [(ngModel)]="user.userCtsDetail.fax"
+            >
+            </av-input-text>
+          </div>
+        </div>
+        <div class="p-p-2 p-col-12">
+          <p-checkbox formControlName="active" [binary]="true" [label]="'module.user.active' | translate"
+            [(ngModel)]="user.active">
+          </p-checkbox>
+        </div>
+        <div class="p-p-2 p-col-12">
+            <p-checkbox formControlName="termsConditions" [binary]="true"
+              [label]="'module.user.termsConditions' | translate" [(ngModel)]="user.termsConditions">
+            </p-checkbox>
+            <small
+              class="p-p-2 p-invalid"
+              *ngIf="
+                (submitted && !user.termsConditions) ||
+                user.termsConditions == false
+              "
+            >
+              {{ "module.user.validation.termsConditionsRequired" | translate }}
+            </small>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <av-button
+      [label]="'module.user.btnCancel' | translate"
+      icon="pi pi-times"
+      class="p-button-text"
+      (click)="hideDialog()"
+    ></av-button>
+    <av-button
+      [label]="'module.user.btnSave' | translate"
+      icon="pi pi-save"
+      class="p-button-text"
+      (click)="saveUser()"
+    >
+    </av-button>
+  </ng-template>
+</p-dialog>
+
+<p-toast baseZIndex="10000"></p-toast>
+
+<p-confirmDialog
+  [style]="{ width: '450px' }"
+  [acceptLabel]="'module.user.btnAccept' | translate"
+  [rejectLabel]="'module.user.btnCancel' | translate"
+></p-confirmDialog>
+
+<p-blockUI [blocked]="loading">
+  <p-progressSpinner></p-progressSpinner>
+</p-blockUI>

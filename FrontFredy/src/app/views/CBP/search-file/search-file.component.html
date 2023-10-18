@@ -1,0 +1,111 @@
+<p-card class="p-p-2">
+    <form id="quotationForm" [formGroup]="searchForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+        <div class="p-fluid p-formgrid p-grid">
+            <div class="p-p-2 p-col-12">
+                <av-file-type formControlName="fileType" label="{{'module.CBP.fileType.moduleName' | translate}}"
+                    [(ngModel)]="fileType">
+                </av-file-type>
+                <div class="p-p-2" style="min-width: 225px">
+                    <small *ngIf="submitted && f.fileType.invalid" class="p-invalid">
+                        {{ "module.CBP.searchFile.validation.fileTypeRequired" | translate }}
+                    </small>
+                </div>
+            </div>
+            <div class="p-p-2 p-col-6">
+                <av-input-date formControlName="dateStart" [monthNavigator]="true" [yearNavigator]="true"
+                    yearRange="2000:2050" [showIcon]="true" inputId="icon" [(ngModel)]="dateStart"
+                    [label]="'module.CBP.searchFile.dateStart' | translate" [minDate]="minDate" (ngModelChange)="addMonth()">
+                </av-input-date>
+                <div class="p-p-2" style="min-width: 225px">
+                    <small *ngIf="submitted && f.dateStart.invalid" class="p-invalid">
+                        {{ "module.CBP.searchFile.validation.dateStartRequired" | translate }}
+                    </small>
+                </div>
+            </div>
+            <div class="p-p-2 p-col-6">
+                <av-input-date formControlName="dateEnd" [monthNavigator]="true" [yearNavigator]="true"
+                    yearRange="2000:2050" [showIcon]="true" inputId="icon" [(ngModel)]="dateEnd"
+                    [label]="'module.CBP.searchFile.dateEnd' | translate" [minDate]="dateStart" [maxDate]="maxDate">
+                </av-input-date>
+                <div class="p-p-2" style="min-width: 225px">
+                    <small *ngIf="submitted && f.dateEnd.invalid" class="p-invalid">
+                        {{ "module.CBP.searchFile.validation.dateEndRequired" | translate }}
+                    </small>
+                </div>
+            </div>
+            <div class="p-p-2 text-right">
+                <av-button [label]="'module.CBP.searchFile.search' | translate" class="p-button-text"
+                    (click)="search()">
+                </av-button>
+            </div>
+        </div>
+    </form>
+</p-card>
+
+<p-table #dt [(value)]="searchUpload" [lazy]="true" [totalRecords]="totalRecords" [rows]="10"
+    (onLazyLoad)="loadQuotation($event)"
+    currentPageReportTemplate="{{'module.componentNames.currentPageReport' | translate }}"
+    styleClass="p-datatable-responsive-demo table-striped" [showCurrentPageReport]="true" [rowHover]="true" dataKey="id"
+    [autoLayout]="true" [paginator]="true" [rowsPerPageOptions]="[5,10, 25, 50]">
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+            <th style="min-width:100px">
+                {{ "module.CBP.searchFile.fileName" | translate }}
+            </th>
+            <th style="min-width:90px">
+                {{ "module.CBP.searchFile.masterAWB" | translate }}
+            </th>
+            <th style="min-width:90px" *ngIf="fileType!=3">
+                {{ "module.CBP.searchFile.statusFile" | translate }}
+            </th>
+            <th style="min-width:90px" *ngIf="fileType==3">
+                {{ "module.CBP.searchFile.description" | translate }}
+            </th>
+            <th style="min-width:90px">
+                {{ "module.CBP.searchFile.date" | translate }}
+            </th>
+            <th style="min-width:110px">
+                {{ "module.CBP.searchFile.user" | translate }}
+            </th>
+            <th style="min-width:100px" *ngIf="fileType!=3">
+                {{ "module.CBP.searchFile.action" | translate }}
+            </th>
+            <th style="min-width:100px" *ngIf="fileType==3">
+                {{ "module.CBP.searchFile.line" | translate }}
+            </th>
+
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-search>
+        <tr>
+            <td>
+                {{ search.fileName }}
+            </td>
+            <td>
+                {{ search.mAWB }}
+            </td>
+            <td>
+                {{ search.fileType }}
+            </td>
+            <td>
+                {{ search.date | date:'yyyy-MM-dd hh:mm' }}
+            </td>
+            <td>
+                {{ search.userName }}
+            </td>
+            <td>
+                <button (click)="download(search.fileName)">descarga</button>
+                <!--
+                <div *ngIf="fileType!=3 && search.isDownload">
+                    <button (click)="download(search.fileName)">descarga</button>
+                </div>
+                <div *ngIf="fileType==3">
+                    {{ search.line }}
+                </div>
+                -->
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-toast baseZIndex="10000" position="top-center"></p-toast>

@@ -1,0 +1,87 @@
+<p-panel>
+      <form id="stationForm" [formGroup]="searchItineraryForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+        <div class="p-fluid p-formgrid p-grid">
+          <div class="p-col-3">
+            <av-city-autocomplete formControlName="departureCity" [label]="'module.searchItinerary.lblDeparting'" [selectionLabel]="'module.searchItinerary.lblSelectedDeparting'|translate" [(ngModel)]="departureCity"></av-city-autocomplete>
+          </div>
+          <div class="p-p-2">
+            <img alt="Card" src="/assets/img/search-itinerary/plane-departure-solid.svg" style="width:32px; margin:5px" />
+          </div>
+          <div class="p-col-3">
+            <av-city-autocomplete formControlName="arrivalCity" [label]="'module.searchItinerary.lblArriving'" [selectionLabel]="'module.searchItinerary.lblSelectedArriving'|translate" [(ngModel)]="arrivalCity"></av-city-autocomplete>
+          </div>
+          <div class="p-p-2">
+            <img alt="Card" src="/assets/img/search-itinerary/plane-arrival-solid.svg" style="width:32px; margin:5px" />
+          </div>
+          <div class="p-col-3">
+            <av-input-date formControlName="flightDate" [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [showIcon]="true" inputId="icon" [(ngModel)]="itineraryFind.departureDate" [label]="'module.searchItinerary.lblFlightDate'"></av-input-date>
+          </div>
+          <div class="p-col-2">
+            <av-button type="button" [label]="'module.searchItinerary.btnSearch' | translate" [icon]="'pi pi-search p-button-icon-left'" class="p-button-text" (click)="GetItineraries()"></av-button>
+          </div>
+          <div  class="p-col-6">
+            <av-itinerary-category-type [label]="'module.searchItinerary.lblFlightType'" [icon]="'/assets/img/search-itinerary/plane-solid.svg'" formControlName="itineraryCategoryType" [(ngModel)]="itineraryFind.categoryId"></av-itinerary-category-type>
+          </div>
+        </div>
+      </form>
+      <div class="p-d-flex p-jc-center">
+        <div class="p-md-8">
+          <p-table #dt [value]="itineraries" [lazy]="true" (onLazyLoad)="loadItinearies($event)" [totalRecords]="totalRecords"
+          [rows]="10" [paginator]="true" [(selection)]="selecteditinerary" [rowHover]="true" dataKey="id"
+          currentPageReportTemplate="{{'module.componentNames.currentPageReport' | translate }}" [showCurrentPageReport]="true"
+          [rowsPerPageOptions]="[10, 25, 50]" styleClass="p-datatable-responsive-demo">
+            <ng-template pTemplate="body" let-itinerary>
+              <tr>
+                <td class="p-d-flex p-ai-center p-jc-center">
+                  <span class="p-d-flex p-flex-column">
+                    <b>
+                      <img alt="Card" src="/assets/img/search-itinerary/plane-departure-solid.svg" style="width:16px; margin:5px" />
+                      {{'module.searchItinerary.tblData.header.LegDeparture'|translate}}
+                    </b>
+                    <b>{{itinerary.legDeparture}}</b>
+                    <small style="color:rgb(233,165,7)">{{itinerary.departureDate.toString().substring(0, 10)}}</small>
+                    <small style="color:rgb(233,165,7)">{{itinerary.departureTime.hours+':'+(itinerary.departureTime.minutes<10?'0':'')+itinerary.departureTime.minutes}}</small>
+                  </span>
+                  <span>
+                    <span class="p-d-flex p-ai-center p-p-3">
+                      <img alt="Card" src="/assets/img/search-itinerary/circle-solid.svg" style="width:16px; margin:5px 0" />
+                      <span>
+                        <span class="p-d-flex p-jc-center">
+                          <span>
+                            <b>{{'module.searchItinerary.tblData.header.LegNo'|translate}}: </b>
+                            <span>{{itinerary.legNo}}</span>
+                          </span>
+                          &nbsp;
+                          <span>
+                            <b>{{'module.searchItinerary.tblData.header.Category'|translate}}: </b>
+                            <span>{{itinerary.category}}</span>
+                          </span>
+                        </span>
+                        <span class="p-d-flex p-jc-center" style="border-top:solid 2px #ccc">
+                          <span>
+                            <b>{{'module.searchItinerary.tblData.header.RouteDuration'|translate}}: </b>
+                            <span>{{itinerary.routeDuration}}</span>
+                          </span>
+                        </span>
+                      </span>
+                      <img alt="Card" src="/assets/img/search-itinerary/circle-solid.svg" style="width:16px; margin:5px 0" />
+                    </span>
+                  </span>
+                  <span class="p-d-flex p-flex-column">
+                    <b>
+                      <img alt="Card" src="/assets/img/search-itinerary/plane-arrival-solid.svg" style="width:16px; margin:5px" />
+                      {{'module.searchItinerary.tblData.header.LegArrival'|translate}}
+                    </b>
+                    <b>{{itinerary.legArrival}}</b>
+                    <small style="color:rgb(233,165,7)">{{itinerary.arrivalDate.toString().substring(0, 10)}}</small>
+                    <small style="color:rgb(233,165,7)">{{itinerary.arrivalTime.hours+':'+(itinerary.arrivalTime.minutes<10?'0':'')+itinerary.arrivalTime.minutes}}</small>
+                  </span>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+</p-panel>
+
+<p-toast baseZIndex="10000"></p-toast>

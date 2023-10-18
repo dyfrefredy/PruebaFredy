@@ -1,0 +1,22 @@
+<!-- <div class="p-p-2">
+  <span class="p-float-label">
+    <p-autoComplete [suggestions]="filteredOptions" [formControl]="autoCompleteControl" (onChange)="onChange()" (completeMethod)="filterOptions($event)" [minLength]="3" [placeholder]="placeholder" [dropdown]="true" [forceSelection]="true"	[multiple]="multiple" (keyup.enter)="onEnterKeyPress($event)" field="label">
+    </p-autoComplete>
+    <label>{{label|translate}}</label>
+  </span>
+</div>
+ -->
+
+
+ <div class="p-p-2">
+	<span class="p-float-label">
+		<p-autoComplete appendTo="body" [(ngModel)]="selectionCountry" [suggestions]="filteredOptions" field="label" dropdownIcon="pi pi-chevron-down"
+			(completeMethod)="search($event)" [forceSelection]="true" minLength="2" (onSelect)="onSelect()"  [dropdown]="true"
+			(onClear)="onClear()">
+			<ng-template let-item pTemplate="selectedItem">
+				<span>{{item.label}}</span>
+			</ng-template>
+		</p-autoComplete>
+		<label for="field-id">{{label|translate}}</label>
+	</span>
+</div>

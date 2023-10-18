@@ -1,0 +1,7 @@
+<div class="p-col-12 p-p-2">
+	<span class="p-float-label">
+		<input [maxlength]="maxlength" [ngClass]="ngClass" type="text" pInputText [(ngModel)]="value"
+			(ngModelChange)="onChange()" [disabled]="disabled" style="width: 100%">
+		<label>{{label|translate}}</label>
+	</span>
+</div>

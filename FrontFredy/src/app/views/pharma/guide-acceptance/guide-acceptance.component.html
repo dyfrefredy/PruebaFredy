@@ -1,0 +1,346 @@
+<div class="p-p-2 p-col-12">
+  <p-accordion>
+    <p-accordionTab header="Filter">
+      <div class="p-fluid p-formgrid p-grid">
+        <div class="p-col-4">
+          <av-input-text [(ngModel)]="guideAcceptanceFind.docNum"
+            [label]="'module.guideAcceptance.tblData.header.awb' | translate"></av-input-text>
+        </div>
+        <div class="p-col-4">
+          <av-input-number [(ngModel)]="guideAcceptanceFind.fitNum"
+            [label]="'module.guideAcceptance.tblData.header.flightNumber' | translate"></av-input-number>
+        </div>
+        <div class="p-col-4">
+          <av-input-text [(ngModel)]="guideAcceptanceFind.shc"
+            [label]="'module.guideAcceptance.tblData.header.shc' | translate"></av-input-text>
+        </div>
+        <av-station-user class="p-col-4" [selectionLabel]="'module.guideAcceptance.tblData.header.endStation'|translate"
+          [(ngModel)]="guideAcceptanceFind.offPtStationId"
+          [label]="'module.guideAcceptance.tblData.header.endStation'|translate">
+        </av-station-user>
+        <div class="p-d-flex p-jc-end p-col-12">
+          <av-button [label]="'module.module.btnFilter' | translate" icon="pi pi-search" class="p-button-text"
+            (click)="filterAcceptance()"></av-button>
+        </div>
+      </div>
+    </p-accordionTab>
+  </p-accordion>
+</div>
+<p-table [(value)]="filters.guideAcceptances" styleClass="p-datatable-responsive-demo table-striped"
+  [totalRecords]="totalRecords" [rows]="pagination.pageSize" [paginator]="true" [showCurrentPageReport]="true"
+  currentPageReportTemplate="Mostrar {first} a {last} de {{totalRecords}} registros" [rowHover]="true" dataKey="id"
+  [rowsPerPageOptions]="[10, 25, 50]" [autoLayout]="true" [lazy]="true" (onLazyLoad)="loadAcceptance($event)">
+
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th style="min-width:100px" pSortableColumn="docNum">
+        {{ "module.guideAcceptance.tblData.header.awb" | translate }}
+        <p-sortIcon field="docNum"></p-sortIcon>
+      </th>
+      <th style="min-width:90px" pSortableColumn="fitNum">
+        {{ "module.guideAcceptance.tblData.header.flightNumber" | translate }}
+        <p-sortIcon field="fitNum"></p-sortIcon>
+      </th>
+      <th style="min-width:90px" pSortableColumn="date">
+        {{ "module.guideAcceptance.tblData.header.date" | translate }}
+        <p-sortIcon field="date"></p-sortIcon>
+      </th>
+      <th style="min-width:110px" pSortableColumn="shc">
+        {{ "module.guideAcceptance.tblData.header.shc" | translate }}
+        <p-sortIcon field="shc"></p-sortIcon>
+      </th>
+      <th style="min-width:100px" pSortableColumn="productTypeId">
+        {{ "module.guideAcceptance.tblData.header.pharmaProduct" | translate }}
+        <p-sortIcon field="productTypeId"></p-sortIcon>
+      </th>
+      <th pSortableColumn="offPtStationId">
+        {{ "module.guideAcceptance.tblData.header.nextStation" | translate }}
+        <p-sortIcon field="offPtStationId"></p-sortIcon>
+      </th>
+      <th pSortableColumn="destinyRedStationId">
+        {{ "module.guideAcceptance.tblData.header.endStation" | translate }}
+        <p-sortIcon field="destinyRedStationId"></p-sortIcon>
+      </th>
+      <th>
+        {{"module.guideAcceptance.tblData.header.acceptanceOption" | translate}}
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-airWaybillAceptance>
+    <tr>
+      <td>
+        {{ airWaybillAceptance.docNum }}
+      </td>
+      <td>
+        {{ airWaybillAceptance.fitNum }}
+      </td>
+      <td>
+        {{ airWaybillAceptance.date | avDateTimeOffset:'OriginalLocationDate' }}
+      </td>
+      <td>
+        {{ airWaybillAceptance.shc }}
+      </td>
+      <td>
+        <div *ngIf="airWaybillAceptance.productTypeId==1">
+          <img alt="Pharma care" style="width: 8rem;" src="../../../../assets/img/pharma/air-wiybill/pharma-care.png">
+        </div>
+        <div *ngIf="airWaybillAceptance.productTypeId!=1">
+          <img alt="Pharma cool care" style="width: 8rem;"
+            src="../../../../assets/img/pharma/air-wiybill/pharma-cool-care.png">
+        </div>
+      </td>
+      <td>
+        {{ airWaybillAceptance.offPtStationIata }}
+      </td>
+      <td>
+        {{ airWaybillAceptance.destinyRedStationName }}
+      </td>
+      <td>
+        <div *ngIf="airWaybillAceptance.productTypeId==1">
+          <span class="img-button" pTooltip="Acceptance">
+            <img alt="logo" src="../../../../assets/img/pharma/states/careact.png" style="width: 1.5rem; "
+              (click)="openDialogPharmaCare(airWaybillAceptance)" />
+          </span>
+          <!-- <p-button styleClass="p-button-rounded p-button-text" (click)="openDialogPharmaCare(airWaybillAceptance)"
+            pTooltip="Acceptance">
+            <img alt="logo" src="../../../../assets/img/pharma/states/careact.png" style="width: 1rem; " />
+          </p-button> -->
+        </div>
+        <div *ngIf="airWaybillAceptance.productTypeId!=1">
+          <span class="img-button" pTooltip="Acceptance">
+            <img alt="logo" src="../../../../assets/img/pharma/states/coolcarerkn.png" style="width: 1.5rem"
+              (click)="openDialogPharmaCoolCare(airWaybillAceptance)" />
+          </span>
+          <!-- <p-button styleClass="p-button-rounded p-button-text" (click)="openDialogPharmaCoolCare(airWaybillAceptance)"
+            pTooltip="Acceptance">
+            <img alt="logo" src="../../../../assets/img/pharma/states/coolcarerkn.png" style="width: 1rem" />
+          </p-button> -->
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="pharmaCoolCareDialog" [style]="{ width: '800px', heigth: '500px' }"
+  [header]="'module.guideAcceptance.popupPharmaCoolCare.title' | translate" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <div class="row">
+      <div class="p-p-2 p-col-12">
+        <span class="p-d-flex p-jc-center">{{'module.guideAcceptance.popupPharmaCare.lblRangeTemperature'|translate}}
+          {{'module.guideAcceptance.popupPharmaCare.lblMinRangeTemperature'|translate}}: {{product.initialRange}} -
+          {{'module.guideAcceptance.popupPharmaCare.lblMaxRangeTemperature'|translate}}: {{product.finalRange}}</span>
+      </div>
+      <div class="p-col-4">
+        <av-input-text [disabled]="true" [(ngModel)]="selectedGuideAcceptance.docNum"
+          [label]="'module.guideAcceptance.tblData.header.awb' | translate"></av-input-text>
+      </div>
+      <div class="p-col-4">
+        <av-input-text [disabled]="true" [(ngModel)]="selectedGuideAcceptance.originStationName"
+          [label]="'module.guideAcceptance.tblData.header.originStation' | translate"></av-input-text>
+      </div>
+      <div class="p-col-4">
+        <av-input-text [disabled]="true" [(ngModel)]="selectedGuideAcceptance.destinyStationName"
+          [label]="'module.guideAcceptance.tblData.header.endStation' | translate"></av-input-text>
+      </div>
+    </div>
+    <form id="pharmaCoolCareForm" [formGroup]="pharmaCoolCareForm"
+      class="form-horizontal ng-untouched ng-pristine ng-valid">
+      <div class="p-fluid p-formgrid p-grid">
+        <div class="p-p-2 p-col-6">
+          <av-input-text formControlName="container" [(ngModel)]="pharmaCoolCare.container"
+            [label]="'module.guideAcceptance.popupPharmaCoolCare.tblData.footer.containerNumber' | translate">
+          </av-input-text>
+          <small class="p-p-2 p-invalid" *ngIf="submitted && !pharmaCoolCare.container">
+            {{"module.guideAcceptance.popupPharmaCoolCare.validation.containerNumberRequired" | translate}}
+          </small>
+        </div>
+        <div class="p-p-2 p-col-6">
+          <av-input-number formControlName="setTemp" [(ngModel)]="pharmaCoolCare.setTemp"
+            [label]="'module.guideAcceptance.popupPharmaCoolCare.tblData.footer.setTemp'| translate"></av-input-number>
+          <small class="p-p-2 p-invalid" *ngIf="submitted && !pharmaCoolCare.setTemp">
+            {{"module.guideAcceptance.popupPharmaCoolCare.validation.setTempRequired" | translate}}
+          </small>
+        </div>
+        <div class="p-p-2 p-col-6">
+          <av-input-number formControlName="voltage" [(ngModel)]="pharmaCoolCare.voltage"
+            [label]="'module.guideAcceptance.popupPharmaCoolCare.tblData.footer.BattVolts'| translate">
+          </av-input-number>
+          <small class="p-p-2 p-invalid" *ngIf="submitted && !pharmaCoolCare.voltage">
+            {{"module.guideAcceptance.popupPharmaCoolCare.validation.voltageRequired" | translate}}
+          </small>
+        </div>
+        <div class="p-p-2 p-col-6">
+          <av-input-number formControlName="temperature" [(ngModel)]="pharmaCoolCare.temperature"
+            [label]="'module.guideAcceptance.popupPharmaCoolCare.tblData.footer.temperatureC'| translate">
+          </av-input-number>
+          <small class="p-p-2 p-invalid" *ngIf="submitted && !pharmaCoolCare.temperature">
+            {{"module.guideAcceptance.popupPharmaCoolCare.validation.temperatureRequired" | translate}}
+          </small>
+        </div>
+      </div>
+    </form>
+    <p-accordion class="p-col-12">
+      <p-accordionTab header="{{'module.guideAcceptance.checklistContainer.title' | translate}}">
+        <div class="row">
+          <div class="p-p-2 p-col-6">
+            <div class="p-p-2">
+              <span class="p-float-label">
+                <p-dropdown [options]="containerTypeOptions" [(ngModel)]="containerTypeId"
+                  (onChange)="onChangeContainerType()">
+                  <ng-template let-item pTemplate="selectedItem">
+                    <span>{{item.label}}</span>
+                  </ng-template>
+                  <ng-template let-opt pTemplate="item">
+                    <div>
+                      <div> {{opt.label}}</div>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
+                <label>{{'module.guideAcceptance.checklistContainer.containerType'|translate}}</label>
+              </span>
+            </div>
+            <small class="p-p-2 p-invalid" *ngIf="submitted && !containerTypeId">
+              {{"module.guideAcceptance.popupPharmaCoolCare.validation.containerTypeRequired" | translate}}
+            </small>
+          </div>
+          <div class="p-p-2 p-col-6">
+            <av-shipment-type label="{{'module.guideAcceptance.checklistContainer.shipmentType' | translate}}"
+              [(ngModel)]="checklistContainer.shipmentTypeId"></av-shipment-type>
+            <small class="p-p-2 p-invalid" *ngIf="submitted && !checklistContainer.shipmentTypeId">
+              {{"module.guideAcceptance.popupPharmaCoolCare.validation.shipmentTypeRequired" | translate}}
+            </small>
+          </div>
+          <div class="p-p-2 p-col-12">
+            <p-table #dt [value]="question" [totalRecords]="totalRecordsQuestion" [rows]="10" [paginator]="true"
+              [showCurrentPageReport]="true"
+              currentPageReportTemplate="Mostrar {first} a {last} de {{ totalRecordsQuestion }} registros"
+              [rowHover]="true" dataKey="id" [rowsPerPageOptions]="[10, 25, 50]">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th pSortableColumn="questionName">
+                    {{ "module.guideAcceptance.checklistContainer.header.question" | translate }}
+                    <p-sortIcon field="questionName"></p-sortIcon>
+                  </th>
+                  <th pSortableColumn="option">
+                    {{ "module.guideAcceptance.checklistContainer.header.option" | translate }}
+                    <p-sortIcon field="option"></p-sortIcon>
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-questionAceptance>
+                <tr>
+                  <td>
+                    {{ questionAceptance.name }}
+                  </td>
+                  <td>
+                    <div *ngFor="let answerType of questionAceptance.answerTypeDto" class="p-field-checkbox p-d-inline">
+                      <label>{{answerType.name}}</label>
+                      <p-radioButton [name]="questionAceptance.id" [inputId]="questionAceptance.id"
+                        [value]="answerType.id" (onClick)="change(answerType.id, questionAceptance.id, answerType.name)"
+                        [(ngModel)]="questionAceptance.answerTypeId"></p-radioButton>
+                      <!-- <input type="radio" [inputId]="questionAceptance.id" [name]="questionAceptance.id"
+                        [value]="answerType.id" [(ngModel)]="questionAceptance.answerTypeId" (change)="change(answerType.id, questionAceptance.id)"> -->
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+            <small class="p-p-2 p-invalid" *ngIf="submitted && question.length != checklistContainerAnswer.length">
+              {{"module.guideAcceptance.popupPharmaCoolCare.validation.checklistContainerAnswerRequired" | translate}}
+            </small>
+          </div>
+          <div class="p-p-2 p-col-12">
+            <av-input-text-area [(ngModel)]="checklistContainer.remark"
+              [label]="'module.quote.quotation.description'|translate"></av-input-text-area>
+            <small class="p-p-2 p-invalid" *ngIf="submitted && !checklistContainer.remark && question.length > 0">
+              {{"module.guideAcceptance.popupPharmaCoolCare.validation.remarkRequired" | translate}}
+            </small>
+          </div>
+        </div>
+      </p-accordionTab>
+    </p-accordion>
+    <div class="p-p-2 p-col-12 text-right">
+      <av-button type="button" icon="pi pi-plus" class="p-button-text" (click)="validatePharmaCoolCare()"></av-button>
+    </div>
+    <p-table [value]="pharmaCoolCares" styleClass="p-datatable-responsive-demo" [showCurrentPageReport]="true"
+      [rowHover]="true" dataKey="id">
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th pSortableColumn="containerNumber">
+            {{"module.guideAcceptance.popupPharmaCoolCare.tblData.header.containerNumber"| translate}}
+          </th>
+          <th pSortableColumn="setTemp">
+            {{"module.guideAcceptance.popupPharmaCoolCare.tblData.header.setTemp"| translate}}
+          </th>
+          <th pSortableColumn="BattVolts">
+            {{"module.guideAcceptance.popupPharmaCoolCare.tblData.header.BattVolts"| translate}}
+          </th>
+          <th pSortableColumn="temperatureC">
+            {{"module.guideAcceptance.popupPharmaCoolCare.tblData.header.temperatureC"| translate}}
+          </th>
+          <th style="width: 80px">
+            {{"module.guideAcceptance.popupPharmaCoolCare.tblData.header.actions"| translate}}
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item let-i="rowIndex">
+        <tr>
+          <td>{{ item.container }}</td>
+          <td>{{ item.setTemp }}</td>
+          <td>{{ item.voltage }}</td>
+          <td>{{ item.temperature }}</td>
+          <td>
+            <av-button type="button" icon="pi pi-trash" class="p-button-text" (click)="deletePharmaCoolCare(i)">
+            </av-button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+    <div class="p-p-2 p-col-6">
+      <small class="p-p-2 p-invalid" *ngIf="pharmaCoolCares.length < 1">
+        {{"module.guideAcceptance.popupPharmaCoolCare.validation.pharmaCoolCaresRequired" | translate}}
+      </small>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <av-button type="button" [label]="'module.guideAcceptance.popupPharmaCoolCare.btnSave' | translate"
+      icon="pi pi-save" class="p-button-text" (click)="saveWaybilStatusPharmaCoolCare(pharmaCoolCares)"></av-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="pharmaCareDialog" [style]="{ width: '50%', heigth: '500px' }"
+  [header]="'module.guideAcceptance.popupPharmaCare.title' | translate" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <form id="pharmaCareForm" [formGroup]="pharmaCareForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+      <div class="p-fluid p-formgrid p-grid">
+        <div class="p-p-2 p-col-12">{{selectedGuideAcceptance.docNum}}</div>
+        <div class="p-p-2 p-col-12">
+          <span class="p-d-flex p-jc-center">{{'module.guideAcceptance.popupPharmaCare.lblRangeTemperature'|translate}}
+            {{'module.guideAcceptance.popupPharmaCare.lblMinRangeTemperature'|translate}}: {{product.initialRange}} -
+            {{'module.guideAcceptance.popupPharmaCare.lblMaxRangeTemperature'|translate}}: {{product.finalRange}}</span>
+        </div>
+        <div class="p-p-2 p-col-6">
+          <av-input-number formControlName="temperature" [(ngModel)]="pharmaCare.temperature"
+            [label]="'module.guideAcceptance.popupPharmaCare.temperatureC'| translate"></av-input-number>
+          <small class="p-p-2 p-invalid" *ngIf="submitted && !pharmaCare.temperature">
+            {{"module.guideAcceptance.popupPharmaCare.validation.temperatureCRequired" | translate}}
+          </small>
+        </div>
+        <div class="p-p-2 p-col-6">
+          <av-input-text formControlName="comments" [(ngModel)]="pharmaCare.comments"
+            [label]="'module.guideAcceptance.popupPharmaCare.comments'| translate"></av-input-text>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <av-button type="button" [label]="'module.guideAcceptance.popupPharmaCare.btnSave' | translate" icon="pi pi-save"
+      class="p-button-text" (click)="saveWaybilStatusPharmaCare()"></av-button>
+  </ng-template>
+</p-dialog>
+
+<p-toast baseZIndex="10000"></p-toast>
+
+<p-confirmDialog [message]="'module.guideAcceptance.popupPharmaCare.confirmTemperature' | translate"
+  [style]="{ width: '450px' }" [acceptLabel]="'module.user.btnAccept' | translate"
+  [rejectLabel]="'module.user.btnCancel' | translate" key="confirmDialogAcceptance"></p-confirmDialog>

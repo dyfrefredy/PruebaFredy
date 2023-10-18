@@ -1,0 +1,200 @@
+<p-card>
+    <p-toolbar styleClass="p-mb-4">
+        <ng-template pTemplate="left">
+            <av-button type="button" [label]="'module.escalation.btnNew' | translate"
+                icon="pi pi-plus p-button-icon-left" class="p-button-text" (click)="openNew()"></av-button>
+            <av-button type="button" [label]="'module.escalation.btnImport' | translate"
+                icon="pi pi-upload p-button-icon-left" class="p-button-text" (click)="openImport()"></av-button>
+            <av-button type="button" [label]="'module.escalation.btnExport' | translate" icon="pi pi-download"
+                class="p-button-text p-button-icon-left" (click)="exportEscalations()"></av-button>
+            <av-button type="button" [label]="'module.escalation.btnDelete' | translate"
+                [icon]="'pi pi-trash p-button-icon-left'" class="p-button-text" (click)="deleteSelectedEscalations()"
+                [disabled]="!selectedEscalations || !selectedEscalations.length"></av-button>
+        </ng-template>
+    </p-toolbar>
+
+    <p-table #dt [value]="escalations" [lazy]="true" (onLazyLoad)="loadEscalations($event)"
+        [totalRecords]="totalRecords" [rows]="10" [paginator]="true" [(selection)]="selectedEscalations"
+        [rowHover]="true" dataKey="id"
+        currentPageReportTemplate="Mostrar {first} a {last} de {{ totalRecords}} registros"
+        [showCurrentPageReport]="true" [rowsPerPageOptions]="[10, 25, 50]" styleClass="p-datatable-responsive-demo">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 3rem">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th pSortableColumn="escalationLevelDesc">
+                    <div class="p-fluid p-p-2">
+                        {{ "module.escalation.escalationLevel" | translate }}
+                        <p-sortIcon field="escalationLevelDesc"></p-sortIcon>
+                    </div>
+                </th>
+                <th pSortableColumn="notificationEmail">
+                    <div class="p-fluid p-p-2">
+                        {{ "module.escalation.notificationEmail" | translate }}
+                        <p-sortIcon field="notificationEmail"></p-sortIcon>
+                    </div>
+                </th>
+                <th pSortableColumn="stationDesc">
+                    <div class="p-fluid p-p-2">
+                        {{ "module.escalation.station" | translate }}
+                        <p-sortIcon field="stationDesc"></p-sortIcon>
+                    </div>
+                </th>
+                <th pSortableColumn="languageDesc">
+                    <div class="p-fluid p-p-2">
+                        {{ "module.escalation.language" | translate }}
+                        <p-sortIcon field="languageDesc"></p-sortIcon>
+                    </div>
+                </th>
+                <th style="width: 8rem"></th>
+            </tr>
+            <tr>
+                <th></th>
+                <th>
+                    <av-escalation-level [label]="'module.escalation.escalationLevel' | translate"
+                        [(ngModel)]="escalationFind.escalationLevelId">
+                    </av-escalation-level>
+                </th>
+                <th>
+                    <av-input-text [label]="'module.escalation.notificationEmail' | translate"
+                        [(ngModel)]="escalationFind.notificationEmail"></av-input-text>
+                </th>
+                <th>
+                    <av-stations [label]="'module.escalation.station' | translate"
+                        [(ngModel)]="escalationFind.stationId">
+                    </av-stations>
+                </th>
+                <th>
+                    <av-language [label]="'module.escalation.language' | translate"
+                        [(ngModel)]="escalationFind.languageId">
+                    </av-language>
+                </th>
+                <th>
+                    <av-button [label]="'module.escalation.btnFilter' | translate" icon="pi pi-search"
+                        class="p-button-text" (click)="getPaginationAndFilter()"></av-button>
+                </th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-escalation let-editing="editing" let-ri="rowIndex">
+            <tr [pEditableRow]="escalation">
+                <td>
+                    <div class="p-fluid p-p-2">
+                        <p-tableCheckbox [value]="escalation"></p-tableCheckbox>
+                    </div>
+                </td>
+                <td pEditableColumn>
+                    <div class="p-fluid p-p-2">
+                        {{ escalation.escalationLevelDesc }}
+                    </div>
+                </td>
+                <td pEditableColumn>
+                    <div class="p-fluid p-p-2">
+                        {{ escalation.notificationEmail }}
+                    </div>
+                </td>
+                <td pEditableColumn>
+                    <div class="p-fluid p-p-2">
+                        {{ escalation.stationDesc + ' (' + escalation.stationName + ')' }}
+                    </div>
+                </td>
+                <td pEditableColumn>
+                    <div class="p-fluid p-p-2">
+                        {{ escalation.languageDesc }}
+                    </div>
+                </td>
+                <td style="text-align: center">
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-text"
+                        (click)="editEscalation(escalation)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-text"
+                        (click)="deleteEscalation(escalation)"></button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-card>
+
+<p-dialog [(visible)]="escalationDialog" [style]="{ width: '600px' }" [header]="'module.escalation.title' | translate"
+    [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <form id="escalationForm" [formGroup]="escalationForm"
+            class="form-horizontal ng-untouched ng-pristine ng-valid">
+            <av-input-text hidden formControlName="id" [label]="'module.escalation.id' | translate"
+                [(ngModel)]="escalation.id"></av-input-text>
+            <av-escalation-level [label]="'module.escalation.escalationLevel' | translate"
+                formControlName="escalationLevelId" [(ngModel)]="escalation.escalationLevelId">
+            </av-escalation-level>
+            <div *ngIf="fg.escalationLevelId.invalid && (fg.escalationLevelId.dirty || submitted)" class="p-p-2"
+                style="min-width: 225px">
+                <small *ngIf="fg.escalationLevelId.errors?.required" class="p-invalid">
+                    {{"module.escalation.validation.escalationLevelRequired" | translate }}
+                </small>
+            </div>
+            <av-input-text formControlName="notificationEmail" [maxlength]="100"
+                [label]="'module.escalation.notificationEmail' | translate" [(ngModel)]="escalation.notificationEmail">
+            </av-input-text>
+            <div *ngIf="fg.notificationEmail.invalid && (fg.notificationEmail.dirty || submitted)" class="p-p-2"
+                style="min-width: 225px">
+                <small *ngIf="fg.notificationEmail.errors?.required" class="p-invalid">
+                    {{"module.escalation.validation.notificationEmailRequired" | translate }}
+                </small>
+                <small *ngIf="fg.notificationEmail.errors?.email" class="p-invalid">
+                    {{"module.escalation.validation.notificationEmailInvalid" | translate }}
+                </small>
+            </div>
+            <av-stations [label]="'module.escalation.station' | translate" formControlName="stationId"
+                [(ngModel)]="escalation.stationId">
+            </av-stations>
+            <div *ngIf="fg.stationId.invalid && (fg.stationId.dirty || submitted)" class="p-p-2"
+                style="min-width: 225px">
+                <small *ngIf="fg.stationId.errors?.required" class="p-invalid">
+                    {{"module.escalation.validation.stationRequired" | translate }}
+                </small>
+            </div>
+            <av-language [label]="'module.escalation.language' | translate" formControlName="languageId"
+                [(ngModel)]="escalation.languageId">
+            </av-language>
+            <div *ngIf="fg.languageId.invalid && (fg.languageId.dirty || submitted)" class="p-p-2" style="min-width: 225px">
+                <small *ngIf="fg.languageId.errors?.required" class="p-invalid">
+                    {{"module.escalation.validation.languageRequired" | translate }}
+                </small>
+            </div>
+        </form>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <av-button [label]="'module.escalation.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+            (click)="hideDialog()"></av-button>
+        <av-button [label]="'module.escalation.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+            (click)="saveEscalation(escalation)"></av-button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="importDialog" [style]="{ width: '600px' }" [header]="'module.escalation.title' | translate"
+    [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <form id="importForm" [formGroup]="importForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+            <div class="p-p-2" style="min-width: 225px">
+                <p-checkbox formControlName="delete" [binary]="true"
+                    [label]="'module.escalation.deletePreviousRecords' | translate"
+                    [(ngModel)]="importEscalation.delete">
+                </p-checkbox>
+            </div>
+            <div class="p-field">
+                <p-fileUpload name="myfile[]" accept=".csv" customUpload="true" (uploadHandler)="uploader($event)"
+                    [chooseLabel]="'module.escalation.btnSelected'|translate"
+                    [uploadLabel]="'module.escalation.btnUploadFile'|translate"
+                    [cancelLabel]="'module.escalation.btnCancel'|translate"></p-fileUpload>
+            </div>
+        </form>
+    </ng-template>
+</p-dialog>
+
+<p-toast baseZIndex="10000"></p-toast>
+
+<p-confirmDialog [style]="{ width: '450px' }" [acceptLabel]="'module.escalation.btnAccept' | translate"
+    [rejectLabel]="'module.escalation.btnCancel' | translate"></p-confirmDialog>
+
+<p-blockUI [blocked]="loading">
+    <p-progressSpinner></p-progressSpinner>
+</p-blockUI>

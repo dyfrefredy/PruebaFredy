@@ -1,0 +1,49 @@
+<header class="app-header navbar">
+  <span class="p-text-center"><img alt="Card" src="assets/img/brand/avianca-cargo-logo-white.jpg"
+      style="width: 140; height: 45px"></span>
+  <!-- Header content here -->
+  <ul class="nav navbar-nav ml-auto">
+    <!-- <li class="nav-item" *ngIf="this.countPharma > 0">
+      <a [routerLink]="this.countPharma > 0 ? ['/pharma/guide-dashboard']:[]" class="nav-link">
+        <i class="icon-bell"></i><span class="badge badge-pill badge-info">{{this.countPharma}}</span>
+      </a>
+    </li> -->
+    <span class="form-inline">
+      <li>
+        <a class="nav-link" (click)="switchLang(this.userSetting.lang)"  href="#" >{{lblLanguage}}</a>
+      </li>
+    </span>
+    <li class="nav-item px-3">
+      <ul class="nav navbar-nav ml-auto">
+        <li placement="bottom right" class="c-header-nav-item px-3">
+          <span *ngIf="loggedIn" class="nav-link">{{welcome}}, {{this.user==null?'':this.user.idToken.emails[0]}}</span>
+        </li>
+        <li>
+          <a *ngIf="!loggedIn" class="nav-link" (click)="login()" href="#"><i class="icon-login"></i> &nbsp;{{lblgLogin}}</a>
+        </li>
+        <li>
+          <a *ngIf="loggedIn" class="nav-link" (click)="logout()" href="#"><i class="icon-logout"></i> &nbsp;{{lblLogout}}</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</header>
+<div class="app-body">
+  <main class="main">
+    <div class="container-fluid">
+      <ol class="breadcrumb">
+        <app-custom-breadcrumb></app-custom-breadcrumb>
+      </ol>
+      <!-- <cui-breadcrumb>
+      </cui-breadcrumb> -->
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>
+<app-footer class="app-footer">
+  <span><a href="https://avianca.com">Cargo Apps</a> &copy; 2020.</span>
+  <span class="ml-auto">Powered by <a href="https://avianca.com">Cargo Apps</a></span>
+</app-footer>
+
+<p-confirmDialog [style]="{ width: '450px' }" [acceptLabel]="'module.componentNames.btnAccept' | translate"
+  [rejectLabel]="'module.componentNames.btnCancel' | translate"></p-confirmDialog>

@@ -1,0 +1,47 @@
+
+<div>
+  <p-dataView [value]="selectedUsers" layout="grid">
+    <ng-template pTemplate="header">
+      <div class="p-grid">
+        <div class="p-col-11 p-p-2">
+          <span class="p-float-label">
+            <p-autoComplete [suggestions]="options" [disabled]="disabled" (completeMethod)="filterCitysByName($event)" (onSelect)="onSelect($event)" optionValue="id"
+              forceSelection="true" dropdownIcon="pi pi-search" [minLength]="minLength" field="firstName"
+              [dropdown]="true" [(ngModel)]="selectionUsersAvailable">
+              <ng-template let-item pTemplate="item">
+                <div>{{item.firstName }} {{item.lastName}} </div>
+              </ng-template>
+              <ng-template let-value pTemplate="selectedItem">
+                <span style="font-size:18px">{{value.firstName}}</span>
+              </ng-template>
+            </p-autoComplete>
+            <label>{{label|translate}}</label>
+          </span>
+        </div>
+        <div class="p-col-1  p-p-2">
+          <p-button label="" icon="pi pi-plus" [disabled]="disabled" iconPos="left" (click)="addUser()"></p-button>
+        </div>
+        <div class="p-col-11 p-p-2">
+          {{labelList|translate}}
+        </div>
+      </div>
+      <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+    </ng-template>
+    <ng-template let-item pTemplate="listItem" let-rowIndex="rowIndex">
+      <div class="p-col-11">
+        {{item.firstName }} {{item.lastName}}
+      </div>
+      <div class="p-col-1">
+        <p-button label="" icon="pi pi-minus" iconPos="left" (click)="deleteUser(rowIndex)"></p-button>
+      </div>
+    </ng-template>
+    <ng-template let-item pTemplate="gridItem" let-rowIndex="rowIndex">
+      <div class="p-col-11 p-md-3">
+        {{item.firstName }} {{item.lastName}}
+      </div>
+      <div class="p-col-1 p-md-1">
+        <p-button label="" icon="pi pi-minus" iconPos="left" (click)="deleteUser(rowIndex)"></p-button>
+      </div>
+    </ng-template>
+  </p-dataView>
+</div>

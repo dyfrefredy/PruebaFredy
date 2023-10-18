@@ -1,0 +1,95 @@
+<p-card>
+  <p-toolbar styleClass="p-mb-4">
+    <ng-template pTemplate="left">
+      <!--<av-button type="button" [label]="'module.configurations.btnNew'|translate" icon="pi pi-plus p-button-icon-left"
+                class="p-button-text" (click)="openNew()"></av-button>
+            <av-button type="button" [label]="'module.configurations.btnDelete'|translate"
+                [icon]="'pi pi-trash p-button-icon-left'" class="p-button-text" (click)="deleteSelectedConfigurations()"
+                [disabled]="!selectedConfigurations || !selectedConfigurations.length"></av-button>-->
+    </ng-template>
+  </p-toolbar>
+
+  <p-table #dt [value]="configurations" [rows]="10" [lazy]="true" (onLazyLoad)="loadConfigurationTable($event)" [totalRecords]="totalRecords" [paginator]="true"
+    [globalFilterFields]="['name','country.name','representative.name','status']" [(selection)]="selectedConfigurations"
+    [rowHover]="true" dataKey="id" currentPageReportTemplate="Mostrar {first} a {last} de {{ totalRecords }} registros"
+    [rowsPerPageOptions]="[10, 25, 50]" [showCurrentPageReport]="true">
+    <ng-template pTemplate="header">
+      <tr>
+        <!--<th style="width: 3rem">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>-->
+        <th pSortableColumn="ConfigurationFilter">
+          {{'module.configurations.configurationFilter'|translate}}
+          <p-sortIcon field="ConfigurationFilter"></p-sortIcon>
+        </th>
+        <th pSortableColumn="ConfiguredValue">
+          {{'module.configurations.configuredValue'|translate}}
+          <p-sortIcon field="ConfiguredValue"></p-sortIcon>
+        </th>
+        <th style="width:8rem"></th>
+      </tr>
+      <tr>
+        <th>
+          <av-input-text [label]="'module.configurations.configurationFilter'|translate"
+            [(ngModel)]="configurationFilter.configurationFilter"></av-input-text>
+        </th>
+        <th>
+          <av-input-text [label]="'module.configurations.configuredValue'|translate"
+            [(ngModel)]="configurationFilter.configuredValue"></av-input-text>
+        </th>
+        <th>
+          <av-button [label]="'module.configurations.btnFilter' | translate" icon="pi pi-search" class="p-button-text"
+            (click)="getPaginationAndFilter()"></av-button>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-configuration let-editing="editing" let-ri="rowIndex">
+      <tr [pEditableRow]="configuration">
+        <!--<td>
+                    <p-tableCheckbox [value]="configuration"></p-tableCheckbox>
+                </td>-->
+        <td pEditableColumn>
+          {{configuration.configurationFilter}}
+        </td>
+        <td pEditableColumn>
+          {{configuration.configuredValue}}
+        </td>
+        <td style="text-align:center">
+          <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-text"
+            (click)="editConfig(configuration)"></button>
+          <!--<button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-text"
+                        (click)="deleteConfigurations(configuration)"></button>-->
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>
+
+<p-dialog [(visible)]="configurationsDialog" [style]="{width: '450px'}"
+  [header]="'module.configurations.title'|translate" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <form id="airlineForm" [formGroup]="configurationTableForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+      <av-input-text formControlName="configurationFilter" label='module.configurations.configurationFilter' [(ngModel)]="configuration.configurationFilter" ng-required="true" [disabled]="true"></av-input-text>
+      <div *ngIf="submitted && !configuration.configurationFilter" class="p-p-2" style="min-width: 225px">
+        <small class="p-invalid" *ngIf="submitted && !configuration.configurationFilter">{{
+          "module.configurations.validation.configurationFilterRequired" | translate
+        }}</small>
+      </div>
+      <av-input-text formControlName="configuredValue" label='module.configurations.configuredValue' [(ngModel)]="configuration.configuredValue" ng-required="true"></av-input-text>
+      <div *ngIf="submitted && !configuration.configuredValue" class="p-p-2" style="min-width: 225px">
+        <small class="p-invalid" *ngIf="submitted && !configuration.configuredValue">{{
+          "module.configurations.validation.configuredValueRequired" | translate
+        }}</small>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <av-button [label]="'module.configurations.btnCancel'|translate" icon="pi pi-times" class="p-button-text"
+      (click)="hideDialog()"></av-button>
+    <av-button [label]="'module.configurations.btnSave'|translate" icon="pi pi-save" class="p-button-text"
+      (click)="saveConfigurations(configuration)"></av-button>
+  </ng-template>
+</p-dialog>
+<p-toast baseZIndex="10000"></p-toast>
+<p-confirmDialog [style]="{width: '450px'}" [acceptLabel]="'module.configurations.btnAccept'|translate"
+  [rejectLabel]="'module.configurations.btnCancel'|translate"></p-confirmDialog>

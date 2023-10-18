@@ -1,0 +1,557 @@
+<p-card>
+  <p-table #dt [value]="bookingModels" [lazy]="true" (onLazyLoad)="loadBookings($event)" [totalRecords]="totalRecords"
+    [rows]="10" [paginator]="true" [rowHover]="true" dataKey="id"
+    currentPageReportTemplate="{{'module.componentNames.currentPageReport' | translate }}"
+    [showCurrentPageReport]="true" [rowsPerPageOptions]="[5,10, 25, 50]" styleClass="p-datatable-responsive-demo"
+    [autoLayout]="true">
+    <ng-template pTemplate="caption">
+      <p-accordion>
+        <p-accordionTab header="Filter">
+          <div class="p-fluid p-formgrid p-grid">
+            <div class="p-col-3">
+              <av-input-number [(ngModel)]="bookingModelFind.id"
+                [label]="'module.myTaskDashboard.bookingConfirmation.id'|translate"></av-input-number>
+            </div>
+            <div class="p-col-3">
+              <av-input-date [monthNavigator]="true" [yearNavigator]="true" yearRange="2000:2050" [showIcon]="true" inputId="icon"
+              [(ngModel)]="bookingModelFind.createdDate"
+                [label]="'module.myTaskDashboard.bookingConfirmation.creationDate'|translate"></av-input-date>
+            </div>
+            
+          
+            <div class="p-col-3">
+              <av-station [label]="'module.myTaskDashboard.bookingConfirmation.originStationName' | translate"
+                [selectionLabel]="'module.myTaskDashboard.bookingConfirmation.originStationName' | translate"
+                [(ngModel)]="originStation" (sendStation)="receiveOriginStation($event)" [dropdown]="false">
+              </av-station>
+            </div>
+            <div class="p-col-3">
+              <av-station [label]="'module.myTaskDashboard.bookingConfirmation.destinationStationName' | translate"
+                [selectionLabel]="'module.myTaskDashboard.bookingConfirmation.destinationStationName' | translate"
+                [(ngModel)]="destinationStation" (sendStation)="receiveDestinationStation($event)" [dropdown]="false">
+              </av-station>
+            </div>
+            <div class="p-col-3">
+              <av-load-type label="{{'module.myTaskDashboard.bookingConfirmation.loadTypeId' | translate}}"
+                selectedLabel="{{'module.myTaskDashboard.bookingConfirmation.loadTypeId' | translate}}"
+                [(ngModel)]="bookingModelFind.loadTypeId"></av-load-type>
+            </div>
+            <div class="p-col-3">
+              <av-input-number label="{{'module.myTaskDashboard.bookingConfirmation.weight' | translate}}"
+                [(ngModel)]="bookingModelFind.weightKgs"></av-input-number>
+            </div>
+            <div class="p-d-flex p-jc-end p-col-12">
+              <av-button [label]="'module.componentNames.btnFilter' | translate" icon="pi pi-search" class="p-button-text"
+                (click)="getPaginationAndFilter()"></av-button>
+            </div>
+          </div>
+        </p-accordionTab>
+      </p-accordion>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="id">
+          <div class="p-fluid p-p-2">
+            {{ "module.myTaskDashboard.bookingConfirmation.id" | translate }}
+            <p-sortIcon field="id"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="creationDate">
+          <div class="p-fluid p-p-2">
+            {{ "module.myTaskDashboard.bookingConfirmation.creationDate" | translate }}
+            <p-sortIcon field="creationDate"></p-sortIcon>
+          </div>
+        </th>
+        
+       
+        <th pSortableColumn="origin">
+          <div class="p-fluid p-p-2">
+            {{"module.myTaskDashboard.bookingConfirmation.origin" | translate}}
+            <p-sortIcon field="origin"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="destination">
+          <div class="p-fluid p-p-2">
+            {{"module.myTaskDashboard.bookingConfirmation.destination" | translate}}
+            <p-sortIcon field="destination"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="lblLoadType">
+          <div class="p-fluid p-p-2">
+            {{ "module.myTaskDashboard.bookingConfirmation.lblLoadType" | translate }}
+            <p-sortIcon field="lblLoadType"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="weight">
+          <div class="p-fluid p-p-2">
+            {{ "module.myTaskDashboard.bookingConfirmation.weight" | translate }}
+            <p-sortIcon field="weight"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="estimatedDate">
+          <div class="p-fluid p-p-2">
+            {{ "module.myTaskDashboard.bookingConfirmation.estimatedDate" | translate }}
+            <p-sortIcon field="estimatedDate"></p-sortIcon>
+          </div>
+        </th>
+        <!-- <th pSortableColumn="user">
+          <div class="p-fluid p-p-2">
+            {{ "module.myTaskDashboard.bookingConfirmation.user" | translate }}
+            <p-sortIcon field="user"></p-sortIcon>
+          </div>
+        </th> -->
+        <th>
+          <div class="p-fluid p-p-2">
+            {{ "module.myTaskDashboard.bookingConfirmation.detail" | translate }}
+          </div>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-bookingModel let-i="rowIndex">
+      <tr>
+        <td>
+          <div class="p-fluid p-p-2">
+            {{bookingModel.id}}
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            {{bookingModel.createdDate | date:'yyyy-MM-dd HH:MM'}}
+          </div>
+        </td>
+       
+       
+        <td>
+          <div class="p-fluid p-p-2">
+            {{bookingModel.orgStationName}}
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            {{bookingModel.destStationName}}
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            {{bookingModel.loadTypeName}}
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            {{ bookingModel.weightKgs }}
+          </div>
+        </td>
+        <td>
+          <div class="p-fluid p-p-2">
+            {{ bookingModel.estimatedFlightDate }}
+          </div>
+        </td>
+        <!-- <td>
+          <div class="p-fluid p-p-2">
+            {{ bookingModel.bookingHistoryLastStatus.createdUser.firstName }}
+          </div>
+        </td> -->
+        <td *ngIf="bookingModel.bookingHistoryLastStatus?.bookingStatusId != 6">
+          <av-button [label]="'module.myTaskDashboard.bookingConfirmation.detail'" icon="pi pi-plus"
+            class="p-button-text" (click)="openDetails(bookingModel)">
+          </av-button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>
+
+<p-dialog [(visible)]="bookingDetailsDialog" [style]="{ width: '900px', heigth : '500px'}"
+  [header]="'module.myTaskDashboard.bookingConfirmation.popupTitle' | translate" [modal]="true" styleClass="p-fluid"
+  (onHide)="closeDetailsDialog()">
+  <ng-template pTemplate="content">
+    <div>
+      <form id="bookingForm" [formGroup]="bookingForm">
+        <div class="p-fluid p-formgrid p-grid">
+          <div class="p-p-2 p-col-3">
+            <av-input-text label="{{'module.myTaskDashboard.bookingConfirmation.name' | translate}}*"
+              formControlName="userName" [(ngModel)]="bookingModel.userName" [disabled]="true">
+            </av-input-text>
+          </div>
+          <div class="p-p-2 p-col-3">
+            <av-input-text label="{{'module.myTaskDashboard.bookingConfirmation.customer' | translate}}"
+              formControlName="customer" [(ngModel)]="bookingModel.company" [disabled]="true">
+            </av-input-text>
+          </div>
+          <div class="p-p-2 p-col-3">
+            <av-input-text label="{{'module.myTaskDashboard.bookingConfirmation.docNum' | translate}}*"
+              formControlName="docNum" [(ngModel)]="bookingModel.docNum">
+            </av-input-text>
+            <div *ngIf="submitted && f.docNum.errors" class="p-invalid">
+              <div *ngIf="f.docNum.errors.required" class="p-p-2">
+                {{"module.myTaskDashboard.bookingConfirmation.validation.docNumRequired" | translate}}
+              </div>
+            </div>
+          </div>
+          <div class="p-p-2 p-col-3">
+            <av-quotation formControlName="quotationId"
+              [email]="user.email"
+              [label]="'module.myTaskDashboard.bookingConfirmation.quotationId' | translate"
+              [selectionLabel]="'module.myTaskDashboard.bookingConfirmation.quotationId' | translate"
+              [(ngModel)]="quotation">
+            </av-quotation>
+          </div>
+          <div class="p-p-2 p-col-3">
+            <av-station formControlName="originStation" required
+              [label]="'module.myTaskDashboard.bookingConfirmation.originStationName' | translate"
+              [selectionLabel]="'module.myTaskDashboard.bookingConfirmation.originStationName' | translate"
+              [(ngModel)]="originStationFind">
+            </av-station>
+            <div *ngIf="submitted && f.originStation.errors" class="p-invalid">
+              <div *ngIf="f.originStation.errors.required" class="p-p-2">
+                {{"module.myTaskDashboard.bookingConfirmation.validation.originStationNameRequired" | translate}}
+              </div>
+            </div>
+          </div>
+          <div class="p-p-2 p-col-3">
+            <av-station formControlName="destinationStation" required
+              [label]="'module.myTaskDashboard.bookingConfirmation.destinationStationName' | translate"
+              [selectionLabel]="'module.myTaskDashboard.bookingConfirmation.destinationStationName' | translate"
+              [(ngModel)]="destinationStationFind">
+            </av-station>
+            <div *ngIf="submitted && f.destinationCity.errors" class="p-invalid">
+              <div *ngIf="f.destinationCity.errors.required" class="p-p-2">
+                {{"module.myTaskDashboard.bookingConfirmation.validation.destinationStationNameRequired" | translate}}
+              </div>
+            </div>
+          </div>
+          <div class="p-p-2 p-col-3">
+            <av-input-date formControlName="estimatedDeliveryDate" [(ngModel)]="bookingModel.estimatedDeliveryDate"
+              [monthNavigator]="true" [showTime]="true" [yearNavigator]="true" yearRange="2000:2050" [showIcon]="true"
+              inputId="icon" [label]="'module.myTaskDashboard.bookingConfirmation.estimatedDate' | translate">
+            </av-input-date>
+            <div *ngIf="submitted &&  f.estimatedDeliveryDate.errors" class="p-p-2" style="min-width: 225px;">
+              <small class="p-invalid"
+                *ngIf="submitted && f.estimatedDeliveryDate.errors">{{'module.myTaskDashboard.bookingConfirmation.validation.estimatedDateRequired'|translate}}
+              </small>
+            </div>
+          </div>
+          <div class="p-p-2 p-col-3">
+            <av-load-type label="{{'module.myTaskDashboard.bookingConfirmation.loadTypeId' | translate}}*"
+              selectedLabel="{{'module.myTaskDashboard.bookingConfirmation.loadTypeId' | translate}}*"
+              formControlName="loadTypeId" [(ngModel)]="bookingModel.loadTypeId"></av-load-type>
+            <div *ngIf="submitted && f.loadTypeId.errors" class="p-invalid">
+              <div *ngIf="f.loadTypeId.errors.required" class="p-p-2">
+                {{"module.myTaskDashboard.bookingConfirmation.validation.loadTypeRequired" | translate}}
+              </div>
+            </div>
+          </div>
+          <div class="p-p-2 p-col-3">
+            <av-payment-mode label="{{'module.myTaskDashboard.bookingConfirmation.paymentMode' | translate}}*"
+              selectedLabel="{{'module.myTaskDashboard.bookingConfirmation.paymentMode' | translate}}"
+              formControlName="paymentMode" [(ngModel)]="bookingModel.paymentMode"></av-payment-mode>
+            <div *ngIf="submitted && f.paymentMode.errors" class="p-invalid">
+              <div *ngIf="f.paymentMode.errors.required" class="p-p-2">
+                {{"module.myTaskDashboard.bookingConfirmation.validation.paymentModeRequired" | translate}}
+              </div>
+            </div>
+          </div>
+          <!-- <div class="p-p-2 p-col-3">
+            <av-input-number label="{{'module.myTaskDashboard.bookingConfirmation.numberPieces' | translate}}*"
+              formControlName="piece" [(ngModel)]="bookingModel.piece"></av-input-number>
+            <div class="p-p-2">
+              <small class="p-invalid" *ngIf="submitted && f.piece.errors">
+                {{"module.myTaskDashboard.bookingConfirmation.validation.numberPiecesRequired" | translate}}
+              </small>
+            </div>
+          </div> -->
+          <!-- <div class="p-p-2 p-col-3">
+            <av-input-number label="{{'module.myTaskDashboard.bookingConfirmation.weightKgs' | translate}}"
+              formControlName="weightKgs" [(ngModel)]="bookingModel.weightKgs"></av-input-number>
+            <div class="p-p-2">
+              <small class="p-invalid" *ngIf="submitted && f.weightKgs.errors">
+                {{"module.myTaskDashboard.bookingConfirmation.validation.weightKgsRequired" | translate}}
+              </small>
+            </div>
+          </div> -->
+          <div class="p-p-2 p-col-3">
+            <av-input-number label="{{'module.myTaskDashboard.bookingConfirmation.volume' | translate}}"
+              formControlName="volume" [(ngModel)]="bookingModel.volume"></av-input-number>
+            <div class="p-p-2">
+              <small class="p-invalid" *ngIf="submitted && f.volume.errors">
+                {{"module.myTaskDashboard.bookingConfirmation.validation.volumeRequired" | translate}}
+              </small>
+            </div>
+          </div>
+          <!-- <div class="p-p-2 p-col-3">
+            <av-measurement-unit-type formControlName="measurementUnit"
+              label="{{'module.myTaskDashboard.bookingConfirmation.weightUnit'|translate}}"
+              [selectionLabel]="'module.myTaskDashboard.bookingConfirmation.weightUnit'|translate"
+              [(ngModel)]="bookingModel.weightUnitId">
+            </av-measurement-unit-type>
+            <div *ngIf="submitted && f.measurementUnit.errors" class="p-invalid">
+              <div *ngIf="f.measurementUnit.errors.required" class="p-p-2">
+                {{"module.myTaskDashboard.bookingConfirmation.validation.weightUnitRequired" | translate}}
+              </div>
+            </div>
+          </div>
+          <div class="p-p-2 p-col-3">
+            <av-input-number label="{{'module.myTaskDashboard.bookingConfirmation.chargeableWeight' | translate}}*"
+              formControlName="chargeableWeight" [(ngModel)]="bookingModel.chargeableWeight"></av-input-number>
+            <div class="p-p-2">
+              <small class="p-invalid" *ngIf="submitted && f.chargeableWeight.errors">
+                {{"module.myTaskDashboard.bookingConfirmation.validation.chargeableWeightRequired" | translate}}
+              </small>
+            </div>
+          </div> -->
+          <div class="p-p-2 p-col-3">
+            <av-input-number label="{{'module.myTaskDashboard.bookingConfirmation.rate' | translate}}*"
+              formControlName="rate" [(ngModel)]="bookingModel.rate"></av-input-number>
+            <div class="p-p-2">
+              <small class="p-invalid" *ngIf="submitted && f.rate.errors">
+                {{"module.myTaskDashboard.bookingConfirmation.validation.rateRequired" | translate}}
+              </small>
+            </div>
+          </div>
+          <div class="p-p-2 p-col-3">
+            <av-input-text label="{{'module.myTaskDashboard.bookingConfirmation.shc' | translate}}"
+              formControlName="shc" [(ngModel)]="bookingModel.shc">
+            </av-input-text>
+            <div *ngIf="submitted && f.name.errors" class="p-invalid">
+              <div *ngIf="f.name.errors.required" class="p-p-2">
+                {{"module.myTaskDashboard.bookingConfirmation.validation.shcRequired" | translate}}
+              </div>
+            </div>
+          </div>
+          <div class="p-p-2 p-col-3">
+            <av-input-text label="{{'module.myTaskDashboard.bookingConfirmation.bookingInstruction' | translate}}"
+              formControlName="bookingInstruction" [(ngModel)]="bookingModel.bookingInstruction">
+            </av-input-text>
+          </div>
+          <div class="p-p-2 p-col-3">
+            <av-cargo-stackable formControlName="removable" label="{{'module.myTaskDashboard.bookingConfirmation.removable' | translate}}*"
+                [(ngModel)]="bookingModel.removable">
+            </av-cargo-stackable>
+            <!-- <div *ngIf="submitted && f.removable.errors" class="p-p-2">
+                <small class="p-invalid" *ngIf="f.removable.errors.required">
+                    {{"module.booking.validation.removableRequired" | translate}}
+                </small>
+            </div> -->
+        </div>
+          <!-- <div class="p-p-2 p-col-3">
+            <div class="p-p-2">
+              <p-checkbox formControlName="removable" [binary]="true"
+                label="{{'module.myTaskDashboard.bookingConfirmation.removable' | translate}}*"
+                [(ngModel)]="bookingModel.removable">
+              </p-checkbox>
+            </div>
+          </div> -->
+          <div class="p-p-2 p-col-3">
+            <av-input-date #myCalender formControlName="estimatedFlightDate" [(ngModel)]="bookingModel.estimatedFlightDate"
+              [monthNavigator]="true" [showTime]="true" [yearNavigator]="true" yearRange="2000:2050" [showIcon]="true"
+              inputId="icon" label="{{'module.myTaskDashboard.bookingConfirmation.estimatedFlightDate' | translate}}*">
+            </av-input-date>
+            <div *ngIf="submitted &&  f.estimatedFlightDate.errors" class="p-p-2" style="min-width: 225px;">
+              <small class="p-invalid"
+                *ngIf="submitted && f.estimatedFlightDate.errors">{{'module.myTaskDashboard.bookingConfirmation.validation.estimatedFlightDateRequired'|translate}}
+              </small>
+            </div>
+          </div>
+          <div class="p-p-2 p-col-3">
+            <av-input-text label="{{'module.myTaskDashboard.bookingConfirmation.flightNumber' | translate}}"
+              formControlName="flightNumber" [(ngModel)]="bookingModel.flightNumber"></av-input-text>
+            <div class="p-p-2">
+              <small class="p-invalid" *ngIf="submitted && f.flightNumber.errors">
+                {{"module.myTaskDashboard.bookingConfirmation.validation.flightNumberRequired" | translate}}
+              </small>
+            </div>
+          </div>
+          <div class="p-p-2 p-col-6">
+            <av-shipper-user formControlName="shipperInformation" required
+              label="{{'module.myTaskDashboard.bookingConfirmation.shipper' | translate}}*"
+              (childShipperDialog)="getShipper()"
+              [selectionLabel]="'module.myTaskDashboard.bookingConfirmation.shipper' | translate"
+              [(ngModel)]="shipperInfo" [userId]="bookingModel.userId">
+            </av-shipper-user>
+            <div *ngIf="submitted && f.shipperInformation.errors" class="p-invalid">
+              <div *ngIf="f.shipperInformation.errors.required" class="p-p-2">
+                {{"module.myTaskDashboard.bookingConfirmation.validation.shipperRequired" | translate}}
+              </div>
+            </div>
+          </div>
+          <div class="p-p-2 p-col-6">
+            <av-consignee-user formControlName="consigneeInformation" required
+              label="{{'module.myTaskDashboard.bookingConfirmation.consignee' | translate}}*"
+              (childConsigneeDialog)="getConsignee()"
+              [selectionLabel]="'module.myTaskDashboard.bookingConfirmation.consignee' | translate"
+              [(ngModel)]="consigneeInfo" [userId]="bookingModel.userId">
+            </av-consignee-user>
+            <div *ngIf="submitted && f.consigneeInformation.errors" class="p-invalid">
+              <div *ngIf="f.consigneeInformation.errors.required" class="p-p-2">
+                {{"module.myTaskDashboard.bookingConfirmation.validation.consigneeRequired" | translate}}
+              </div>
+            </div>
+          </div>
+          <div class="p-p-2 p-col-6">
+            <av-input-text-area formControlName="description" [(ngModel)]="bookingModel.description"
+              label="{{'module.myTaskDashboard.bookingConfirmation.description' | translate}}*"></av-input-text-area>
+          </div>
+          <div class="p-p-2 p-col-6">
+            <av-input-text-area formControlName="comment" [(ngModel)]="bookingModel.comment"
+              [label]="'module.myTaskDashboard.bookingConfirmation.comment'|translate"></av-input-text-area>
+          </div>
+        </div>
+      </form>
+
+      <form id="bookingDetailsForm" [formGroup]="bookingDetailsForm" class="form-horizontal ng-untouched ng-pristine ng-valid">
+        <div class="p-fluid p-formgrid p-grid">
+            <div class="p-col-3">
+                <av-input-number label="{{'module.booking.details.numberPieces' | translate}}"
+                    formControlName="numberPieces" [(ngModel)]="bookingDetail.pieces"
+                    onkeypress="return event.charCode >= 48"></av-input-number>
+                <div class="p-p-2">
+                    <small class="p-invalid" *ngIf="submittedDetail && fDetail.numberPieces.errors">
+                        {{"module.booking.details.validation.numberPiecesRequired" | translate}}
+                    </small>
+                </div>
+            </div>
+            <div class="p-col-3">
+                <av-input-number formControlName="weight" label="module.booking.details.weight"
+                    [(ngModel)]="bookingDetail.weight" onkeypress="return event.charCode >= 48">
+                </av-input-number>
+                <div class="p-p-2">
+                    <small class="p-invalid"
+                        *ngIf="submittedDetail && fDetail.weight.errors">{{"module.booking.details.validation.weightRequired"
+                        |
+                        translate}}</small>
+                </div>
+            </div>
+            <div class="p-col-3">
+                <av-measurement-unit-type formControlName="weightUnitId"
+                    [label]="'module.booking.details.weightUnit'|translate"
+                    [selectionLabel]="'module.componentNames.select'|translate" [(ngModel)]="bookingDetail.weightUnitId"
+                    (sendDesc)="receiveMeasurementUnit($event)">
+                </av-measurement-unit-type>
+                <div class="p-p-2">
+                    <small class="p-invalid" *ngIf="submittedDetail && fDetail.weightUnitId.errors">
+                        {{"module.booking.details.validation.weightUnitRequired" | translate}}</small>
+                </div>
+            </div>
+            <div class="p-col-3"></div>
+            <div class="p-col-2">
+                <av-input-number formControlName="depth" label="module.booking.details.depth"
+                    [(ngModel)]="bookingDetail.depth" onkeypress="return event.charCode >= 48">
+                </av-input-number>
+                <div class="p-p-2">
+                    <small class="p-invalid" *ngIf="submittedDetail && fDetail.depth.errors">
+                        {{"module.booking.details.validation.depthRequired" | translate}}
+                    </small>
+                </div>
+            </div>
+            <div class="p-col-2">
+                <av-input-number formControlName="width" label="module.booking.details.width"
+                    [(ngModel)]="bookingDetail.width" onkeypress="return event.charCode >= 48"></av-input-number>
+                <div class="p-p-2">
+                    <small class="p-invalid" *ngIf="submittedDetail && fDetail.width.errors">
+                        {{"module.booking.details.validation.widthRequired" | translate}}
+                    </small>
+                </div>
+            </div>
+            <div class="p-col-2">
+                <av-input-number formControlName="high" label="module.booking.details.high"
+                    [(ngModel)]="bookingDetail.high" onkeypress="return event.charCode >= 48"></av-input-number>
+                <div class="p-p-2">
+                    <small class="p-invalid"
+                        *ngIf="submittedDetail && fDetail.high.errors">{{"module.booking.details.validation.highRequired" |
+                        translate}}</small>
+                </div>
+            </div>
+            <div class="p-col-3">
+                <av-weight-unit-type formControlName="lengthUnitId"
+                    [label]="'module.booking.details.lengthUnit'|translate"
+                    [selectionLabel]="'module.componentNames.select'|translate" [(ngModel)]="bookingDetail.lengthUnitId"
+                    (sendDescription)="receiveLengthUnit($event)">
+                </av-weight-unit-type>
+                <div class="p-p-2">
+                    <small class="p-invalid" *ngIf="submittedDetail && fDetail.lengthUnitId.errors">
+                        {{"module.booking.details.validation.lengthUnitRequired" | translate}}</small>
+                </div>
+            </div>
+            <div class="p-p-2 text-right">
+                <av-button [label]="'module.booking.details.btnAdd' | translate" icon="pi pi-plus"
+                    class="p-button-text" (click)="addDetails()"></av-button>
+            </div>
+        </div>
+    </form>
+
+    <p-table #dt [value]="bookingModel.bookingDetails" [rows]="10" [rowHover]="true" dataKey="id"
+        [showCurrentPageReport]="true" [rowsPerPageOptions]="[10, 25, 50]" styleClass="p-datatable-responsive-demo">
+        <ng-template pTemplate="header">
+            <tr>
+                <th class="text-center">
+                    {{ "module.booking.details.numberPieces" | translate }}
+                </th>
+                <th class="text-center">
+                    {{ "module.booking.details.weight" | translate }}
+                </th>
+                <th class="text-center">
+                    {{ "module.booking.details.weightUnit" | translate }}
+                </th>
+                <th class="text-center">
+                    {{ "module.booking.details.depth" | translate }}
+                </th>
+                <th class="text-center">
+                    {{ "module.booking.details.width" | translate }}
+                </th>
+                <th class="text-center">
+                    {{ "module.booking.details.high" | translate }}
+                </th>
+                <th class="text-center">
+                    {{ "module.booking.details.lengthUnit" | translate }}
+                </th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-bd let-rowIndex="rowIndex">
+          <ng-container *ngIf="bd.active==true">
+            <tr>
+                <td pEditableColumn>
+                    {{ bd.pieces }}
+                </td>
+                <td pEditableColumn>
+                    {{ bd.weight }}
+                </td>
+                <td pEditableColumn>
+                    {{ bd.weightUnitDesc }}
+                </td>
+                <td pEditableColumn>
+                    {{ bd.depth }}
+                </td>
+                <td pEditableColumn>
+                    {{ bd.width }}
+                </td>
+                <td pEditableColumn>
+                    {{ bd.high }}
+                </td>
+                <td pEditableColumn>
+                    {{ bd.lengthUnitDesc }}
+                </td>
+                <td style="text-align: center">
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-text"
+                        (click)="deleteDetail(rowIndex)"></button>
+                </td>
+            </tr>
+          </ng-container>
+        </ng-template>
+    </p-table>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <!-- <av-button [label]="'module.myTaskDashboard.bookingConfirmation.btnOnHold' | translate" icon="pi pi-times"
+      class="p-button-text" (click)="onHold()"></av-button> -->
+    <av-button [label]="'module.componentNames.btnCancel' | translate" icon="pi pi-save" class="p-button-text"
+      (click)="cancel()"></av-button>
+    <av-button [label]="'module.componentNames.btnRequest' | translate" icon="pi pi-save" class="p-button-text"
+      (click)="confirm()"></av-button>
+  </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{ width: '450px' }" [acceptLabel]="'module.booking.btnConfirm' | translate"
+  [rejectLabel]="'module.booking.btnCancel' | translate"></p-confirmDialog>
+
+<p-toast baseZIndex="10000"></p-toast>

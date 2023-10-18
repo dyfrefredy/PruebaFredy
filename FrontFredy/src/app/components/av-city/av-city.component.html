@@ -1,0 +1,7 @@
+<div class="p-fluid p-p-2">
+  <span class="p-float-label">
+    <p-dropdown [options]="options" [(ngModel)]="selectionCity" [filter]="filter" [disabled]="disabled" (onChange)="onChange()" optionValue="value" optionLabel="description" filterBy="label" [showClear]="true">
+    </p-dropdown>
+    <label for="field-id">{{label|translate}}</label>
+  </span>
+</div>

@@ -1,0 +1,12 @@
+<div class="p-p-2">
+  <span class="p-float-label">
+    <p-autoComplete [suggestions]="options" [(ngModel)]="selectionAriport" optionValue="id" forceSelection="true" dropdownIcon="pi pi-search" [minLength]="minLength" (completeMethod)="filterAirport($event)" field="displayName" [dropdown]="true">
+      <ng-template let-selectionAriport pTemplate="item">
+          <div class="country-item">
+              <div>{{selectionAriport.displayName}}</div>
+          </div>
+      </ng-template>
+    </p-autoComplete>
+    <label>{{label|translate}}</label>
+  </span>
+</div>

@@ -1,0 +1,135 @@
+<p-card>
+  <div class="p-field p-grid">
+    <div class="p-col-1">
+      <av-button type="button" [label]="'module.componentNames.btnNew' | translate" icon="pi pi-plus p-button-icon-left"
+        class="p-button-text" (click)="openNew()"></av-button>
+    </div>
+    <div class="p-col-1">
+      <av-button type="button" [label]="'module.componentNames.btnDisabled' | translate"
+        [icon]="'pi pi-minus-circle p-button-icon-left'" class="p-button-text"
+        (click)="deleteSelectedAutomaticAssignmentsUsers()"
+        [disabled]="!selectedAutomaticAssignmentsUsers || !selectedAutomaticAssignmentsUsers.length"></av-button>
+    </div>
+  </div>
+
+  <p-table #dt styleClass="p-datatable-sm p-datatable-responsive-demo" [value]="automaticAssignmentsUsers" [lazy]="true"
+    (onLazyLoad)="loadAutomaticAssignmentsUsers($event)" [totalRecords]="totalRecords" [rows]="10" [paginator]="true"
+    [(selection)]="selectedAutomaticAssignmentsUsers" [rowHover]="true" dataKey="id"
+    currentPageReportTemplate="Mostrar {first} a {last} de {{ totalRecords}} registros" [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 25, 50]">
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 3rem">
+          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+        </th>
+        <th pSortableColumn="firstName">
+          {{ "module.automaticAssignmentsUser.firstName" | translate }}
+          <p-sortIcon field="firstName"></p-sortIcon>
+        </th>
+        <th pSortableColumn="lastName">
+          {{ "module.automaticAssignmentsUser.lastName" | translate }}
+          <p-sortIcon field="lastName"></p-sortIcon>
+        </th>
+        <th pSortableColumn="available">
+          {{ "module.automaticAssignmentsUser.available" | translate }}
+          <p-sortIcon field="available"></p-sortIcon>
+        </th>
+        <th style="width: 8rem"></th>
+      </tr>
+      <tr>
+        <th></th>
+        <th>
+          <av-input-text [label]="'module.automaticAssignmentsUser.firstName'|translate"
+            [(ngModel)]="automaticAssignmentsUserFind.user.firstName">
+          </av-input-text>
+        </th>
+        <th>
+          <av-input-text [label]="'module.automaticAssignmentsUser.lastName'|translate"
+            [(ngModel)]="automaticAssignmentsUserFind.user.lastName">
+          </av-input-text>
+        </th>
+        <th>
+          <p-triStateCheckbox [(ngModel)]="automaticAssignmentsUserFind.active" placeholder="Activo">
+          </p-triStateCheckbox>
+        </th>
+        <th>
+          <av-button [label]="'module.componentNames.btnFilter' | translate" icon="pi pi-search" class="p-button-text"
+            (click)="getPaginationAndFilter()"></av-button>
+        </th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-automaticAssignmentsUser let-editing="editing" let-ri="rowIndex">
+      <tr [pEditableRow]="automaticAssignmentsUser">
+        <td>
+          <p-tableCheckbox [value]="automaticAssignmentsUser"></p-tableCheckbox>
+        </td>
+        <td pEditableColumn>
+          {{ automaticAssignmentsUser.user.firstName }}
+        </td>
+        <td pEditableColumn>
+          {{ automaticAssignmentsUser.user.lastName }}
+        </td>
+        <td pEditableColumn>
+          {{ automaticAssignmentsUser.available ? "SI" : "NO" }}
+        </td>
+        <td style="text-align: center">
+          <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-text"
+            (click)="editAutomaticAssignmentsUser(automaticAssignmentsUser)"></button>
+          <button pButton pRipple icon="pi pi-minus-circle" class="p-button-rounded p-button-text"
+            (click)="deleteAutomaticAssignmentsUser(automaticAssignmentsUser)"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>
+
+<p-dialog [(visible)]="automaticAssignmentsUserDialog" [style]="{ width: '450px' }"
+  [header]="'module.automaticAssignmentsUser.title' | translate" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <form id="automaticAssignmentsUserForm" [formGroup]="automaticAssignmentsUserForm"
+      class="form-horizontal ng-untouched ng-pristine ng-valid">
+      <av-user-customer-service formControlName="userAsignment" label="{{'module.automaticAssignmentsUser.user' | translate}}"
+        [(ngModel)]="userAsignment" [userLoginId]= "user.id"></av-user-customer-service>
+      <small class="p-p-2 p-invalid" *ngIf="submitted && !userAsignment">
+        {{"module.automaticAssignmentsUser.validation.userAsignmentRequired" | translate}}
+      </small>
+      <small class="p-p-2 p-invalid" *ngIf="userChange==false">
+        {{"module.quote.user.validation.userChangeRequired" | translate}}
+      </small>
+      <div class="p-p-2" style="min-width: 225px">
+        <p-checkbox formControlName="quotes" [binary]="true"
+          [label]="'module.automaticAssignmentsUser.quotes' | translate"
+          [(ngModel)]="automaticAssignmentsUser.quotes">
+        </p-checkbox>
+      </div>
+      <div class="p-p-2" style="min-width: 225px">
+        <p-checkbox formControlName="bookings" [binary]="true"
+          [label]="'module.automaticAssignmentsUser.bookings' | translate"
+          [(ngModel)]="automaticAssignmentsUser.bookings">
+        </p-checkbox>
+      </div>
+      <div class="p-p-2" style="min-width: 225px">
+        <p-checkbox formControlName="available" [binary]="true"
+          [label]="'module.automaticAssignmentsUser.available' | translate"
+          [(ngModel)]="automaticAssignmentsUser.available">
+        </p-checkbox>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <av-button [label]="'module.componentNames.btnCancel' | translate" icon="pi pi-times" class="p-button-text"
+      (click)="hideDialog()"></av-button>
+    <av-button [label]="'module.componentNames.btnSave' | translate" icon="pi pi-save" class="p-button-text"
+      (click)="saveAutomaticAssignmentsUser(automaticAssignmentsUser)"></av-button>
+  </ng-template>
+</p-dialog>
+
+<p-toast baseZIndex="10000"></p-toast>
+
+<p-confirmDialog [style]="{ width: '450px' }" [acceptLabel]="'module.componentNames.btnAccept' | translate"
+  [rejectLabel]="'module.componentNames.btnCancel' | translate"></p-confirmDialog>
+
+<p-blockUI [blocked]="loading">
+  <p-progressSpinner></p-progressSpinner>
+</p-blockUI>

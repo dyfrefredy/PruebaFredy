@@ -1,0 +1,9 @@
+<p-fieldset [legend]="label| translate">
+	<div *ngFor="let item of options; let i = index" class="av-item">
+		<p-checkbox name="group" [value]="item.value" [(ngModel)]="values" [disabled]="disabled" (onChange)="onChange()">
+		</p-checkbox>
+		<label class="av-label"
+			[ngClass]="{'av-item-selected': selectable && i === selected, 'av-item-cursor': selectable }"
+			(click)="select(i)">{{item.label}}</label>
+	</div>
+</p-fieldset>
